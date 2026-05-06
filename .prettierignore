@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Environment files
+.env*
+!.env.example
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache
+*.tsbuildinfo
+
+# Temporary files
+*.tmp
+*.temp
+openclaw-temp
+darwin-skill-temp
+project
+ui
+
+# Testing
+coverage
+.nyc_output

@@ -1,0 +1,462 @@
+round	file_changed	defect_id	severity	dimension_scored	old_score	new_score	status	description
+15	research-synthesis-matching.md	D93	critical	创新评估精度	5	8	keep	Scope Expansion Innovation Assessment added
+15	research-synthesis-matching.md	D94	critical	创新评估精度	5	8	keep	AI Drug Discovery Pipeline Assessment added
+15	research-synthesis-matching.md	D95	critical	创新评估精度	5	8	keep	Generative vs Predictive Innovation Distinction added
+15	research-synthesis-matching.md	D96	moderate	全面性	10	12	keep	AI Autonomy Level Classification added
+15	research-synthesis-matching.md	D97	moderate	全面性	10	12	keep	System-Level Innovation Assessment added
+15	research-synthesis-matching.md	D98	moderate	全面性	10	12	keep	Nobel/Major Award Validation added
+16	research-synthesis-matching.md	D99	critical	前沿检测精度	6	8	keep	Architecture vs Application Frontier Distinction added
+16	research-synthesis-matching.md	D100	critical	前沿检测精度	6	8	keep	Causal Reasoning Level Assessment added
+16	research-synthesis-matching.md	D101	moderate	全面性	12	13	keep	Continual Learning Assessment added
+16	research-synthesis-matching.md	D102	moderate	全面性	12	13	keep	LLM Knowledge Injection Forgetting Assessment added
+17	research-synthesis-matching.md	D103	critical	创新评估精度	8	10	keep	Explainability-Driven Innovation Assessment added
+17	research-synthesis-matching.md	D104	critical	创新评估精度	8	10	keep	Conditional vs Unconditional Generation Distinction added
+17	research-synthesis-matching.md	D105	critical	全面性	13	14	keep	Engineering vs Algorithmic Innovation Distinction added
+17	research-synthesis-matching.md	D108	critical	全面性	13	15	keep	Regulatory/Policy Innovation Assessment added
+17	research-synthesis-matching.md	D106	moderate	创新评估精度	8	9	keep	Computational Efficiency Breakthrough Assessment added
+17	research-synthesis-matching.md	D107	moderate	创新评估精度	8	9	keep	Constrained Optimization Innovation Assessment added
+17	research-synthesis-matching.md	D109	moderate	全面性	15	16	keep	Scale-up Innovation Assessment added
+17	research-synthesis-matching.md	D110	moderate	准确性	7	8	keep	AI Surpassing Human Expert Validation Requirements added
+19	research-synthesis-matching.md	D111	critical	前沿检测精度	8	9	keep	Deployment Failure Downgrade Mechanism added
+19	research-synthesis-matching.md	D112	critical	准确性	8	9	keep	Core Capability Challenge Downgrade added
+19	research-synthesis-matching.md	D114	critical	前沿检测精度	9	10	keep	Fairness-Driven Frontier Downgrade added
+19	research-synthesis-matching.md	D118	critical	准确性	9	10	keep	Accuracy-Reasoning Gap Assessment added
+19	research-synthesis-matching.md	D113	moderate	前沿检测精度	10	10	keep	Conditional Established Sub-stage added
+19	research-synthesis-matching.md	D115	moderate	真实性	8	9	keep	AI Hallucination/Misinformation Impact Assessment added
+19	research-synthesis-matching.md	D116	moderate	前沿检测精度	10	10	keep	Re-emerging Frontier Stage added
+19	research-synthesis-matching.md	D117	moderate	全面性	16	17	keep	Field-Level Validation Gap Assessment added
+19	research-synthesis-matching.md	D119	moderate	全面性	17	18	keep	Retraction Cascade Assessment added
+20	research-synthesis-matching.md	D120	critical	全面性	18	19	keep	Closed-Loop Medical AI Assessment added
+20	research-synthesis-matching.md	D121	critical	创新评估精度	9	10	keep	Knowledge Discovery vs Knowledge Application Distinction added
+20	research-synthesis-matching.md	D128	critical	全面性	19	20	keep	Self-Modifying AI Safety Assessment added
+20	research-synthesis-matching.md	D122	moderate	全面性	20	21	keep	AI Authorship Assessment added
+20	research-synthesis-matching.md	D123	moderate	创新评估精度	10	10	keep	Data-Free/Physics-Informed Innovation added
+20	research-synthesis-matching.md	D124	moderate	全面性	21	22	keep	Hybrid Intelligence Assessment added
+20	research-synthesis-matching.md	D125	moderate	准确性	10	10	keep	Prediction Time Horizon Validation added
+20	research-synthesis-matching.md	D126	moderate	全面性	22	23	keep	Ethical Innovation Dimension added
+20	research-synthesis-matching.md	D127	moderate	全面性	23	24	keep	Cross-Species Medical AI placeholder added
+20	research-synthesis-matching.md	D129	moderate	准确性	10	10	keep	Simultaneous Independent Discovery rule added
+21	research-synthesis-matching.md	D130	critical	前沿检测精度	10	11	keep	Post-Nobel/Landmark Performance Regression Assessment added
+21	research-synthesis-matching.md	D131	critical	创新评估精度	10	11	keep	Post-Nobel Innovation Trajectory Assessment added
+21	research-synthesis-matching.md	D133	critical	真实性	9	10	keep	Landmark Method Known Limitation Assessment added
+21	research-synthesis-matching.md	D132	moderate	创新评估精度	11	12	keep	Incremental vs Fundamental Improvement Distinction added
+21	research-synthesis-matching.md	D134	moderate	全面性	24	25	keep	Unsolved Sub-problem Assessment added
+21	research-synthesis-matching.md	D135	moderate	创新评估精度	12	12	keep	Compute-Method Trade-off Assessment added
+22	research-synthesis-matching.md	D136	critical	真实性	10	11	keep	Quantum Advantage Verification Assessment added
+22	research-synthesis-matching.md	D137	critical	全面性	25	26	keep	Novel Life Form/Bio-Computational Entity Assessment added
+22	research-synthesis-matching.md	D138	critical	全面性	26	27	keep	Biological Computing Paradigm Assessment added
+22	research-synthesis-matching.md	D139	moderate	全面性	27	28	keep	Biological System Degradation Assessment added
+22	research-synthesis-matching.md	D140	moderate	全面性	28	29	keep	Non-Natural Biological System Assessment added
+22	research-synthesis-matching.md	D141	moderate	创新评估精度	12	13	keep	Hybrid Computing Architecture Assessment added
+22	research-synthesis-matching.md	D142	moderate	全面性	29	30	keep	Multi-Domain Fusion (>2 Domains) Assessment added
+23	research-synthesis-matching.md	D143	critical	准确性	10	11	keep	Cross-Dimensional Conflict Resolution Rule 1 (Generative vs Compute-Method) added
+23	research-synthesis-matching.md	D144	critical	准确性	11	12	keep	Cross-Dimensional Conflict Resolution Rule 2 (Limitation Bonus vs Improvement Type) added
+23	research-synthesis-matching.md	D145	critical	准确性	12	13	keep	Cross-Dimensional Conflict Resolution Rule 3 (Closed-Loop vs Integration Bonus) added
+23	research-synthesis-matching.md	D150	critical	全面性	30	31	keep	Cross-Dimensional Conflict Resolution Rule 4 (Fusion Assessment Unified) added
+23	research-synthesis-matching.md	D152	critical	安全性	5	8	keep	Cross-Dimensional Conflict Resolution Rule 5 (Continual Learning vs Self-Modifying Boundary) added
+23	research-synthesis-matching.md	D146	moderate	准确性	13	13	keep	Cross-Dimensional Conflict Resolution Rule 6 (Fairness vs Ethics Priority) added
+23	research-synthesis-matching.md	D147	moderate	全面性	31	32	keep	Cross-Dimensional Conflict Resolution Rule 7 (Knowledge Discovery vs AI Autonomy) added
+23	research-synthesis-matching.md	D148	moderate	创新评估精度	13	14	keep	Cross-Dimensional Conflict Resolution Rule 8 (Quantum vs Efficiency) added
+23	research-synthesis-matching.md	D149	moderate	全面性	32	33	keep	Cross-Dimensional Conflict Resolution Rule 9 (Bio-Autonomy B0-B4) added
+23	research-synthesis-matching.md	D151	moderate	准确性	13	13	keep	Cross-Dimensional Conflict Resolution Rule 10 (Explainability vs Accuracy-Reasoning) added
+23	research-synthesis-matching.md	D153	moderate	前沿检测精度	11	12	keep	Conditional Established vs Re-emerging Transition Rules added
+24	research-synthesis-matching.md	D154	moderate	全面性	33	34	keep	Neural ODE/Dynamical System Causal Reasoning Assessment added
+24	research-synthesis-matching.md	D155	moderate	创新评估精度	14	15	keep	Quantum-Accelerated Classical AI Assessment added
+25	research-synthesis-matching.md	D156	critical	真实性	11	12	keep	Biological Plausibility Check added
+25	research-synthesis-matching.md	D157	critical	真实性	12	13	keep	Hit Rate Plausibility Assessment added
+25	research-synthesis-matching.md	D159	critical	准确性	13	14	keep	Surpassing-SOTA Claim Verification added
+25	research-synthesis-matching.md	D160	critical	真实性	13	14	keep	LLM Unstructured Data Shortcut Detection added
+25	research-synthesis-matching.md	D158	moderate	全面性	34	35	keep	Federated Learning Performance Heterogeneity added
+25	research-synthesis-matching.md	D161	moderate	创新评估精度	15	15	keep	Method Selection Justification Assessment added
+25	research-synthesis-matching.md	D162	moderate	全面性	35	36	keep	Synthetic Data Fidelity-Privacy Trade-off Assessment added
+25	research-synthesis-matching.md	D163	moderate	准确性	14	14	keep	Zero-shot Claim Plausibility Assessment added
+25	research-synthesis-matching.md	D164	moderate	全面性	36	37	keep	Cross-Domain Claim Calibration added
+26	research-synthesis-matching.md	D165	critical	知识综合	0	5	keep	Technology Convergence Trajectory added
+26	research-synthesis-matching.md	D166	critical	知识综合	5	8	keep	Cross-Domain Hypothesis Generation added
+26	research-synthesis-matching.md	D167	critical	知识综合	8	10	keep	Cross-Paper Pattern Recognition added
+26	research-synthesis-matching.md	D169	critical	知识综合	10	12	keep	Paradigm Shift Trajectory added
+26	research-synthesis-matching.md	D168	moderate	知识综合	12	13	keep	Problem-Solution Matching added
+26	research-synthesis-matching.md	D170	moderate	知识综合	13	14	keep	Architecture Selection Trend added
+26	research-synthesis-matching.md	D171	moderate	知识综合	14	15	keep	Research Ecosystem Trend added
+26	research-synthesis-matching.md	D172	moderate	知识综合	15	16	keep	Discipline Development Ladder added
+27	research-synthesis-matching.md	D173	critical	推理能力	0	8	keep	Information-Theoretic Feasibility Assessment added
+27	research-synthesis-matching.md	D174	critical	推理能力	8	12	keep	Statistical Power Adequacy Check added
+27	research-synthesis-matching.md	D175	moderate	全面性	37	38	keep	Federated Learning Bias Propagation Assessment added
+28	research-synthesis-matching.md	D176	critical	准确性	14	15	keep	Emergent Capability Controversy Assessment added
+28	research-synthesis-matching.md	D179	critical	准确性	15	16	keep	Explanation Faithfulness Assessment added
+28	research-synthesis-matching.md	D177	moderate	创新评估精度	15	16	keep	Generative Model Mode Collapse Assessment added
+28	research-synthesis-matching.md	D178	moderate	全面性	38	39	keep	Self-Supervised Implicit Bias Assessment added
+29	research-synthesis-matching.md	D180	critical	知识综合	16	20	keep	Next-Frontier Prediction Framework added
+30	research-synthesis-matching.md	D181	critical	推理能力	12	18	keep	Domain Knowledge Reasoning Framework added
+30	research-synthesis-matching.md	D182	critical	推理能力	18	22	keep	Method-Problem Fit Reasoning added
+31	research-synthesis-matching.md	D183	critical	知识创造	0	10	keep	Experiment Design from First Principles added
+31	research-synthesis-matching.md	D184	critical	知识创造	10	15	keep	Hypothesis-to-Validation Pathway Design added
+31	research-synthesis-matching.md	D185	critical	知识创造	15	20	keep	Method Invention from Problem Structure added
+31	research-synthesis-matching.md	D186	critical	知识创造	20	23	keep	Understanding Verification Design added
+31	research-synthesis-matching.md	D189	critical	知识创造	23	26	keep	Bias Remediation Design added
+31	research-synthesis-matching.md	D187	moderate	知识创造	26	28	keep	Novel Metric Design added
+31	research-synthesis-matching.md	D188	moderate	知识创造	28	30	keep	AI Intervention Trial Design added
+31	research-synthesis-matching.md	D190	moderate	知识创造	30	32	keep	Human-AI Collaboration Protocol Design added
+32	research-synthesis-matching.md	D193	critical	推理链完整性	0	8	keep	Reasoning Chain Integration Protocol added
+32	research-synthesis-matching.md	D196	critical	推理链完整性	8	14	keep	Knowledge State Update Protocol added
+32	research-synthesis-matching.md	D191	moderate	推理链完整性	14	17	keep	Performance-to-Clinical Translation added
+32	research-synthesis-matching.md	D192	moderate	推理链完整性	17	19	keep	Innovation-Frontier Auto-trigger Chain added
+32	research-synthesis-matching.md	D194	moderate	推理链完整性	19	21	keep	Convergence-Paradigm Auto-connection added
+32	research-synthesis-matching.md	D195	moderate	推理链完整性	21	23	keep	Failure-Remediation Chain added
+33	research-synthesis-matching.md	D198	critical	自洽性	0	8	keep	Fairness vs Ethical Innovation Conflict Resolution added
+33	research-synthesis-matching.md	D200	critical	自洽性	8	14	keep	BioPlausibility Rebuttable Gate added
+33	research-synthesis-matching.md	D197	moderate	自洽性	14	16	keep	Rule Conflict Priority Hierarchy added
+33	research-synthesis-matching.md	D199	moderate	自洽性	16	18	keep	Foundation Model Below All SOTA Resolution added
+33	research-synthesis-matching.md	D201	moderate	自洽性	18	19	keep	Closed-Loop vs Integration Bonus Resolution added
+33	research-synthesis-matching.md	D202	moderate	自洽性	19	20	keep	Post-Nobel Independent Assessment Rule added
+33	research-synthesis-matching.md	D203	moderate	自洽性	20	21	keep	Domain-Specific Paradigm Shift Frequency added
+33	research-synthesis-matching.md	D204	moderate	自洽性	21	22	keep	Hit Rate Search Efficiency vs Claim Inflation added
+34	research-synthesis-matching.md	D208	critical	自动进化	0	8	keep	Calibration Feedback Loop added
+34	research-synthesis-matching.md	D205	moderate	自动进化	8	10	keep	Cross-Domain Knowledge Transfer Reasoning added
+34	research-synthesis-matching.md	D206	moderate	自动进化	10	12	keep	Cross-Domain Safety Transfer added
+34	research-synthesis-matching.md	D207	moderate	自动进化	12	14	keep	Domain Constraint Transfer added
+34	research-synthesis-matching.md	D209	moderate	自动进化	14	16	keep	Periodic Refresh Protocol added
+36	research-synthesis-matching.md	D210	critical	基线参考	0	8	keep	Diagnostic Accuracy Baselines + Drug Hit Rate Baselines added
+36	research-synthesis-matching.md	D212	critical	Agentic评估	8	14	keep	Agentic AI Assessment Protocol added
+36	research-synthesis-matching.md	D217	critical	实验设计	14	20	keep	Computational Experiment Design Protocol added
+36	research-synthesis-matching.md	D218	critical	撞库校准	20	26	keep	Hit Rate Baselines updated for AI virtual screening
+36	research-synthesis-matching.md	D221	critical	临床意义	26	32	keep	MCID Reference Values added
+36	research-synthesis-matching.md	D222	critical	子域评估	32	38	keep	Sub-Domain Differentiated Assessment added
+36	research-synthesis-matching.md	D223	critical	前沿评估	38	44	keep	Sub-Domain Specific Frontier Assessment added
+36	research-synthesis-matching.md	D227	critical	基础模型	44	50	keep	Foundation Model Assessment updated with MedVLMBench evidence
+36	research-synthesis-matching.md	D211	moderate	声明验证	50	52	keep	Claim Precision Verification added
+36	research-synthesis-matching.md	D213	moderate	临床翻译	52	54	keep	Rare Disease Performance-to-Clinical specificity added
+36	research-synthesis-matching.md	D214	moderate	公平性	54	56	keep	Geographic Generalization Assessment added
+36	research-synthesis-matching.md	D215	moderate	撞库基线	56	58	keep	Unsupervised Drug Screening Hit Rate Baseline added
+36	research-synthesis-matching.md	D216	moderate	分布验证	58	60	keep	Single-cell Distribution Assumption Verification noted
+36	research-synthesis-matching.md	D219	moderate	创新评估	60	62	keep	End-to-end AI Drug Discovery innovation subtype noted
+36	research-synthesis-matching.md	D220	moderate	验证协议	62	64	keep	Clinical Stage Success Rate Comparison added
+36	research-synthesis-matching.md	D224	moderate	EEG基线	64	66	keep	Motor Imagery Classification Baselines added to EEG ref
+36	research-synthesis-matching.md	D225	moderate	验证基线	66	68	keep	Domain Validation Baseline (3.7% external validation) noted
+36	research-synthesis-matching.md	D226	moderate	校准信号	68	70	keep	Domain-level Calibration Signal noted
+36	research-synthesis-matching.md	D228	moderate	创新评估	70	72	keep	Fine-tuning Strategy Innovation Assessment noted
+36	research-synthesis-matching.md	D229	moderate	创新评估	72	74	keep	Domain Pretraining Strategy Innovation noted
+37	research-synthesis-matching.md	D230	critical	新兴方向	0	8	keep	Digital Twin Validation Protocol added
+37	research-synthesis-matching.md	D231	critical	新兴方向	8	16	keep	Biological Computing System Assessment added
+37	research-synthesis-matching.md	D233	critical	新兴方向	16	24	keep	AI-Designed Biological Entity Safety Assessment added
+37	research-synthesis-matching.md	D232	moderate	新兴方向	24	28	keep	Sensor-Algorithm Joint Assessment added
+37	research-synthesis-matching.md	D234	moderate	新兴方向	28	32	keep	Multimodal Contribution Assessment added
+37	research-synthesis-matching.md	D235	moderate	新兴方向	32	34	keep	AI-Assisted Trial Design Assessment noted
+38	research-synthesis-matching.md	D236	critical	核心实验	0	8	keep	Gene Editing Safety Assessment Protocol added
+38	research-synthesis-matching.md	D237	critical	核心实验	8	14	keep	N-of-1 Experiment Assessment Protocol added
+38	research-synthesis-matching.md	D238	moderate	核心实验	14	17	keep	Off-target Detection Method Assessment added
+38	research-synthesis-matching.md	D239	moderate	核心实验	17	20	keep	Multi-Platform Benchmark Comparison Protocol added
+38	research-synthesis-matching.md	D240	moderate	核心实验	20	23	keep	Computational-Experimental Validation Joint Assessment added
+40	deep-learning-bme.md	D241	critical	新兴架构	0	8	keep	Diffusion Models for Medical Imaging added
+40	deep-learning-bme.md	D242	critical	新兴架构	8	14	keep	Mamba/SSM for BME added
+40	deep-learning-bme.md	D243	critical	新兴架构	14	20	keep	Vision-Language Models for Medicine added
+40	deep-learning-bme.md	D248	moderate	新兴架构	20	23	keep	Continual/Lifelong Learning for BME added
+40	clinical-statistical-framework.md	D244	critical	公平性	0	8	keep	Fairness Audit Protocol added
+40	clinical-statistical-framework.md	D245	critical	漂移检测	8	14	keep	Model Drift Detection Protocol added
+40	clinical-statistical-framework.md	D246	moderate	临床试验	14	17	keep	AI-Specific Clinical Trial Design added
+40	signal-processing-foundations.md	D247	critical	可穿戴	0	8	keep	Wearable Device Signal Processing added
+40	signal-processing-foundations.md	D249	critical	多模态融合	8	14	keep	Multimodal Signal Fusion Pipeline added
+40	signal-processing-foundations.md	D250	moderate	DL去伪影	14	17	keep	DL-Based Artifact Removal added
+41	research-synthesis-matching.md	D251	critical	临床转化	0	8	keep	Computational Biomarker Assessment Protocol added
+41	research-synthesis-matching.md	D252	critical	临床转化	8	14	keep	AI Screening RCT Assessment Protocol added
+41	research-synthesis-matching.md	D253	critical	临床转化	14	20	keep	AI-Designed Protein Verification Protocol added
+41	research-synthesis-matching.md	D254	moderate	监管合规	20	23	keep	Regulatory Compliance Assessment added
+42	SKILL.md	D255	critical	跨文件矛盾	0	8	keep	Hit Rate基线矛盾修复(BioPlausibility+HitRate)
+42	SKILL.md	D256	moderate	跨文件缺失	8	12	keep	Emerging DL/Fairness/Drift/Wearable摘要同步
+43	clinical-statistical-framework.md	D257	moderate	重训练失败	12	14	keep	Model Retraining Failure Protocol added
+43	clinical-statistical-framework.md	D258	moderate	联邦学习安全	14	17	keep	Federated Learning Security Assessment added
+44	clinical-statistical-framework.md	D259	critical	实用临床试验	17	22	keep	Pragmatic Clinical Trial Assessment Protocol added
+44	clinical-statistical-framework.md	D260	moderate	卫生经济学	22	25	keep	Health Economics Assessment Protocol added
+44	clinical-statistical-framework.md	D261	moderate	数据标准化	25	27	keep	Data Standardization Assessment added
+44	research-synthesis-matching.md	D262	critical	AI-ECG跨疾病筛查	26	32	keep	AI-ECG Cross-Disease Screening Assessment Protocol added
+44	research-synthesis-matching.md	D263	critical	AI药物发现失败	32	38	keep	AI Drug Discovery Clinical Translation Failure Assessment added
+44	research-synthesis-matching.md	D264	critical	计算生物标志物不一致	38	44	keep	Computational Biomarker-Gold Standard Discordance Protocol added
+44	research-synthesis-matching.md	D265	critical	AI筛查过度诊断	44	50	keep	AI Screening Overdiagnosis Assessment Protocol added
+44	research-synthesis-matching.md	D266	critical	AI筛查工作流程效率	50	56	keep	AI Screening Workflow Efficiency Assessment Protocol added
+44	research-synthesis-matching.md	D267	critical	Agentic工具可靠性	56	62	keep	Agentic AI Tool Chain Reliability Assessment added
+44	research-synthesis-matching.md	D268	critical	罕见病诊断评估	62	68	keep	Rare Disease Diagnostic Assessment Protocol added
+44	research-synthesis-matching.md	D269	critical	多疾病干扰评估	68	74	keep	Multi-Disease AI Diagnostic Interference Assessment added
+44	research-synthesis-matching.md	D270	critical	多疾病校准评估	74	80	keep	Multi-Disease Calibration Assessment Protocol added
+45	research-synthesis-matching.md	D271	critical	AI临床试验设计	80	86	keep	AI-Optimized Clinical Trial Design Assessment Protocol added
+45	research-synthesis-matching.md	D272	critical	数字孪生临床部署	86	92	keep	Digital Twin Clinical Deployment Assessment Protocol added
+45	research-synthesis-matching.md	D273	critical	BCI长期稳定性	92	98	keep	BCI Long-Term Stability & Home-Use Assessment Protocol added
+45	research-synthesis-matching.md	D274	critical	空间生物学AI	98	104	keep	Spatial Biology + AI Assessment Protocol added
+45	research-synthesis-matching.md	D275	critical	AI手术评估	104	110	keep	AI for Surgery Assessment Protocol added
+45	research-synthesis-matching.md	D276	critical	液体活检AI	110	116	keep	Liquid Biopsy AI Assessment Protocol added
+45	research-synthesis-matching.md	D277	critical	细胞治疗AI	116	122	keep	Cell Therapy AI Assessment Protocol added
+45	research-synthesis-matching.md	D278	critical	多组学整合AI	122	128	keep	Multi-Omics Integration AI Assessment Protocol added
+46	research-synthesis-matching.md	D279	critical	体内基因编辑递送	128	134	keep	In Vivo Gene Editing Delivery Assessment Protocol added
+46	research-synthesis-matching.md	D280	critical	计算生物标志物前瞻验证	134	140	keep	Computational Biomarker Prospective Validation Protocol added
+46	research-synthesis-matching.md	D281	critical	联邦学习收敛通信	140	146	keep	Federated Learning Convergence & Communication Assessment added
+46	research-synthesis-matching.md	D282	critical	真实世界证据AI	146	152	keep	Real-World Evidence AI Assessment Protocol added
+46	research-synthesis-matching.md	D283	critical	AI鲁棒性对抗评估	152	158	keep	AI Model Robustness & Adversarial Assessment Protocol added
+46	research-synthesis-matching.md	D284	critical	AI模型版本化可复现	158	164	keep	AI Model Versioning & Reproducibility Protocol added
+47	research-synthesis-matching.md	D285	critical	反事实临床推理	164	170	keep	Counterfactual Clinical Reasoning Protocol added
+47	research-synthesis-matching.md	D286	critical	生物合理性第一性原理	170	176	keep	Biological Plausibility First Principles Reasoning Protocol added
+47	research-synthesis-matching.md	D287	critical	临床工作流整合推理	176	182	keep	Clinical Workflow Integration Reasoning Protocol added
+47	research-synthesis-matching.md	D288	critical	知识结构驱动科研空白识别	182	188	keep	Knowledge Structure-Driven Research Gap Identification Protocol added
+47	research-synthesis-matching.md	D289	critical	跨域类比推理	188	194	keep	Cross-Domain Analogy Reasoning Protocol added
+47	research-synthesis-matching.md	D290	critical	系统架构失败预测	194	200	keep	System Architecture-Driven Failure Prediction Protocol added
+48	research-synthesis-matching.md	D291	critical	六组件整合协议	200	206	keep	Six-Component Integration Protocol added
+48	research-synthesis-matching.md	D292	critical	进化触发协议	206	212	keep	Evolution Trigger Protocol added
+48	research-synthesis-matching.md	D293	critical	跨组件一致性验证	212	218	keep	Cross-Component Consistency Verification Protocol added
+48	research-synthesis-matching.md	D294	critical	技能自我评估协议	218	224	keep	Skill Self-Assessment Protocol added
+48	research-synthesis-matching.md	D295	critical	知识图谱整合协议	224	230	keep	Knowledge Graph Integration Protocol added
+49	research-synthesis-matching.md	D296	critical	AI生成科学内容检测	230	236	keep	AI-Generated Scientific Content Detection Protocol added
+49	research-synthesis-matching.md	D297	critical	临床AI警报疲劳评估	236	242	keep	Clinical AI Alert Fatigue Assessment Protocol added
+49	research-synthesis-matching.md	D298	critical	AI-人类团队绩效评估	242	248	keep	AI-Human Team Performance Assessment Protocol added
+49	research-synthesis-matching.md	D299	critical	模型漂移检测与监控	248	254	keep	Model Drift Detection and Monitoring Protocol added
+49	research-synthesis-matching.md	D300	critical	AI安全事件分类	254	260	keep	AI Safety Incident Classification Protocol added
+49	research-synthesis-matching.md	D301	critical	多模态LLM临床评估	260	266	keep	Multi-Modal LLM Clinical Assessment Protocol added
+50	research-synthesis-matching.md	D302	critical	AI临床试验参与者选择偏差评估	266	272	keep	AI Clinical Trial Participant Selection Bias Assessment Protocol added
+50	research-synthesis-matching.md	D303	critical	AI诊断系统对抗性鲁棒性临床场景评估	272	278	keep	AI Diagnostic System Adversarial Robustness Clinical Scenario Assessment Protocol added
+50	research-synthesis-matching.md	D304	critical	AI模型退役与替代协议	278	284	keep	AI Model Retirement and Replacement Protocol added
+50	research-synthesis-matching.md	D305	critical	AI医疗数据隐私攻击与防御评估	284	290	keep	AI Medical Data Privacy Attack and Defense Assessment Protocol added
+50	research-synthesis-matching.md	D306	critical	AI系统可解释性临床充分性评估	290	296	keep	AI System Explainability Clinical Adequacy Assessment Protocol added
+50	research-synthesis-matching.md	D307	critical	AI辅助诊断认知偏差放大评估	296	302	keep	AI-Assisted Diagnosis Cognitive Bias Amplification Assessment Protocol added
+51	research-synthesis-matching.md	D308	critical	AI上下文切换评估	302	308	keep	AI Context Switching Assessment Protocol added [Nature Medicine 2025]
+51	research-synthesis-matching.md	D309	critical	体内生成细胞疗法评估	308	314	keep	In Vivo Generated Cell Therapy Assessment Protocol added [Nature Biotech 2025]
+51	research-synthesis-matching.md	D310	critical	AI代理自主实验评估	314	320	keep	Agentic AI Autonomous Experiment Assessment Protocol added [Nature Biotech 2025]
+51	research-synthesis-matching.md	D311	critical	器官芯片肿瘤芯片模型评估	320	326	keep	Organ-on-Chip and Tumor-on-Chip Model Assessment Protocol added [Nature Biotech 2025]
+51	research-synthesis-matching.md	D312	critical	计算代谢组学AI评估	326	332	keep	Computational Metabolomics AI Assessment Protocol added [Nature Biotech 2025]
+51	research-synthesis-matching.md	D313	critical	AI听诊器跨疾病筛查评估	332	338	keep	AI-Stethoscope Cross-Disease Screening Assessment Protocol added [Lancet 2026]
+51	research-synthesis-matching.md	D314	critical	合成生物学治疗评估	338	344	keep	Synthetic Biology Therapeutic Assessment Protocol added [Nature Biotech 2025]
+51	research-synthesis-matching.md	D315	critical	AI筛查商业化直接付费评估	344	350	keep	AI-Assisted Screening Commercialization Direct-to-Consumer Assessment Protocol added [NEJM 2025]
+52	research-synthesis-matching.md	D316	critical	病理基础模型微调临床转化评估	350	356	keep	Pathology Foundation Model Fine-Tuning Clinical Translation Assessment Protocol added [Nature Medicine 2025]
+52	research-synthesis-matching.md	D317	critical	后AlphaFold药物虚拟筛选评估	356	362	keep	Post-AlphaFold Drug Virtual Screening Assessment Protocol added [Nature Biotech 2025]
+52	research-synthesis-matching.md	D318	critical	侵入性BCI首次人体试验评估	362	368	keep	Invasive BCI First-in-Human Trial Assessment Protocol added [Science Corp/Neuralink 2025]
+52	research-synthesis-matching.md	D319	critical	LLM辅助复杂专科诊疗RCT评估	368	374	keep	LLM-Assisted Complex Specialty Care RCT Assessment Protocol added [Nature Medicine 2026]
+52	research-synthesis-matching.md	D320	critical	体内碱基编辑临床治疗评估	374	380	keep	In Vivo Base Editing Clinical Therapy Assessment Protocol added [Nature Biotech 2025]
+52	research-synthesis-matching.md	D321	critical	个性化癌症疫苗临床试验评估	380	386	keep	Personalized Cancer Vaccine Clinical Trial Assessment Protocol added [Nature Biotech 2025]
+53	research-synthesis-matching.md	D322	critical	顶刊作者思维框架-疾病优先推理	386	392	keep	Nature Medicine Author Thinking Framework: Disease-First Reasoning Protocol added [Nature Medicine editorial + Topol + Kolachalama]
+53	research-synthesis-matching.md	D323	critical	顶刊作者思维框架-平台优先推理	392	398	keep	Nature Biotechnology Author Thinking Framework: Platform-First Reasoning Protocol added [Nature Biotech editorial + Profluent + Susztak]
+53	research-synthesis-matching.md	D324	critical	顶刊作者思维框架-证据优先推理	398	404	keep	Lancet/NEJM Author Thinking Framework: Evidence-First Reasoning Protocol added [MASAI + CPS1 + Prime Editing]
+53	research-synthesis-matching.md	D325	critical	跨期刊整合推理协议	404	410	keep	Cross-Journal Integrative Reasoning Protocol added [4-lens assessment + weakest-lens rule]
+53	research-synthesis-matching.md	D326	critical	AI设计生物实体安全评估	410	416	keep	AI-Designed Biological Entity Safety Assessment Protocol added [Nature 2025 OpenCRISPR-1]
+53	research-synthesis-matching.md	D327	critical	LLM生物年龄预测评估	416	422	keep	LLM-Based Biological Age Prediction Assessment Protocol added [Nature Medicine 2025 10M+]
+53	research-synthesis-matching.md	D328	critical	AI药物发现临床转化评估	422	428	keep	AI Drug Discovery Clinical Translation Assessment Protocol added [Nature Medicine 2025 rentosertib]
+53	research-synthesis-matching.md	D329	critical	MASAI乳腺癌AI筛查RCT评估	428	434	keep	MASAI Trial Breast AI Screening Assessment Protocol added [Lancet 2026]
+53	research-synthesis-matching.md	D330	critical	先导编辑首次人体临床评估	434	440	keep	Prime Editing First-in-Human Clinical Assessment Protocol added [NEJM 2025]
+53	research-synthesis-matching.md	D331	critical	单细胞跨物种图谱评估	440	446	keep	Single-Cell Cross-Species Atlas Assessment Protocol added [Nature Genetics 2025 SISKA]
+53	research-synthesis-matching.md	D332	critical	BISC硅芯片脑机接口评估	446	452	keep	BISC Silicon Chip Brain-Computer Interface Assessment Protocol added [Nature Electronics 2025]
+54	research-synthesis-matching.md	D333	critical	异种移植临床转化评估	452	458	keep	Xenotransplantation Clinical Translation Assessment Protocol added [Nature Medicine 2026 + Nature 2025]
+54	research-synthesis-matching.md	D334	critical	表观遗传编辑体内持久性评估	458	464	keep	Epigenetic Editing In Vivo Durability Assessment Protocol added [Nature 2025 NovaIscB/OMEGAoff]
+54	research-synthesis-matching.md	D335	critical	可穿戴AI连续监测临床评估	464	470	keep	Wearable AI Continuous Monitoring Clinical Assessment Protocol added [Feinstein 2025]
+54	research-synthesis-matching.md	D336	critical	脑类器官移植与血管化评估	470	476	keep	Brain Organoid Transplantation and Vascularization Assessment Protocol added [Cell Stem Cell 2025]
+54	research-synthesis-matching.md	D337	critical	顶刊作者思维框架-机制优先推理	476	482	keep	Science/Cell Author Thinking Framework: Mechanism-First Reasoning Protocol added [Science/Cell editorial]
+55	research-synthesis-matching.md	D338	critical	多模态病理基础模型临床部署评估	482	488	keep	Multimodal Pathology Foundation Model Clinical Deployment Assessment Protocol added [Nature Medicine 2025 TITAN + EAGLE]
+55	research-synthesis-matching.md	D339	critical	IL-15武装CAR-T固体瘤评估	488	494	keep	IL-15 Armored CAR-T for Solid Tumors Assessment Protocol added [Nature 2025 GPC3]
+55	research-synthesis-matching.md	D340	critical	免疫屏蔽载体体内CAR-T评估	494	500	keep	Immune-Shielded Vector In Vivo CAR-T Assessment Protocol added [Nature Medicine 2026 ESO-T01]
+55	research-synthesis-matching.md	D341	critical	公平优先AI医疗部署评估	500	506	keep	Equity-First AI Healthcare Deployment Assessment Protocol added [Lancet Digital Health 2025 + NEJM 2025]
+55	research-synthesis-matching.md	D342	critical	个性化mRNA癌症疫苗临床转化评估	506	512	keep	Personalized mRNA Cancer Vaccine Clinical Translation Assessment Protocol added [Nature Medicine 2025 + NEJM 2025]
+56	research-synthesis-matching.md	D343	critical	争议性疾病AI诊断评估	512	518	keep	Controversial Disease AI Diagnostic Assessment Protocol added [Nature Medicine 2025 BioMapAI ME/CFS]
+56	research-synthesis-matching.md	D344	critical	AI设计酶功能验证评估	518	524	keep	AI-Designed Enzyme Function Validation Assessment Protocol added [Nature/Science 2025 DISCO + GenSLM]
+56	research-synthesis-matching.md	D345	critical	AI听诊器初级保健RCT评估	524	530	keep	AI Stethoscope Primary Care RCT Assessment Protocol added [Lancet 2026 TRICORDER]
+56	research-synthesis-matching.md	D346	critical	碱基编辑三核苷酸重复疾病评估	530	536	keep	Base Editing for Trinucleotide Repeat Disorders Assessment Protocol added [Nature Genetics 2025 CAG-CBE + GAA-ABE]
+56	research-synthesis-matching.md	D347	critical	合成基因回路治疗安全评估	536	542	keep	Synthetic Gene Circuit Therapeutic Safety Assessment Protocol added [eLife 2025 + MIT 2025]
+56	research-synthesis-matching.md	D348	critical	微生物组AI治疗干预评估	542	548	keep	Microbiome AI Therapeutic Intervention Assessment Protocol added [Nature Medicine 2025 + Gut 2025 + Cell 2025]
+57	research-synthesis-matching.md	D349	critical	ADC临床耐药与生物标志物评估	548	554	keep	Antibody-Drug Conjugate Clinical Resistance and Biomarker Assessment Protocol added [OASIS + CCR 2025 + 100+ ADCs]
+57	research-synthesis-matching.md	D350	critical	AI精神健康数字表型评估	554	560	keep	AI Mental Health Digital Phenotyping Assessment Protocol added [NPJ Digital Medicine 2025 + NCT07151846]
+57	research-synthesis-matching.md	D351	critical	量子传感生物医学应用评估	560	566	keep	Quantum Sensing Biomedical Application Assessment Protocol added [PNAS 2025 + Science Advances 2025 + NIHR 2025]
+57	research-synthesis-matching.md	D352	critical	AI指导LNP设计器官靶向递送评估	566	572	keep	AI-Guided LNP Design for Organ-Targeted mRNA Delivery Assessment Protocol added [Nature Biotechnology 2025 + SORT]
+57	research-synthesis-matching.md	D353	critical	GLP-1受体激动剂心血管代谢结局评估	572	578	keep	GLP-1 Receptor Agonist Cardiovascular and Metabolic Outcome Assessment Protocol added [NEJM 2025 SURMOUNT-5 + Nature Medicine 2026]
+57	research-synthesis-matching.md	D354	critical	双特异性T细胞衔接器CRS管理评估	578	584	keep	Bispecific T-Cell Engager Antibody CRS Management and Clinical Assessment Protocol added [CCR 2025 + 9 FDA-approved T-BiSp]
+57	research-synthesis-matching.md	D355	critical	细胞外囊泡临床转化评估	584	590	keep	Extracellular Vesicle Clinical Translation Assessment Protocol added [Clinical Chemistry 2025 + MISEV2023]
+58	research-synthesis-matching.md	D356	critical	蛋白质语言模型临床转化评估	590	596	keep	Protein Language Model Clinical Translation Assessment Protocol added [ESM3 + CellWhisperer Nature Biotechnology 2025]
+58	research-synthesis-matching.md	D357	critical	AI脓毒症早期预警临床部署评估	596	602	keep	AI Sepsis Early Warning System Clinical Deployment Assessment Protocol added [TREWS Nature Medicine 2025 + SepsisAI]
+58	research-synthesis-matching.md	D358	critical	CRISPR基因治疗长期安全随访评估	602	608	keep	CRISPR Gene Therapy Long-Term Safety and Follow-Up Assessment Protocol added [NEJM 2026 Renicel + Exa-cel + BMJ 2025]
+58	research-synthesis-matching.md	D359	critical	脑类器官意识与伦理评估	608	614	keep	Brain Organoid Consciousness and Ethical Assessment Protocol added [Nature Neuroscience 2025 + Science 2025 + Hopkins 2025]
+58	research-synthesis-matching.md	D360	critical	单细胞AI基础模型评估	614	620	keep	Single-Cell AI Foundation Model Assessment Protocol added [CellWhisperer Nature Biotechnology 2025 + Geneformer + scGPT]
+59	research-synthesis-matching.md	D361	critical	AI放射学基础模型临床部署评估	620	626	keep	AI Radiology Foundation Model Clinical Deployment Assessment Protocol added [Merlin NIH 2026 + DeepFAN Nature Cancer 2025 + ArteraAI FDA 2025]
+59	research-synthesis-matching.md	D362	critical	RNA治疗临床转化评估	626	632	keep	RNA Therapeutics Clinical Translation Assessment Protocol added [Pharmaceutics 2025 + zilganersen FDA BT + BW-40202]
+59	research-synthesis-matching.md	D363	critical	表观遗传时钟临床效用评估	632	638	keep	Epigenetic Clock Clinical Utility Assessment Protocol added [14 clocks + GrimAge v2 HR=1.54 + Nature Aging 2025]
+59	research-synthesis-matching.md	D364	critical	语音神经假体BCI临床转化评估	638	644	keep	Speech Neuroprosthesis BCI Clinical Translation Assessment Protocol added [UCSF Nature Neuroscience 2025 + UC Davis Nature 2025 + BrainGate 2026]
+59	research-synthesis-matching.md	D365	critical	AI病理伴随诊断评估	644	650	keep	AI Pathology Companion Diagnostic Assessment Protocol added [ArteraAI FDA 2025 + Roche TROP2 RxDx + im4MEC Lancet DH 2025]
+59	research-synthesis-matching.md	D366	critical	AI药物重定位知识图谱验证评估	650	656	keep	AI Drug Repurposing Knowledge Graph Validation Assessment Protocol added [Annu Rev Med 2026 + arXiv 2026 KG + rentosertib]
+60	research-synthesis-matching.md	D367	critical	空间转录组AI临床转化评估	656	662	keep	Spatial Transcriptomics AI Clinical Translation Assessment Protocol added [Nature Communications 2025 cortex atlas + spatial AI]
+60	research-synthesis-matching.md	D368	critical	长新冠和感染后综合征评估	662	668	keep	Long COVID and Post-Acute Infection Syndrome Assessment Protocol added [JAMA 2025 RCT + tirzepatide NCT07128082 + immunoadsorption]
+60	research-synthesis-matching.md	D369	critical	AI从头酶设计实验验证评估	668	674	keep	AI De Novo Enzyme Design Experimental Validation Assessment Protocol added [RFdiffusion2 + COMPSS 74% + 1.6-5.2% baseline]
+60	research-synthesis-matching.md	D370	critical	AI临床试验优化评估	674	680	keep	AI Clinical Trial Optimization Assessment Protocol added [FDA 2025 guidance + adaptive design + 173 AI programs]
+60	research-synthesis-matching.md	D371	critical	知识图谱药物重定位时间验证评估	680	686	keep	Knowledge Graph Drug Repurposing Temporal Validation Assessment Protocol added [arXiv 2026 ChEMBL36 temporal split + 6/14 confirmed]
+60	research-synthesis-matching.md	D372	critical	AI放射学基础模型跨解剖泛化评估	686	692	keep	AI Radiology Foundation Model Cross-Anatomy Generalization sub-protocol added [Merlin abdominal→chest CT]
+61	research-synthesis-matching.md	D373	critical	AI集成闭环胰岛素输送系统评估	692	698	keep	AI-Integrated Closed-Loop Insulin Delivery System Assessment Protocol added [JAMA CIRCUIT trial + Nature Medicine PROGRESS + Control-IQ]
+61	research-synthesis-matching.md	D374	critical	CAR-T细胞治疗制造自动化与质量评估	698	704	keep	CAR-T Cell Therapy Manufacturing Automation and Quality Assessment Protocol added [2L perfusion bioreactor + CliniMACS Prodigy + CTS Cellmation]
+61	research-synthesis-matching.md	D375	critical	肠脑轴治疗干预评估	704	710	keep	Gut-Brain Axis Therapeutic Intervention Assessment Protocol added [Psychobiotics + Visbiome + FMT for neuropsychiatric]
+61	research-synthesis-matching.md	D376	critical	类器官药物筛选与毒性预测评估	710	716	keep	Organoid Drug Screening and Toxicity Prediction Assessment Protocol added [Clevers review + multi-lineage hepatic organoids + heart-on-chip]
+61	research-synthesis-matching.md	D377	critical	AI-ECG基础模型临床部署评估	716	722	keep	AI-ECG Foundation Model Clinical Deployment Assessment Protocol added [ECGFounder 10M+ + VITAL-AF + TRICORDER + EchoNext]
+61	research-synthesis-matching.md	D378	critical	AI集成可穿戴糖尿病风险预测评估	722	728	keep	AI-Integrated Wearable Diabetes Risk Prediction Assessment Protocol added [PROGRESS CGM+microbiome+diet+genetics + glucose spike dynamics]
+62	research-synthesis-matching.md	D379	critical	多模态病理-放射AI融合临床评估	728	734	keep	Multimodal Pathology-Radiology AI Fusion Clinical Assessment Protocol added [TITAN 335K WSIs + DIANet + synthetic caption circular validation risk]
+62	research-synthesis-matching.md	D380	critical	CRISPR碱基/引物编辑脱靶安全评估	734	740	keep	CRISPR Base/Prime Editing Off-Target Safety Assessment Protocol added [CHANGE-seq-BE 95.4% + Casgevy + non-viral carriers + germline risk]
+62	research-synthesis-matching.md	D381	critical	AI卒中影像决策支持临床部署评估	740	746	keep	AI Stroke Imaging Decision Support Clinical Deployment Assessment Protocol added [Brainomix 360 + NHS 70+ hospitals + eSanjeevani 250M+ consultations]
+62	research-synthesis-matching.md	D382	critical	从头蛋白质设计临床转化评估	746	752	keep	De Novo Protein Design Clinical Translation Assessment Protocol added [RFdiffusion2/3 + AlphaDesign + ProteinMPNN + immunogenicity risk]
+62	research-synthesis-matching.md	D383	critical	AI医疗算法公平性与公平评估	752	758	keep	AI Healthcare Algorithmic Fairness and Equity Assessment Protocol added [LLM triage bias + Nature Medicine 2025 racial/income bias + FDA TPLC]
+62	research-synthesis-matching.md	D384	critical	生成式AI医疗安全与监管评估	758	764	keep	Generative AI in Medicine Safety and Regulatory Assessment Protocol added [NEJM 2025 GenAI review + hallucination + confidence calibration + FDA TPLC]
+63	research-synthesis-matching.md	D385	critical	AI辅助手术导航与自主手术评估	764	770	keep	AI-Assisted Surgical Navigation and Autonomous Surgery Assessment Protocol added [JHU 100% autonomous + NCT07186803 RCT + SURG-1→5 framework]
+63	research-synthesis-matching.md	D386	critical	个性化mRNA癌症疫苗临床转化评估	770	776	keep	Personalized mRNA Cancer Vaccine Clinical Translation Assessment Protocol added [Nature 2026 TNBC + V940 Phase 3 + neoantigen 10-30% immunogenic]
+63	research-synthesis-matching.md	D387	critical	类器官智能与生物计算评估	776	782	keep	Organoid Intelligence and Biological Computing Assessment Protocol added [Nature Neuroscience 2025 innate OS + JHU whole-brain + OI-1→5]
+63	research-synthesis-matching.md	D388	critical	双特异性抗体T细胞衔接器实体瘤临床评估	782	788	keep	Bispecific Antibody T-Cell Engager Solid Tumor Clinical Assessment Protocol added [cibisatamab ORR 13.5% + BiTE vs CAR-T + solid tumor efficacy wall]
+63	research-synthesis-matching.md	D389	critical	AI药物发现临床试验成功率评估	788	794	keep	AI Drug Discovery Clinical Trial Success Rate Assessment Protocol added [Phase I 80-90% vs Phase II ~40% paradox + efficacy prediction gap]
+63	research-synthesis-matching.md	D390	critical	患者数字孪生临床部署评估	794	800	keep	Patient Digital Twin Clinical Deployment Assessment Protocol added [98% preclinical + 11% two-way flow + Nature Medicine 2026 surgery AI]
+64	research-synthesis-matching.md	D391	critical	LLM临床决策支持安全评估	800	806	keep	LLM Clinical Decision Support Safety Assessment Protocol added [Nature Medicine 2026 52% emergency miss + Oxford 34.5% vs 60.7% + Convergence Regression 30% gap + LLM-0→4 framework]
+64	research-synthesis-matching.md	D392	critical	AAV基因治疗长期耐久性评估	806	812	keep	AAV Gene Therapy Long-Term Durability Assessment Protocol added [NEJM 2025 HOPE-B 5yr FIX 36.1 IU/dL + re-dosing impossibility + DUR-1→5 framework]
+64	research-synthesis-matching.md	D393	critical	CAR-T实体瘤耐药机制评估	812	818	keep	CAR-T Solid Tumor Resistance Mechanism Assessment Protocol added [Nature BME 2026 + Foxp3 metabolic reprogramming + L1→L6 resistance layers + 60-80% vs <20% ORR gap]
+64	research-synthesis-matching.md	D394	critical	空间组学质量控制与标准化评估	818	824	keep	Spatial Omics Quality Control and Standardization Assessment Protocol added [Nature Biotech 2025 Spatial Touchstone + OmiCLIP + QC-1→5 maturity framework]
+64	research-synthesis-matching.md	D395	critical	脑类器官神经回路功能评估	824	830	keep	Brain Organoid Neural Circuit Functional Assessment Protocol added [PNAS 2026 thalamocortical assembloid + JHU whole-brain + CIRC-1→5 framework]
+64	research-synthesis-matching.md	D396	critical	AI诊断真实世界性能退化评估	830	836	keep	AI Diagnostic Real-World Performance Degradation Assessment Protocol added [npj Digital Medicine 52.1% accuracy + AMIA 11pp drop + DEG-1→5 severity framework]
+65	research-synthesis-matching.md	D397	critical	多组学AI生物标志物临床验证评估	836	842	keep	Multi-Omics AI Biomarker Clinical Validation Assessment Protocol added [TuPro 4-week 9-tech + pan-cancer median AUC 0.644 + MO-1→5 readiness framework]
+65	research-synthesis-matching.md	D398	critical	体内CRISPR基因编辑肝毒性安全评估	842	848	keep	In Vivo CRISPR Gene Editing Hepatotoxicity Safety Assessment Protocol added [Intellia NEX-Z patient death + Grade 4 hepatotoxicity + HEP-1→5 severity framework]
+65	research-synthesis-matching.md	D399	critical	AI辅助乳腺癌筛查RCT临床效益评估	848	854	keep	AI-Assisted Breast Cancer Screening RCT Clinical Benefit Assessment Protocol added [MASAI 12% interval cancer reduction + 44% workload reduction + SCR-1→5 implementation framework]
+65	research-synthesis-matching.md	D400	critical	合成生物学基因电路生物安全遏制评估	854	860	keep	Synthetic Biology Gene Circuit Biocontainment Safety Assessment Protocol added [STALEMATE dual-layer + RAS-targeting circuit + BIO-1→5 containment framework]
+65	research-synthesis-matching.md	D401	critical	可穿戴AI连续监测临床部署评估	860	866	keep	Wearable AI Continuous Monitoring Clinical Deployment Assessment Protocol added [Nature Medicine 2026 Apple Watch HF + Feinstein 17hr prediction + WEAR-1→5 deployment framework]
+65	research-synthesis-matching.md	D402	critical	个性化mRNA新抗原疫苗长期免疫持久性评估	866	872	keep	Personalized mRNA Neoantigen Vaccine Long-Term Immune Durability Assessment Protocol added [autogene cevumeran 7.7yr T cell lifespan + 50% response rate + VAX-1→5 durability framework]
+66	research-synthesis-matching.md	D403	critical	CAR-NK细胞疗法临床转化安全性与疗效评估	872	878	keep	CAR-NK Cell Therapy Clinical Translation Safety and Efficacy Assessment Protocol added [Lancet 2025 FT596 54% ORR + SLE 67% remission + CAR-NK vs CAR-T comparative framework]
+66	research-synthesis-matching.md	D404	critical	AI放射学推理模型临床可解释性评估	878	884	keep	AI Radiology Reasoning Model Clinical Explainability Assessment Protocol added [Ark+ open model + Clara Reason + DeepMedix-R1 + REAS-1→5 maturity framework]
+66	research-synthesis-matching.md	D405	critical	异种移植免疫排斥与长期存活评估	884	890	keep	Xenotransplantation Immune Rejection and Long-Term Survival Assessment Protocol added [Columbia pig kidney+thymus 2mo + T-cell rejection + XENO-1→5 survival framework]
+66	research-synthesis-matching.md	D406	critical	AI驱动蛋白质设计实验验证与临床转化评估	890	896	keep	AI-Driven Protein Design Experimental Validation and Clinical Translation Assessment Protocol added [George Church roadmap + 10^455 sequence space + PRO-1→5 translation framework]
+66	research-synthesis-matching.md	D407	critical	数字孪生器官生物学年龄预测临床效用评估	896	902	keep	Digital Twin Organ Biological Age Prediction Clinical Utility Assessment Protocol added [Weizmann 30K volunteers 260B data points + 40% prediabetes + DT-1→5 utility framework]
+66	research-synthesis-matching.md	D408	critical	脑类器官意识风险评估与伦理治理评估	902	908	keep	Brain Organoid Consciousness Risk Assessment and Ethical Governance Protocol added [IIT vs GNW conflict + CON-1→5 risk framework + precautionary principle]
+67	research-synthesis-matching.md	D409	critical	AI脓毒症预警系统临床部署与真实世界有效性评估	908	914	keep	AI Sepsis Early Warning System Clinical Deployment and Real-World Effectiveness Assessment Protocol added [TREWS 590K+ encounters 18% mortality reduction + SEP-1→5 maturity framework]
+67	research-synthesis-matching.md	D410	critical	表观遗传编辑可遗传性沉默与可逆性安全评估	914	920	keep	Epigenetic Editing Heritability and Reversibility Safety Assessment Protocol added [CRISPRoff >8mo silencing + EPI-1→5 safety classification]
+67	research-synthesis-matching.md	D411	critical	单细胞AI基础模型临床转化与标准化评估	920	926	keep	Single-Cell AI Foundation Model Clinical Translation and Standardization Assessment Protocol added [CellFM 100M cells 800M params + SC-1→5 translation framework]
+67	research-synthesis-matching.md	D412	critical	长新冠治疗临床试验设计与生物标志物评估	926	932	keep	Long COVID Treatment Clinical Trial Design and Biomarker Assessment Protocol added [PAX LC Paxlovid negative + LoCITT tirzepatide 1000pt RCT + LC-1→5 design framework]
+67	research-synthesis-matching.md	D413	critical	液体活检AI癌症早筛临床验证与过度诊断评估	932	938	keep	Liquid Biopsy AI Cancer Early Detection Clinical Validation and Overdiagnosis Assessment Protocol added [98.1% specificity 53.8% sensitivity + LB-1→5 readiness framework]
+67	research-synthesis-matching.md	D414	critical	语音神经假体BCI实时解码临床转化评估	938	944	keep	Speech Neuroprosthesis BCI Real-Time Decoding Clinical Translation Assessment Protocol added [UC Davis 10ms latency + SBCI-1→5 translation framework]
+68	research-synthesis-matching.md	D415	critical	视觉-语言肿瘤学基础模型临床部署评估	944	950	keep	Vision-Language Oncology Foundation Model Clinical Deployment Assessment Protocol added [MUSK Nature 2025 + TITAN 335K slides + VLO-1→5 maturity framework]
+68	research-synthesis-matching.md	D416	critical	体内CAR-T自身免疫病临床评估	950	956	keep	In Vivo CAR-T Autoimmune Disease Clinical Assessment Protocol added [NEJM 2025 USTC LNP CD19 CAR-T SLE + AIC-1→5 safety framework]
+68	research-synthesis-matching.md	D417	critical	AI药物发现失败模式分类学评估	956	962	keep	AI Drug Discovery Failure Mode Taxonomy Assessment Protocol added [Nature Medicine 2025 same Phase II failure rate + FAIL-1→7 classification]
+68	research-synthesis-matching.md	D418	critical	血管化脑类器官功能神经血管耦合评估	962	968	keep	Vascularized Brain Organoid Functional Neurovascular Coupling Assessment Protocol added [vOrganoids PLOS Biology 2025 + NVC-1→5 maturity framework]
+68	research-synthesis-matching.md	D419	critical	计算生物标志物分诊工作流临床评估	968	974	keep	Computational Biomarker Triage Workflow Clinical Assessment Protocol added [EAGLE AUC 0.847 + TRI-1→5 maturity framework]
+68	research-synthesis-matching.md	D420	critical	基因编辑治疗模式选择评估	974	980	keep	Gene Editing Therapeutic Modality Selection Assessment Protocol added [PM359 prime editing CGD + 4-modality decision framework]
+69	research-synthesis-matching.md	D421	critical	AI临床试验数字孪生与合成对照组评估	980	986	keep	AI Clinical Trial Digital Twin and Synthetic Control Arm Assessment Protocol added [Unlearn.ai EMA approved + VCT-1→5 maturity framework]
+69	research-synthesis-matching.md	D422	critical	空间转录组学跨平台反卷积一致性评估	986	992	keep	Spatial Transcriptomics Cross-Platform Deconvolution Consistency Assessment Protocol added [4-platform benchmark + STX-1→5 consistency framework]
+69	research-synthesis-matching.md	D423	critical	GLP-1RA心血管获益机制解耦评估	992	998	keep	GLP-1RA Cardiovascular Benefit Mechanism Disentanglement Assessment Protocol added [SELECT 17K + SURMOUNT-5 + GLP-M1→5 mechanism framework]
+69	research-synthesis-matching.md	D424	critical	AI酶设计活性-稳定性权衡评估	998	1004	keep	AI Enzyme Design Activity-Stability Tradeoff Assessment Protocol added [GeoEvoBuilder 20x efficiency + ENZ-1→5 maturity framework]
+69	research-synthesis-matching.md	D425	critical	非配对多模态单细胞数据整合评估	1004	1010	keep	Unpaired Multi-Modal Single-Cell Data Integration Assessment Protocol added [scHiCAR + SuperMap + UMM-1→5 reliability framework]
+69	research-synthesis-matching.md	D426	critical	AAV基因治疗长期表达轨迹与再给药免疫屏障评估	1010	1016	keep	AAV Gene Therapy Long-Term Expression Trajectory and Re-Dosing Immune Barrier Assessment Protocol added [NEJM 13yr FIX + AAV-D1→5 durability framework]
+70	research-synthesis-matching.md	D427	critical	AI设计药物首次人体试验评估	1016	1022	keep	AI-Designed Drug First-in-Human Trial Assessment Protocol added [Isomorphic Labs clinical trial + Rentosertib Phase IIa + AID-1→5 maturity framework]
+70	research-synthesis-matching.md	D428	critical	CRISPR-Cas12a与碱基编辑同靶点比较临床评估	1022	1028	keep	CRISPR-Cas12a vs Base Editing Same-Target Comparative Clinical Assessment Protocol added [NEJM 2026 dual publication + CM-1→5 comparison framework]
+70	research-synthesis-matching.md	D429	critical	CAR-T中靶脱瘤毒性评估	1028	1034	keep	CAR-T On-Target Off-Tumor Toxicity Assessment Protocol added [Nature Communications 2025 CLDN18.2 OTOT + OTOT-1→5 risk classification]
+70	research-synthesis-matching.md	D430	critical	BCI实时语音合成情感韵律恢复评估	1034	1040	keep	BCI Real-Time Speech Synthesis Emotional Prosody Restoration Assessment Protocol added [UC Davis <80ms + PROS-1→5 maturity framework]
+70	research-synthesis-matching.md	D431	critical	AI医疗分诊偏见与公平性临床决策评估	1040	1046	keep	AI Healthcare Triage Bias and Equity Clinical Decision Assessment Protocol added [Nature Medicine 2025 LLM bias + EQ-1→5 equity classification]
+70	research-synthesis-matching.md	D432	critical	类器官智能生物计算可靠性与伦理评估	1046	1052	keep	Organoid Intelligence Biological Computing Reliability and Ethical Assessment Protocol added [JHU learning/memory + CL1 + OIC-1→5 maturity framework]
+71	research-synthesis-matching.md	D433	critical	个性化mRNA癌症疫苗III期临床转化评估	1052	1058	keep	Personalized mRNA Cancer Vaccine Phase III Clinical Translation Assessment Protocol added [mRNA-4157 Phase III + mRNA-V1→5 maturity framework]
+71	research-synthesis-matching.md	D434	critical	AI闭环胰岛素给药2型糖尿病临床评估	1058	1064	keep	AI Closed-Loop Insulin Delivery Type 2 Diabetes Clinical Assessment Protocol added [NEJM 2IQP -0.6% HbA1c + AID-T2-1→5 maturity framework]
+71	research-synthesis-matching.md	D435	critical	空间转录组学标准化质量控制与临床部署评估	1064	1070	keep	Spatial Transcriptomics Standardization QC and Clinical Deployment Assessment Protocol added [Spatial Touchstone 254 datasets + STX-C1→5 readiness framework]
+71	research-synthesis-matching.md	D436	critical	异种移植分子免疫排斥时空图谱评估	1070	1076	keep	Xenotransplantation Molecular Immune Rejection Spatiotemporal Atlas Assessment Protocol added [Nature 2025 3-phase rejection + XENO-1→5 stage framework]
+71	research-synthesis-matching.md	D437	critical	AI医疗分诊盲区与安全底线评估	1076	1082	keep	AI Medical Triage Blind Spot and Safety Floor Assessment Protocol added [Mount Sinai >50% under-triage + SAFE-1→5 classification]
+71	research-synthesis-matching.md	D438	critical	AI空间细胞表型组学临床风险分层评估	1082	1088	keep	AI Spatial Cell Phenomics Clinical Risk Stratification Assessment Protocol added [NSCLC 1168pt 14-47% improvement + SPC-1→5 maturity framework]
+72	research-synthesis-matching.md	D439	critical	表观遗传编辑CRISPRoff/CRISPRon T细胞工程临床转化评估	1088	1094	keep	Epigenetic Editing CRISPRoff/CRISPRon T Cell Engineering Clinical Translation Assessment Protocol added [Nature Biotech 2025 93%+ silencing 28d + EPI-T1→5 maturity framework]
+72	research-synthesis-matching.md	D440	critical	AI病理泛癌淋巴结转移检测评估	1094	1100	keep	AI Pathology Pan-Cancer Lymph Node Metastasis Detection Assessment Protocol added [Lancet DH 2025 PanCAM 9256pt 33 cancers + PCAM-1→5 readiness framework]
+72	research-synthesis-matching.md	D441	critical	蛋白质语言模型基因编辑工具设计与功能验证评估	1100	1106	keep	Protein Language Model Gene Editing Tool Design and Functional Validation Assessment Protocol added [Nature 2025 OpenCRISPR-1 + Nature Biotech PiggyBac + AIGE-1→5 readiness framework]
+72	research-synthesis-matching.md	D442	critical	AI脓毒症宿主反应分子诊断临床部署评估	1106	1112	keep	AI Sepsis Host Response Molecular Diagnostic Clinical Deployment Assessment Protocol added [Nature Med 2025 TriVerity 29-mRNA 95% rule-in/out + HRD-1→5 maturity framework]
+72	research-synthesis-matching.md	D443	critical	个性化N-of-1 CRISPR基因治疗临床安全与监管评估	1112	1118	keep	Personalized N-of-1 CRISPR Gene Therapy Clinical Safety and Regulatory Assessment Protocol added [NEJM 2025 KJ CPS1 6-month + N1-1→5 readiness framework]
+72	research-synthesis-matching.md	D444	critical	AI设计CRISPR向导RNA临床安全与脱靶评估	1118	1124	keep	AI-Designed CRISPR Guide RNA Clinical Safety and Off-Target Assessment Protocol added [Profluent gRNA + CRISPR-GPT + AIgRNA-1→5 certification framework]
+73	research-synthesis-matching.md	D445	critical	脑类器官异种移植功能性神经环路整合评估	1124	1130	keep	Brain Organoid Xenotransplantation Functional Neural Circuit Integration Assessment Protocol added [Cellular and Molecular Life Sciences 2025 vOrganoids + BOI-1→5 maturity framework]
+73	research-synthesis-matching.md	D446	critical	AI虚拟临床试验药物重定位疗效预测评估	1130	1136	keep	AI Virtual Clinical Trial Drug Repurposing Efficacy Prediction Assessment Protocol added [Mayo Clinic npj 2025 17 drugs + VCT-1→5 validation framework]
+73	research-synthesis-matching.md	D447	critical	BCMA靶向CAR-T自身免疫病临床安全评估	1136	1142	keep	BCMA-Targeted CAR-T for Autoimmune Disease Clinical Safety Assessment Protocol added [Annals of the Rheumatic Diseases 2025 7pt SLE + BCMA-AI1→5 maturity framework]
+73	research-synthesis-matching.md	D448	critical	CAR-T疗法长期免疫重建与感染风险评估	1142	1148	keep	CAR-T Therapy Long-Term Immune Reconstitution and Infection Risk Assessment Protocol added [ARD 2025 vaccination antibody loss + IR-1→5 assessment framework]
+73	research-synthesis-matching.md	D449	critical	第三代CRISPR去甲基化基因激活治疗评估	1148	1154	keep	Third-Generation CRISPR Demethylation Gene Reactivation Therapeutic Assessment Protocol added [Nature Communications 2025 dCas9-TET1 + DM-1→5 readiness framework]
+73	research-synthesis-matching.md	D450	critical	AI优化临床试验患者招募公平性与普适性评估	1154	1160	keep	AI-Optimized Clinical Trial Patient Recruitment Equity and Generalizability Assessment Protocol added [Nature Biotech 2025 TrialGPT + AIRE-1→5 maturity framework]
+74	research-synthesis-matching.md	D451	critical	智能体AI罕见病诊断推理评估	1160	1166	keep	Agentic AI Rare Disease Diagnostic Reasoning Assessment Protocol added [Nature 2026 DeepRare 40 tools + AIRD-1→5 maturity framework]
+74	research-synthesis-matching.md	D452	critical	少样本即插即用病理AI评估	1166	1172	keep	Few-Shot Plug-and-Play Pathology AI Assessment Protocol added [Nature Cancer 2026 PRET 1-8 slides + FSP-1→5 readiness framework]
+74	research-synthesis-matching.md	D453	critical	双靶向CAR-T自身免疫病评估	1172	1178	keep	Dual-Targeting CAR-T for Autoimmune Disease Assessment Protocol added [Nature Med 2025 CD19+BCMA + DT-1→5 maturity framework]
+74	research-synthesis-matching.md	D454	critical	AI科学家自主科学发现评估	1178	1184	keep	AI Scientist Autonomous Scientific Discovery Assessment Protocol added [Nature 2026 Sakana AI v2 + ASD-1→5 maturity framework]
+74	research-synthesis-matching.md	D455	critical	体内CRISPR心血管代谢疾病基因编辑评估	1184	1190	keep	In Vivo CRISPR Gene Editing for Cardiovascular-Metabolic Disease Assessment Protocol added [NEJM 2025 CTX310 ANGPTL3 + CVM-1→5 readiness framework]
+74	research-synthesis-matching.md	D456	critical	石墨烯介导脑类器官成熟加速评估	1190	1196	keep	Graphene-Mediated Brain Organoid Maturation Acceleration Assessment Protocol added [Nature Comms 2025 GraMOS + GMA-1→5 readiness framework]
+75	research-synthesis-matching.md	D457	critical	开源LLM临床决策支持机构部署评估	1196	1202	keep	Open-Source LLM Clinical Decision Support Institutional Deployment Assessment Protocol added [Nature Med 2025 DeepSeek + OSLLM-1→5 readiness framework]
+75	research-synthesis-matching.md	D458	critical	个性化mRNA癌症疫苗免疫逃逸机制评估	1202	1208	keep	Personalized mRNA Cancer Vaccine Immune Escape Mechanism Assessment Protocol added [Nature 2025 BioNTech TNBC-MERIT + EE-1→5 escape classification]
+75	research-synthesis-matching.md	D459	critical	AI乳腺X线筛查检出增加vs过度诊断评估	1208	1214	keep	AI Mammography Screening Detection Increase vs Overdiagnosis Assessment Protocol added [MASAI trial + SCR-1→5 screening classification]
+75	research-synthesis-matching.md	D460	critical	空间组学基础模型临床转化评估	1214	1220	keep	Spatial Omics Foundation Model Clinical Translation Assessment Protocol added [SOFM-1→5 readiness framework]
+75	research-synthesis-matching.md	D461	critical	mRNA癌症疫苗检查点抑制剂联合协同评估	1220	1226	keep	mRNA Cancer Vaccine Checkpoint Inhibitor Combination Synergy Assessment Protocol added [KEYNOTE-942 5yr + MVC-1→5 maturity framework]
+75	research-synthesis-matching.md	D462	critical	LLM医学幻觉临床安全底线评估	1226	1232	keep	LLM Medical Hallucination Clinical Safety Floor Assessment Protocol added [HALL-S1→5 safety classification]
+76	research-synthesis-matching.md	D463	critical	AI辅助多基因风险评分临床部署评估	1232	1238	keep	AI-Assisted Polygenic Risk Score Clinical Deployment Assessment Protocol added [PRS-1→5 readiness framework]
+76	research-synthesis-matching.md	D464	critical	体内CAR-T细胞治疗长期安全性随访评估	1238	1244	keep	In Vivo CAR-T Cell Therapy Long-Term Safety Follow-Up Assessment Protocol added [CARLT-1→5 safety classification]
+76	research-synthesis-matching.md	D465	critical	AI病理全切片图像计算效率与临床部署可行性评估	1244	1250	keep	AI Pathology Whole-Slide Image Computational Efficiency and Clinical Deployment Feasibility Assessment Protocol added [PATHCOMP-1→5 readiness framework]
+76	research-synthesis-matching.md	D466	critical	CRISPR先导编辑体内递送效率与脱靶整合评估	1250	1256	keep	CRISPR Prime Editing In Vivo Delivery Efficiency and Off-Target Integration Assessment Protocol added [PEIV-1→5 maturity framework]
+76	research-synthesis-matching.md	D467	critical	多模态医学AI融合架构可靠性评估	1256	1262	keep	Multimodal Medical AI Fusion Architecture Reliability Assessment Protocol added [MMAI-1→5 reliability classification]
+76	research-synthesis-matching.md	D468	critical	AI驱动抗生素发现与耐药性预测临床转化评估	1262	1268	keep	AI-Driven Antibiotic Discovery and Resistance Prediction Clinical Translation Assessment Protocol added [AID-1→5 maturity framework]
+77	research-synthesis-matching.md	D469	critical	AI辅助手术机器人自主决策安全评估	1268	1274	keep	AI-Assisted Surgical Robot Autonomous Decision Safety Assessment Protocol added [SRA-1→5 autonomy classification]
+77	research-synthesis-matching.md	D470	critical	表观遗传时钟临床决策支持可靠性评估	1274	1280	keep	Epigenetic Clock Clinical Decision Support Reliability Assessment Protocol added [EPC-1→5 reliability framework]
+77	research-synthesis-matching.md	D471	critical	AI药物重定位真实世界验证与监管路径评估	1280	1286	keep	AI Drug Repurposing Real-World Validation and Regulatory Pathway Assessment Protocol added [AIDR-1→5 maturity framework]
+77	research-synthesis-matching.md	D472	critical	脑机接口长期植入物生物相容性与信号衰减评估	1286	1292	keep	BCI Long-Term Implant Biocompatibility and Signal Degradation Assessment Protocol added [BCI-ST1→5 stability classification]
+77	research-synthesis-matching.md	D473	critical	AI辅助放射治疗计划自动化安全评估	1292	1298	keep	AI-Assisted Radiation Therapy Planning Automation Safety Assessment Protocol added [RTP-1→5 automation framework]
+77	research-synthesis-matching.md	D474	critical	合成生物学基因线路体内稳定性与进化逃逸评估	1298	1304	keep	Synthetic Biology Gene Circuit In Vivo Stability and Evolutionary Escape Assessment Protocol added [SYNBIO-1→5 stability classification]
+78	research-synthesis-matching.md	D475	critical	AI辅助心理健康数字表型隐私与临床效用平衡评估	1304	1310	keep	AI-Assisted Mental Health Digital Phenotyping Privacy and Clinical Utility Balance Assessment Protocol added [DP-1→5 balance framework]
+78	research-synthesis-matching.md	D476	critical	单细胞多组学AI整合分析批次效应与生物学信号区分评估	1310	1316	keep	Single-Cell Multi-Omics AI Integration Batch Effect and Biological Signal Discrimination Assessment Protocol added [SCMO-1→5 reliability framework]
+78	research-synthesis-matching.md	D477	critical	AI驱动临床试验适应性设计统计有效性与操作可行性评估	1316	1322	keep	AI-Driven Clinical Trial Adaptive Design Statistical Validity and Operational Feasibility Assessment Protocol added [ACT-1→5 validity framework]
+78	research-synthesis-matching.md	D478	critical	基因治疗AAV载体免疫原性与再给药可行性评估	1322	1328	keep	Gene Therapy AAV Vector Immunogenicity and Re-Dosing Feasibility Assessment Protocol added [AAV-IRD-1→5 feasibility framework]
+78	research-synthesis-matching.md	D479	critical	AI医学影像基础模型跨机构泛化与域适应评估	1328	1334	keep	AI Medical Imaging Foundation Model Cross-Institutional Generalization and Domain Adaptation Assessment Protocol added [CIG-1→5 generalization framework]
+78	research-synthesis-matching.md	D480	critical	类器官药物筛选与动物模型预测一致性评估	1334	1340	keep	Organoid Drug Screening and Animal Model Predictive Concordance Assessment Protocol added [ORG-1→5 concordance framework]
+79	research-synthesis-matching.md	D481	critical	AI辅助病理全切片图像多癌症泛化诊断评估	1340	1346	keep	AI-Assisted Pathology Whole-Slide Image Multi-Cancer Pan-Cancer Generalization Assessment Protocol added [PANC-1→5 generalization framework]
+79	research-synthesis-matching.md	D482	critical	CRISPR体内基因编辑生殖细胞系脱靶风险评估	1346	1352	keep	CRISPR In Vivo Gene Editing Germline Off-Target Risk Assessment Protocol added [GL-1→5 risk classification]
+79	research-synthesis-matching.md	D483	critical	AI驱动临床试验合成对照组外部有效性评估	1352	1358	keep	AI-Driven Clinical Trial Synthetic Control Arm External Validity Assessment Protocol added [SCA-1→5 validity framework]
+79	research-synthesis-matching.md	D484	critical	多模态生物医学AI跨模态对齐可靠性评估	1358	1364	keep	Multimodal Biomedical AI Cross-Modal Alignment Reliability Assessment Protocol added [CMA-1→5 reliability framework]
+79	research-synthesis-matching.md	D485	critical	AI辅助药物发现先导化合物优化可合成性评估	1364	1370	keep	AI-Assisted Drug Discovery Lead Compound Optimization Synthesizability Assessment Protocol added [SYN-1→5 synthesizability framework]
+79	research-synthesis-matching.md	D486	critical	脑机接口神经解码稳定性与长期可塑性冲突评估	1370	1376	keep	BCI Neural Decoding Stability and Long-Term Neural Plasticity Conflict Assessment Protocol added [BCI-SP1→5 stability framework]
+80	research-synthesis-matching.md	D487	critical	AI辅助内窥镜实时病变检测延迟与临床决策时间窗冲突评估	1376	1382	keep	AI-Assisted Endoscopy Real-Time Lesion Detection Latency and Clinical Decision Time Window Conflict Assessment Protocol added [ENDO-1→5 latency framework]
+80	research-synthesis-matching.md	D488	critical	细胞治疗AI制造过程质量控制与放行标准评估	1382	1388	keep	Cell Therapy AI Manufacturing Process Quality Control and Release Criteria Assessment Protocol added [CTM-1→5 QC framework]
+80	research-synthesis-matching.md	D489	critical	AI辅助基因组变异解读临床一致性评估	1388	1394	keep	AI-Assisted Genomic Variant Interpretation Clinical Concordance Assessment Protocol added [VIC-1→5 concordance framework]
+80	research-synthesis-matching.md	D490	critical	可穿戴AI连续监测假阳性级联与医疗资源浪费评估	1394	1400	keep	Wearable AI Continuous Monitoring False Positive Cascade and Healthcare Resource Waste Assessment Protocol added [WFP-1→5 cascade framework]
+80	research-synthesis-matching.md	D491	critical	AI辅助手术术中边缘检测与肿瘤残留评估	1400	1406	keep	AI-Assisted Surgery Intraoperative Margin Detection and Tumor Residual Assessment Protocol added [MARG-1→5 detection framework]
+80	research-synthesis-matching.md	D492	critical	大语言模型医学知识更新滞后与临床指南同步评估	1406	1412	keep	LLM Medical Knowledge Update Lag and Clinical Guideline Synchronization Assessment Protocol added [CUR-1→5 currency framework]
+81	research-synthesis-matching.md	D493	critical	AI辅助床旁超声操作者依赖性与诊断可靠性评估	1412	1418	keep	AI-Assisted Point-of-Care Ultrasound Operator Dependency and Diagnostic Reliability Assessment Protocol added [POC-1→5 maturity framework]
+81	research-synthesis-matching.md	D494	critical	AI驱动空间转录组细胞类型解卷积与临床生物标志物发现评估	1418	1424	keep	AI-Driven Spatial Transcriptomics Cell Type Deconvolution and Clinical Biomarker Discovery Assessment Protocol added [SDC-1→5 readiness framework]
+81	research-synthesis-matching.md	D495	critical	AI辅助连续血糖监测胰岛素给药闭环安全评估	1424	1430	keep	AI-Assisted Continuous Glucose Monitoring Insulin Dosing Closed-Loop Safety Assessment Protocol added [CLP-1→5 maturity framework]
+81	research-synthesis-matching.md	D496	critical	AI驱动多组学数据整合罕见病诊断评估	1430	1436	keep	AI-Driven Multi-Omics Data Integration Rare Disease Diagnosis Assessment Protocol added [MOD-1→5 maturity framework]
+81	research-synthesis-matching.md	D497	critical	AI辅助视网膜影像心血管疾病风险预测跨域评估	1436	1442	keep	AI-Assisted Retinal Imaging Cardiovascular Disease Risk Prediction Cross-Domain Assessment Protocol added [RCV-1→5 readiness framework]
+81	research-synthesis-matching.md	D498	critical	AI驱动电子健康记录表型定义与队列选择偏倚评估	1442	1448	keep	AI-Driven Electronic Health Record Phenotype Definition and Cohort Selection Bias Assessment Protocol added [PHB-1→5 bias framework]
+81	research-synthesis-matching.md	D499	critical	BME对齐：空间转录组协议添加仪器SNR和计算管线维度	1448	1450	keep	Spatial Transcriptomics Protocol: added Instrumentation SNR and Computational Pipeline BME engineering dimensions
+81	research-synthesis-matching.md	D500	critical	BME对齐：多组学罕见病协议添加传感器集成和管线自动化维度	1450	1452	keep	Multi-Omics Rare Disease Protocol: added Sensor Integration and Pipeline Automation BME engineering dimensions
+81	research-synthesis-matching.md	D501	critical	BME对齐：EHR表型协议添加数据管线工程和CDSS公平性维度	1452	1454	keep	EHR Phenotyping Protocol: added Clinical Data Pipeline Engineering and CDSS Fairness BME engineering dimensions
+81	research-synthesis-matching.md	D502	critical	AI辅助神经接口与脑机接口安全长期可靠性评估	1454	1460	keep	AI-Assisted Neural Interface and BCI Safety and Long-Term Reliability Assessment Protocol added [BCI-1→5 maturity framework]
+81	research-synthesis-matching.md	D503	critical	AI驱动可穿戴生物传感器信号质量与临床决策可靠性评估	1460	1466	keep	AI-Driven Wearable Biosensor Signal Quality and Clinical Decision Reliability Assessment Protocol added [WBS-1→5 maturity framework]
+81	research-synthesis-matching.md	D504	critical	AI辅助医疗器械软件安全与预定变更控制评估	1466	1472	keep	AI-Assisted Medical Device Software Safety and PCCP Assessment Protocol added [MDS-1→5 maturity framework]
+81	SKILL.md	D505	critical	论文全文深度学习协议添加（Step 0）	-	-	keep	Added Step 0: Full-Text Paper Acquisition and Deep Learning Protocol with 10-dimension extraction template and multi-source acquisition strategy
+81	SKILL.md	D506	critical	Hallucination Guard更新：全文优先规则	-	-	keep	Updated Hallucination Guard: added full-text priority rule and updated abstract-only warning
+81	README.md	D507	critical	局限性第1条更新：全文深度学习机制替代无法访问全文	-	-	keep	Replaced limitation "无法访问全文" with full-text deep learning mechanism description
+81	README.md	D508	critical	最佳实践更新：DOI/URL触发全文学习	-	-	keep	Updated best practices: DOI/URL triggers full-text learning, added 撞库学习 trigger
+81	research-synthesis-matching.md	D509	critical	BME对齐：AI-POCUS协议添加超声换能器工程和边缘计算维度	-	-	keep	AI-POCUS Protocol: added Ultrasound Transducer Array Engineering and Edge Computing Real-Time Inference BME dimensions + IEEE T-BME/Annals of BME references
+81	research-synthesis-matching.md	D510	critical	BME对齐：闭环胰岛素协议添加CGM传感器电化学、胰岛素泵微流控、传感器-执行器集成维度	-	-	keep	Closed-Loop Insulin Protocol: added CGM Sensor Electrochemical Stability, Insulin Pump Microfluidic Delivery, and Sensor-Actuator Integration BME dimensions + IEEE T-BME/Annals of BME references
+81	research-synthesis-matching.md	D511	critical	BME对齐：视网膜CVD协议添加眼底相机光学、图像采集管线、跨域传感器集成维度	-	-	keep	Retinal CVD Protocol: added Fundus Camera Optics Engineering, Retinal Image Acquisition Pipeline, and Cross-Domain Sensor Integration BME dimensions + IEEE T-BME/Annals of BME references
+81	README.md	D512	critical	局限性第1条修正：全文深度学习机制从局限性移至能力，局限性改为付费墙限制	-	-	keep	Fixed L508: moved full-text learning from limitation to capability; limitation now correctly states paywall constraint
+81	README.md	D513	critical	局限性新增第6条：撞库学习依赖全文获取	-	-	keep	Added limitation #6: database learning effectiveness depends on full-text acquisition success
+81	README.md	D514	critical	最佳实践第1条加强：撞库学习时DOI/URL必须提供	-	-	keep	Strengthened best practice #1: DOI/URL mandatory for database learning
+81	SKILL.md	D515	critical	撞库学习规则6加强：MANDATORY INTEGRATION强制写入参考文件	-	-	keep	Strengthened Rule 6: database learning requires MANDATORY file integration (specify+provide+execute edits)
+81	SKILL.md	D516	critical	全文学习规则8新增：Full-Text Completeness Gate确保1-6节提取完整	-	-	keep	Added Rule 8: Full-Text Completeness Gate verifies sections 1-6 extracted before Step 1
+81	SKILL.md	D517	critical	路由逻辑新增4条BME工程路由：传感器/生物材料/生物力学/医疗器械	-	-	keep	Added 4 BME engineering routes: sensor/wearable, biomaterial/tissue engineering, biomechanics/rehab, medical device/regulatory
+81	SKILL.md	D518	critical	Step 2.5论文类型分类新增3种BME类型：仪器/传感器、临床设备/系统、植入/侵入	-	-	keep	Added 3 BME paper types: BME Instrument/Sensor, BME Clinical Device/System, BME Implantable/Invasive
+81	SKILL.md	D519	critical	创新评估新增BME Engineering Depth维度	-	-	keep	Added BME Engineering Depth dimension to Innovation Assessment table
+81	SKILL.md	D520	critical	Darwin协议补充：Phase 2.5探索性重写+优化策略库P0-P3+异常边界条件+eval_mode+BME对齐约束	-	-	keep	Added Phase 2.5 exploratory rewrite, optimization strategy library P0-P3, exception handling table, eval_mode, BME alignment constraint #7
+81	README.md	D521	critical	核心能力新增第7条全文深度学习与撞库整合+第8条BME工程视角评估	-	-	keep	Added core capabilities #7 (full-text learning + database integration) and #8 (BME engineering perspective assessment)
+81	README.md	D522	critical	路由逻辑新增4条BME路由+撞库学习路由	-	-	keep	Added 4 BME routes + database learning route to README routing table
+81	README.md	D523	critical	防幻觉规则新增第9条全文优先规则	-	-	keep	Added hallucination guard rule #9: full-text priority (FACT from full text not downgraded)
+81	SKILL.md	D524	critical	计算生物力学仿真验证协议添加（网格收敛/时间步收敛/求解器收敛/质量能量守恒/代码验证MMS）	-	-	keep	Added Computational Biomechanics & Simulation Verification protocol (adapted from OpenClaw convergence-study/mesh-generation/linear-solvers/nonlinear-solvers/time-stepping/post-processing)
+81	SKILL.md	D525	critical	临床报告写作协议添加（CARE/ICH-E3/STARD/FDA 510k/PMA/MedWatch模板）	-	-	keep	Added Clinical Report Writing protocol (adapted from OpenClaw clinical-reports)
+81	SKILL.md	D526	critical	FDA医疗器械监管数据访问协议添加（510k/PMA/UDI/不良事件/召回/SaMD/PCCP/EU MDR）	-	-	keep	Added FDA Medical Device Regulatory Data Access protocol (adapted from OpenClaw fda-database)
+81	SKILL.md	D527	critical	生物信号处理管线添加（ECG/PPG/EEG/EDA/EMG/RSP标准化处理+HRV+运动伪影+跨信号延迟）	-	-	keep	Added Biosignal Processing Pipeline (adapted from OpenClaw neurokit2)
+81	SKILL.md	D528	critical	数字病理与全切片成像管线添加（WSI处理/染色标准化/核分割/空间图/病理AI验证）	-	-	keep	Added Digital Pathology & Whole-Slide Imaging pipeline (adapted from OpenClaw pathml/histolab)
+81	SKILL.md	D529	critical	实验室自动化集成添加（液体处理/板读/环境控制/离心/显微镜数据管理）	-	-	keep	Added Laboratory Automation Integration (adapted from OpenClaw pylabrobot/omero-integration)
+81	SKILL.md	D530	critical	路由逻辑新增5条BME工程路由：FEA/CFD仿真、生物信号、数字病理、实验室自动化、临床报告	-	-	keep	Added 5 BME engineering routes: FEA/CFD/simulation, biosignal, digital pathology, lab automation, clinical report
+81	README.md	D531	critical	路由逻辑新增5条BME路由：FEA/CFD仿真、生物信号、数字病理、实验室自动化、临床报告	-	-	keep	Added 5 BME routes to README routing table
+81	README.md	D532	critical	核心能力新增第9-12条：计算生物力学仿真验证/生物信号处理管线/数字病理/FDA医疗器械监管数据	-	-	keep	Added core capabilities #9-12: computational biomechanics, biosignal processing, digital pathology, FDA regulatory data
+81	SKILL.md	D533	critical	Peer Review Stage 5增强：添加BME特有图像完整性检查（DICOM/信号/仿真/设备/病理/传感器）	-	-	keep	Enhanced Peer Review Stage 5 with BME-specific figure checks (medical images, signal plots, simulation, device, pathology, sensor)
+81	SKILL.md	D534	critical	Deep Research添加BME Research Guidelines（证据层级/工程就绪度/安全信息/监管状态/数据库）	-	-	keep	Added BME Research Guidelines to Deep Research Protocol (evidence hierarchy, engineering readiness, safety, regulatory status, BME databases)
+81	SKILL.md	D535	critical	Dataset Diversity Assessment添加（HEIM框架：代表性指数/杂合度/地理/设备/临床站点）	-	-	keep	Added Dataset Diversity Assessment (adapted from OpenClaw equity-scorer HEIM framework) with 5 metrics and composite score
+81	SKILL.md	D536	critical	BME特有Fatal Blocker Checks添加（仿真无验证/传感器无校准/设备无监管/生物相容性缺失/体外→临床声明/信号质量未报告）	-	-	keep	Added BME-Specific Fatal Blocker Checks: simulation without verification, sensor without calibration, device without regulatory, biocompatibility missing, in vitro→clinical claim, signal quality not reported
+81	database-api-guide.md	D537	critical	TIER 19专利数据库添加（USPTO/Google Patents/EPO Espacenet）+BME医疗器械IP工作流	-	-	keep	Added TIER 19 Patent & IP Databases (USPTO, Google Patents, EPO Espacenet) + BME Medical Device IP & Regulatory Workflow
+81	SKILL.md	D538	critical	路由逻辑新增2条：专利/USPTO/IP/先验技术、生物相容性/ISO 10993/植入安全	-	-	keep	Added 2 routing entries: patent/USPTO/IP and biocompatibility/ISO 10993
+81	README.md	D539	critical	路由逻辑新增2条：专利/USPTO/IP、生物相容性/ISO 10993	-	-	keep	Added 2 BME routes to README routing table: patent/USPTO/IP, biocompatibility/ISO 10993
+81	SKILL.md	D540	critical	Darwin约束规则#7添加BME领域对齐约束（修复重复行）	-	-	keep	Added Darwin constraint rule #7: BME domain alignment (fixed duplicate line)
+81	SKILL.md	D541	critical	Hallucination Guard规则#10添加BME特有防幻觉（仿真/传感器/生物相容性/监管/设备性能/生物信号）	-	-	keep	Added Hallucination Guard rule #10: BME-specific hallucination guards (simulation, sensor, biocompatibility, regulatory, device, biosignal)
+81	README.md	D542	critical	防幻觉规则新增第10条BME特有防幻觉	-	-	keep	Added hallucination guard rule #10: BME-specific hallucination guards to README
+81	README.md	D543	moderate	局限性#4更新：明确BME核心领域覆盖较深+交叉领域覆盖有限	-	-	keep	Updated limitation #4: clarified BME core domains well-covered, cross-domains limited
+81	SKILL.md	D544	critical	Darwin协议完整整合darwin-skill-temp：设计哲学+Git版本控制+子agent独立评分+人在回路+基线评分卡+结果卡+使用模式+Phase 2.5探索性重写+优化策略库+异常处理+BME对齐约束	-	-	keep	Integrated darwin-skill-temp into Darwin protocol: design philosophy, git version control, sub-agent scoring, human-in-the-loop, baseline scorecard, result card, usage modes, Phase 2.5, strategy library, exception handling, BME alignment
+81	SKILL.md	D545	critical	17项BME核心实验方法协议从OpenClaw整合：多目标优化/贝叶斯建模/临床AI可解释性/生存分析/临床试验匹配/蛋白质结构/代谢建模/癌症依赖性/离散事件仿真/药物基因组学/空间转录组/质谱/糖工程/基金申请/假设生成	-	-	keep	Integrated 17 BME experimental method protocols from OpenClaw: multi-objective optimization, Bayesian modeling, clinical AI explainability, survival analysis, clinical trial matching, protein structure, metabolic modeling, cancer dependency, DES, pharmacogenomics, spatial transcriptomics, mass spec, glycoengineering, grant writing, hypothesis generation
+81	SKILL.md	D546	critical	路由逻辑新增15条BME路由：多目标优化/贝叶斯/SHAP/生存分析/临床试验匹配/蛋白质结构/代谢建模/DepMap/SimPy/PGx/空间转录组/质谱/糖工程/基金/假设生成	-	-	keep	Added 15 BME routing entries for new protocols
+81	SKILL.md	D547	critical	Frontmatter更新：description扩展覆盖27项核心能力+中英文触发词	-	-	keep	Updated frontmatter: description expanded to cover 27 core capabilities + Chinese/English triggers
+81	SKILL.md	D548	critical	Hallucination Guard规则#10扩展：新增蛋白质结构/代谢建模/癌症依赖/临床试验匹配/药物基因组学/质谱防幻觉子规则	-	-	keep	Extended Hallucination Guard rule #10: added protein structure, metabolic modeling, cancer dependency, clinical trial matching, pharmacogenomics, mass spectrometry sub-rules
+81	README.md	D549	critical	核心能力一览扩展至27条：新增#13-27覆盖多目标优化到假设生成	-	-	keep	Expanded core capabilities list to 27 items: added #13-27 covering multi-objective optimization through hypothesis generation
+81	README.md	D550	critical	Darwin协议完整同步：设计哲学+10维评估体系更新+优化循环更新+棘轮机制增强+优化策略库+使用模式4种	-	-	keep	Fully synchronized Darwin protocol: design philosophy, updated 10-dimension assessment, enhanced optimization loop, ratchet mechanism, strategy library, 4 usage modes
+81	README.md	D551	critical	路由逻辑新增15条BME路由（与SKILL.md同步）	-	-	keep	Added 15 BME routing entries to README (synchronized with SKILL.md)
+81	README.md	D552	critical	防幻觉规则#10扩展：新增7项BME特有防幻觉子规则	-	-	keep	Extended hallucination guard rule #10: added 7 BME-specific sub-rules
+81	README.md	D553	moderate	文件清单更新：移除darwin-skill-temp目录引用	-	-	keep	Updated file listing: removed darwin-skill-temp directory reference

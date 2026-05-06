@@ -1,0 +1,14 @@
+import { ReferenceManager } from '@/components/reference-manager'
+
+export const metadata = {
+  title: 'Reference Manager - NIH Skill',
+  description: 'Search, analyze, and organize your biomedical literature with AI-powered insights'
+}
+
+export default function ReferenceManagerPage() {
+  return (
+    <div className="min-h-screen bg-background">
+      <ReferenceManager />
+    </div>
+  )
+}

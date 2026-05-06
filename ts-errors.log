@@ -1,0 +1,1 @@
+﻿  Type '{ type: "doi"; content: string; }' is not assignable to type 'string | FileInput[]'.

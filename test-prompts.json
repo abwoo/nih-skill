@@ -1,0 +1,399 @@
+{
+  "version": "2.0",
+  "description": "Scalable batch testing framework for biomed-research skill. Supports 1000+ iterations via combinatorial generation.",
+  "base_prompts": [
+    {
+      "id": 1,
+      "prompt": "分析AlphaFold2的创新特征，它属于哪个创新层级？它的前沿性如何随时间演变？",
+      "expected": "应识别为L5b(Historic Problem Solved)，前沿阶段从Frontier(2021)→Established-Classic(2024+)，需提及CASP14验证和独立复现",
+      "category": "innovation_assessment",
+      "difficulty": "hard",
+      "dimensions_tested": ["innovation_level", "frontier_evolution", "validation_sufficiency"]
+    },
+    {
+      "id": 2,
+      "prompt": "GPT-4o读ECG图像诊断心律失常，准确率83%，这算创新吗？有什么潜在问题？",
+      "expected": "应触发LLM Visual Shortcut Detection，标记ECG纸上可能含有诊断文字，需区分LLM读文字vs读波形，创新层级应为L2(应用级)，非L3+",
+      "category": "llm_shortcut_detection",
+      "difficulty": "hard",
+      "dimensions_tested": ["llm_shortcut", "innovation_level", "validation_sufficiency"]
+    },
+    {
+      "id": 3,
+      "prompt": "一篇论文用ECG+胸片多模态融合诊断心脏疾病，AUC从0.89提升到0.90，这值得做吗？",
+      "expected": "应触发Fusion Benefit-Cost Ratio评估，ΔAUC=0.01属于Marginal fusion benefit，需标记额外复杂度是否值得",
+      "category": "fusion_benefit_cost",
+      "difficulty": "medium",
+      "dimensions_tested": ["fusion_benefit", "modality_compatibility", "clinical_value"]
+    },
+    {
+      "id": 4,
+      "prompt": "评估一篇声称'digital twin for cardiac monitoring'的论文的创新性",
+      "expected": "应触发Terminology Inflation Check，验证是否真正符合NASEM 7级分类，大多数'digital twin'论文实际只是预测模型",
+      "category": "terminology_inflation",
+      "difficulty": "medium",
+      "dimensions_tested": ["terminology_inflation", "innovation_level", "digital_twin_validation"]
+    },
+    {
+      "id": 5,
+      "prompt": "一篇论文在MIMIC-IV上训练ICU死亡预测模型，AUC=0.92，声称'超越临床医生'，但只有内部验证",
+      "expected": "应触发Validation Sufficiency Auto-Check，FB-5 Comparison Fairness，FB-6 External Validation，临床声明需V3+验证",
+      "category": "validation_sufficiency",
+      "difficulty": "medium",
+      "dimensions_tested": ["validation_sufficiency", "ai_vs_human", "clinical_claim_rigor"]
+    },
+    {
+      "id": 6,
+      "prompt": "比较CheXnet(Rajpurkar 2017)和AlphaFold2(Jumper 2021)的创新层级差异",
+      "expected": "CheXnet=L5a(Domain-First)，AlphaFold2=L5b/c(Historic Problem+Global Disruptive)，需区分'接近人类'vs'超越人类'vs'解决历史难题'",
+      "category": "innovation_comparison",
+      "difficulty": "hard",
+      "dimensions_tested": ["innovation_level", "innovation_subtype", "cross_domain_comparison"]
+    },
+    {
+      "id": 7,
+      "prompt": "一篇2025年的论文用LLM自动设计CRISPR基因编辑实验方案并成功在实验室验证，创新性如何？",
+      "expected": "应识别为L2f(AI-Driven Experiment Automation)，因有实验验证可升至L3，需评估AI-made vs AI-assisted",
+      "category": "ai_driven_discovery",
+      "difficulty": "hard",
+      "dimensions_tested": ["ai_autonomy_level", "innovation_level", "experimental_validation"]
+    },
+    {
+      "id": 8,
+      "prompt": "分析一篇声称'foundation model for ECG'的论文，它在PTB-XL上微调GPT架构",
+      "expected": "应触发Foundation Model Tier评估(T1 General+fine-tuning)，Terminology Inflation Check(微调GPT≠foundation model for ECG)",
+      "category": "foundation_model_assessment",
+      "difficulty": "hard",
+      "dimensions_tested": ["foundation_model_tier", "terminology_inflation", "data_scale_innovation"]
+    },
+    {
+      "id": 9,
+      "prompt": "一篇论文报告其AI系统在3家医院部署后因种族偏见导致误诊率差异，如何评估？",
+      "expected": "应触发Bias/Fairness Severity Scale(S3或S4)，Clinical Deployment Failure Analysis Framework",
+      "category": "bias_deployment_failure",
+      "difficulty": "medium",
+      "dimensions_tested": ["bias_severity", "deployment_failure", "fairness_assessment"]
+    },
+    {
+      "id": 10,
+      "prompt": "比较2020年和2025年的ECG深度学习方法的前沿性变化",
+      "expected": "应触发Frontier Stage Temporal Evolution，2020年ECG-DL=Frontier→2025年=Established-Standard",
+      "category": "frontier_evolution",
+      "difficulty": "hard",
+      "dimensions_tested": ["frontier_stage", "temporal_evolution", "dimension_specific_assessment"]
+    },
+    {
+      "id": 11,
+      "prompt": "一篇论文用联邦学习在5家医院训练COVID-CT诊断模型，各医院数据分布差异大，如何评估？",
+      "expected": "应评估Modality Compatibility(non-iid数据分布)，Fusion架构选择，外部验证充分性",
+      "category": "federated_learning",
+      "difficulty": "medium",
+      "dimensions_tested": ["federated_learning", "data_heterogeneity", "privacy_performance_tradeoff"]
+    },
+    {
+      "id": 12,
+      "prompt": "Google Health发表乳腺癌筛查AI论文，声称超越放射科医生，但数据私有、模型闭源",
+      "expected": "应触发Resource Asymmetry Check(Private data→Reproducibility=NO, Closed-source→Rigor≤5/10)，Industry Release vs Academic Publication区分",
+      "category": "resource_asymmetry",
+      "difficulty": "hard",
+      "dimensions_tested": ["resource_asymmetry", "reproducibility", "industry_vs_academic"]
+    },
+    {
+      "id": 13,
+      "prompt": "分析Med-PaLM 2的创新特征和临床验证水平",
+      "expected": "应识别Foundation Model Tier(T2 Domain)，Clinical Validation Level(V2-V3)，Generalist vs Specialist Trade-off",
+      "category": "llm_clinical",
+      "difficulty": "hard",
+      "dimensions_tested": ["foundation_model_tier", "clinical_validation", "generalist_specialist_tradeoff"]
+    },
+    {
+      "id": 14,
+      "prompt": "一篇论文用可穿戴PPG信号无创连续血压监测，声称准确度达到AAMI标准",
+      "expected": "应触发Physical/Biological Feasibility Check(PPG血压估计有物理限制)，Signal Processing Pipeline评估",
+      "category": "signal_processing_feasibility",
+      "difficulty": "medium",
+      "dimensions_tested": ["physical_feasibility", "signal_processing", "clinical_validation"]
+    },
+    {
+      "id": 15,
+      "prompt": "分析一篇被撤稿的Nature论文的影响——它之前被引用500次，撤稿后如何处理引用它的后续研究？",
+      "expected": "应触发Paper Integrity Check(RETRACTED→L0)，Innovation Downgrade机制，需评估引用链影响",
+      "category": "retraction_handling",
+      "difficulty": "hard",
+      "dimensions_tested": ["paper_integrity", "innovation_downgrade", "citation_chain_impact"]
+    },
+    {
+      "id": 16,
+      "prompt": "一篇预印本论文声称用AI发现了新的药物靶点，但没有任何实验验证",
+      "expected": "应标记Publication Type(Preprint→未同行评审)，AI-Driven Scientific Discovery评估(Hypothesis without validation→L2 max)",
+      "category": "preprint_discovery",
+      "difficulty": "medium",
+      "dimensions_tested": ["publication_type", "innovation_level", "validation_sufficiency"]
+    },
+    {
+      "id": 17,
+      "prompt": "比较专用ECG模型(如CPEC)和通用医学LLM(如Med-Gemini)在心律失常检测上的表现差异",
+      "expected": "应触发Generalist vs Specialist Trade-off评估，评估task coverage × acceptable accuracy × zero-shot transfer",
+      "category": "generalist_vs_specialist",
+      "difficulty": "hard",
+      "dimensions_tested": ["generalist_specialist_tradeoff", "task_coverage", "zero_shot_transfer"]
+    },
+    {
+      "id": 18,
+      "prompt": "一篇论文报告其AI模型在训练集上AUC=0.99但外部验证AUC=0.72，如何分析？",
+      "expected": "应识别为严重过拟合，FB-6 External Validation(有但性能骤降)，需检查域偏移、特征泄露、标签分布差异",
+      "category": "overfitting_detection",
+      "difficulty": "medium",
+      "dimensions_tested": ["overfitting_detection", "domain_shift", "feature_leakage"]
+    },
+    {
+      "id": 19,
+      "prompt": "分析一种新型生物传感器(非AI)用于连续血糖监测的创新性",
+      "expected": "应使用Non-AI Innovation Assessment框架，评估临床影响/技术新颖性/可扩展性/监管可行性",
+      "category": "non_ai_innovation",
+      "difficulty": "medium",
+      "dimensions_tested": ["non_ai_innovation", "clinical_impact", "regulatory_feasibility"]
+    },
+    {
+      "id": 20,
+      "prompt": "一篇2023年的论文声称'首次用Transformer做ECG分类'，但2019年已有类似工作",
+      "expected": "应触发Innovation Red Flags(Hype Inflation)，Research Chain Position分析(非Original Concept)，需降级创新层级",
+      "category": "innovation_inflation",
+      "difficulty": "medium",
+      "dimensions_tested": ["innovation_inflation", "research_chain_position", "frontier_stage"]
+    },
+    {
+      "id": 21,
+      "prompt": "DeepRare(Nature 2026)用Host-Agent架构实现罕见病可溯源诊断，准确率57.18%但可解释每步推理，创新性如何？",
+      "expected": "应识别Explainability-Driven Innovation(Traceable Reasoning=+1)，创新层级L3-L4(因可解释性而非准确率)，需区分黑盒高精度vs可溯源低精度",
+      "category": "explainability_innovation",
+      "difficulty": "hard",
+      "dimensions_tested": ["explainability_innovation", "innovation_level", "clinical_value"]
+    },
+    {
+      "id": 22,
+      "prompt": "ESM3(Science 2025)通过条件生成(prompted by sequence+structure+function)设计出esmGFP(58% identity from known FPs)，创新层级？",
+      "expected": "应识别Conditional Generation(L4-L5)，esmGFP=Interactive Generation(L5a, 500M years evolution equivalent)，需区分条件生成vs自由生成vs预测",
+      "category": "conditional_generation",
+      "difficulty": "hard",
+      "dimensions_tested": ["generation_type", "innovation_level", "generative_vs_predictive"]
+    },
+    {
+      "id": 23,
+      "prompt": "Neuralink PRIME Study(2025)让瘫痪患者用思维控制电脑，创新性如何？算法是已知解码算法",
+      "expected": "应区分Engineering vs Algorithmic Innovation，Neuralink=E3(Breakthrough Engineering)+L2-L3(algorithmic)，工程创新是主要贡献",
+      "category": "engineering_innovation",
+      "difficulty": "hard",
+      "dimensions_tested": ["engineering_innovation", "algorithmic_innovation", "bci_assessment"]
+    },
+    {
+      "id": 24,
+      "prompt": "FDA 2025年发布NAM路线图，计划用数字孪生/计算机模拟替代动物实验，这算创新吗？",
+      "expected": "应识别Regulatory/Policy Innovation(L4-L5 policy innovation)，监管突破独立于技术创新，使整个in-silico试验类别成为可能",
+      "category": "regulatory_innovation",
+      "difficulty": "hard",
+      "dimensions_tested": ["regulatory_innovation", "policy_innovation", "digital_twin_validation"]
+    },
+    {
+      "id": 25,
+      "prompt": "NOBLE(NeurIPS 2025)用神经算子实现4200倍速神经元模拟，首次经人类皮层数据验证，创新层级？",
+      "expected": "应识别Computational Efficiency Breakthrough(100-1000x→L3)，需验证准确度保持+人类皮层验证是关键(无则降为L2)",
+      "category": "efficiency_breakthrough",
+      "difficulty": "hard",
+      "dimensions_tested": ["efficiency_breakthrough", "innovation_level", "validation_sufficiency"]
+    },
+    {
+      "id": 26,
+      "prompt": "Ctrl-DNA(NeurIPS 2025)用约束RL设计细胞类型特异性调控DNA，最大化目标细胞活性+强制近零脱靶活性，创新性？",
+      "expected": "应识别Constrained Optimization Innovation(L3-L4)，约束优化比无约束多目标更创新，需验证约束是否真正强制执行",
+      "category": "constrained_optimization",
+      "difficulty": "hard",
+      "dimensions_tested": ["constrained_optimization", "innovation_level", "biological_design"]
+    },
+    {
+      "id": 27,
+      "prompt": "Merck与Google Cloud签署$1B合作，部署agentic AI平台给75,000名员工使用，创新性如何？",
+      "expected": "应识别Scale-up Innovation(L2 algorithmic + Scale-up L4 enterprise deployment)，规模化部署本身是创新",
+      "category": "scale_up_innovation",
+      "difficulty": "medium",
+      "dimensions_tested": ["scale_up_innovation", "enterprise_deployment", "agentic_ai"]
+    },
+    {
+      "id": 28,
+      "prompt": "剑桥大学血液细胞扩散分类器(Nature 2025)声称超越临床专家，如何验证？",
+      "expected": "应触发AI Surpassing Human Expert验证要求：专家资质?盲评?相同病例?外部验证?AI与专家分歧时谁对?",
+      "category": "ai_vs_expert",
+      "difficulty": "hard",
+      "dimensions_tested": ["ai_vs_expert", "validation_rigor", "clinical_claim"]
+    },
+    {
+      "id": 29,
+      "prompt": "ECG-Mamba(2025)将Mamba架构应用于ECG分类，创新层级？",
+      "expected": "应触发Architecture vs Application Frontier区分：Mamba=Pre-frontier架构，ECG-Mamba=Pre-frontier应用(架构前沿-1)，应用本身L1-L2",
+      "category": "architecture_vs_application",
+      "difficulty": "medium",
+      "dimensions_tested": ["architecture_vs_application", "frontier_stage", "innovation_level"]
+    },
+    {
+      "id": 30,
+      "prompt": "CURE AI(2025)用因果推理框架预测个体治疗获益，这属于哪个因果层级？创新性如何？",
+      "expected": "应识别Causal Reasoning Level L-Intervention(P(Y|do(X)))，创新层级L2-L3，需验证因果假设、识别策略、混杂敏感性",
+      "category": "causal_reasoning",
+      "difficulty": "hard",
+      "dimensions_tested": ["causal_reasoning_level", "innovation_level", "clinical_causal_inference"]
+    },
+    {
+      "id": 31,
+      "prompt": "MedPEFT-CL(2025)用参数高效微调实现医疗AI持续学习，但未测量旧任务遗忘，如何评估？",
+      "expected": "应触发Continual Learning Assessment：缺失遗忘测量→Flag'⚠️ Core problem not measured'，持续学习必须测量灾难性遗忘",
+      "category": "continual_learning",
+      "difficulty": "medium",
+      "dimensions_tested": ["continual_learning", "forgetting_measurement", "clinical_relevance"]
+    },
+    {
+      "id": 32,
+      "prompt": "BoltzGen(2025)用单一模型跨分子类型设计蛋白结合物，66%靶标获纳摩尔级亲和力，创新层级？",
+      "expected": "应识别Scope Expansion Innovation(Paradigm Expansion: single-target→universal binder design)，Conditional Generation，L3-L4",
+      "category": "protein_design_innovation",
+      "difficulty": "hard",
+      "dimensions_tested": ["scope_expansion", "conditional_generation", "innovation_level"]
+    },
+    {
+      "id": 33,
+      "prompt": "Nicheformer(Nat Methods 2025)在1.1亿细胞上预训练空间+单细胞基础模型，创新性？",
+      "expected": "应识别Foundation Model Tier(T2 Domain-Specific)，Architecture vs Application(架构创新+领域应用)，Data Scale Innovation",
+      "category": "spatial_omics_foundation",
+      "difficulty": "medium",
+      "dimensions_tested": ["foundation_model_tier", "data_scale_innovation", "architecture_vs_application"]
+    },
+    {
+      "id": 34,
+      "prompt": "ArteraAI Prostate获FDA De Novo授权，首个AI数字病理预后工具，创新性如何？",
+      "expected": "应识别Regulatory Precedent(L3-L4 regulatory innovation)+Technical L2-L3，De Novo创建新product code为后续产品开辟路径",
+      "category": "regulatory_precedent",
+      "difficulty": "hard",
+      "dimensions_tested": ["regulatory_innovation", "fda_pathway", "clinical_validation"]
+    },
+    {
+      "id": 35,
+      "prompt": "一篇论文用扩散模型生成合成训练数据提升罕见病诊断，AUC提升0.03，创新性？",
+      "expected": "应评估Generative vs Predictive(生成式用于数据增强)，Fusion Benefit-Cost(ΔAUC=0.03是否值得生成数据复杂度)，需验证合成数据质量",
+      "category": "synthetic_data_generation",
+      "difficulty": "medium",
+      "dimensions_tested": ["generative_vs_predictive", "fusion_benefit_cost", "synthetic_data_quality"]
+    },
+    {
+      "id": 36,
+      "prompt": "AlphaFold3(2024)从蛋白质结构预测扩展到所有生物分子复合物，创新层级？",
+      "expected": "应识别Scope Expansion Innovation(Paradigm Expansion: proteins→all biomolecules)，L4，需区分架构创新vs范围扩展",
+      "category": "scope_expansion",
+      "difficulty": "hard",
+      "dimensions_tested": ["scope_expansion", "innovation_level", "architecture_vs_application"]
+    },
+    {
+      "id": 37,
+      "prompt": "Insilico Medicine的Rentosertib完成Phase IIa，从AI靶点发现到AI分子设计到临床验证，创新层级？",
+      "expected": "应识别AI Drug Discovery Pipeline(Full Pipeline=L4-L5)，AI Autonomy Level(A1-A2)，需验证AI在每个阶段的贡献",
+      "category": "ai_drug_discovery",
+      "difficulty": "hard",
+      "dimensions_tested": ["ai_drug_pipeline", "ai_autonomy_level", "innovation_level"]
+    },
+    {
+      "id": 38,
+      "prompt": "一篇论文声称其AI系统'自主发现'了新的生物标志物，但人工选择了候选集，如何评估？",
+      "expected": "应触发AI Autonomy Level评估(A1 AI-Assisted而非A4 Fully Autonomous)，需验证AI在每个步骤的自主程度",
+      "category": "ai_autonomy_assessment",
+      "difficulty": "medium",
+      "dimensions_tested": ["ai_autonomy_level", "innovation_inflation", "discovery_claim_validation"]
+    },
+    {
+      "id": 39,
+      "prompt": "InternAL(2025)发现LLM注入新医学知识时会遗忘语义相关知识，这对临床LLM意味着什么？",
+      "expected": "应触发LLM Knowledge Injection Forgetting评估：语义遗忘+灾难性覆盖+混淆+范围蔓延，关键安全关切",
+      "category": "llm_knowledge_injection",
+      "difficulty": "hard",
+      "dimensions_tested": ["llm_knowledge_injection", "semantic_forgetting", "clinical_safety"]
+    },
+    {
+      "id": 40,
+      "prompt": "Squidiff(Nat Methods 2025)用扩散模型模拟转录组响应扰动，创新性？",
+      "expected": "应识别Generative Innovation(扩散模型生成转录组响应)，Conditional Generation(给定扰动条件)，L2-L3",
+      "category": "generative_transcriptomics",
+      "difficulty": "medium",
+      "dimensions_tested": ["generative_vs_predictive", "conditional_generation", "innovation_level"]
+    }
+  ],
+  "combinatorial_templates": {
+    "description": "Templates for generating 1000+ test variants by combining domains, methods, and assessment dimensions",
+    "domains": [
+      "ECG", "EEG", "fMRI", "CT", "MRI", "X-ray", "pathology", "genomics",
+      "proteomics", "single-cell", "spatial-omics", "EHR", "clinical-trial",
+      "drug-discovery", "BCI", "wearable", "point-of-care", "surgery",
+      "radiology", "dermatology", "ophthalmology", "cardiology", "neurology",
+      "oncology", "rare-disease", "pediatrics", "mental-health"
+    ],
+    "methods": [
+      "CNN", "RNN/LSTM", "Transformer", "Mamba/SSM", "Diffusion", "GAN",
+      "VAE", "GNN", "RL", "Federated Learning", "Self-supervised", "Contrastive",
+      "Foundation Model", "LLM", "Multi-agent", "Neural Operator", "Neural ODE",
+      "Bayesian", "Causal Inference", "Continual Learning", "Meta-learning"
+    ],
+    "innovation_dimensions": [
+      "innovation_level", "innovation_subtype", "frontier_stage", "causal_reasoning_level",
+      "ai_autonomy_level", "foundation_model_tier", "engineering_innovation",
+      "regulatory_innovation", "explainability_innovation", "generation_type",
+      "scope_expansion", "efficiency_breakthrough", "constrained_optimization",
+      "scale_up_innovation", "ai_vs_expert"
+    ],
+    "generation_rules": [
+      "For each (domain, method) pair, generate a test prompt asking about innovation assessment",
+      "For each innovation_dimension, generate a test prompt checking if the framework correctly applies that dimension",
+      "For each (domain, method, dimension) triple, generate a specific test case with expected output",
+      "Total combinations: 27 domains × 21 methods × 15 dimensions = 8,505 possible test cases"
+    ]
+  },
+  "batch_test_protocols": {
+    "quick_scan": {
+      "description": "Fast scan using base_prompts only (40 tests)",
+      "estimated_time": "10 minutes",
+      "use_case": "Quick validation after each code change"
+    },
+    "standard_cycle": {
+      "description": "Standard testing cycle: 40 base + 100 combinatorial = 140 tests",
+      "estimated_time": "30 minutes",
+      "use_case": "Regular testing cycle (every round)"
+    },
+    "deep_dive": {
+      "description": "Deep dive: 40 base + 500 combinatorial + 50 edge cases = 590 tests",
+      "estimated_time": "2 hours",
+      "use_case": "Major framework updates"
+    },
+    "full_scale": {
+      "description": "Full scale: 40 base + 2000 combinatorial + 200 edge cases = 2,240 tests",
+      "estimated_time": "8 hours",
+      "use_case": "Pre-release validation"
+    },
+    "thousand_iteration": {
+      "description": "1000+ iteration stress test: systematic coverage of all dimension combinations",
+      "estimated_time": "4 hours",
+      "use_case": "Comprehensive quality assurance"
+    }
+  },
+  "scoring_rubric": {
+    "dimensions": [
+      {"name": "Frontmatter质量", "weight": 5, "max": 5},
+      {"name": "工作流清晰度", "weight": 10, "max": 10},
+      {"name": "边界条件覆盖", "weight": 10, "max": 10},
+      {"name": "创新评估精度", "weight": 10, "max": 10},
+      {"name": "前沿检测精度", "weight": 10, "max": 10},
+      {"name": "指令具体性", "weight": 10, "max": 10},
+      {"name": "真实性(Authenticity)", "weight": 10, "max": 10},
+      {"name": "前沿性(Cutting-edge)", "weight": 10, "max": 10},
+      {"name": "准确性(Accuracy)", "weight": 10, "max": 10},
+      {"name": "全面性(Comprehensiveness)", "weight": 15, "max": 15}
+    ],
+    "total_max": 100,
+    "pass_threshold": 70,
+    "excellent_threshold": 85
+  }
+}

@@ -1,0 +1,221 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Biomed Research Accelerator — Dark scientific dashboard */
+  --background: #070d1a;
+  --foreground: #e6ecf7;
+  --card: #0f1829;
+  --card-foreground: #e6ecf7;
+  --popover: #0f1829;
+  --popover-foreground: #e6ecf7;
+  --primary: #4f8ef7;
+  --primary-foreground: #070d1a;
+  --secondary: #131e35;
+  --secondary-foreground: #e6ecf7;
+  --muted: #131e35;
+  --muted-foreground: #6b84a8;
+  --accent: #1a2744;
+  --accent-foreground: #e6ecf7;
+  --destructive: #f43f5e;
+  --destructive-foreground: #ffffff;
+  --border: #1a2744;
+  --input: #1a2744;
+  --ring: #4f8ef7;
+
+  /* Brand semantic tokens */
+  --success: #22d3a0;
+  --warning: #f59e0b;
+  --danger: #f43f5e;
+  --info: #4f8ef7;
+  --teal: #2dd4bf;
+  --violet: #a78bfa;
+  --pink: #f472b6;
+  --emerald: #10b981;
+  --orange: #f97316;
+
+  /* Module accent colors */
+  --module-decompose: #4f8ef7;
+  --module-compare: #a78bfa;
+  --module-reproduce: #10b981;
+  --module-paradigm: #f97316;
+  --module-evidence: #2dd4bf;
+  --module-datasets: #f472b6;
+
+  /* Charts */
+  --chart-1: #4f8ef7;
+  --chart-2: #22d3a0;
+  --chart-3: #f59e0b;
+  --chart-4: #a78bfa;
+  --chart-5: #f472b6;
+
+  --radius: 0.5rem;
+
+  --sidebar: #0a1322;
+  --sidebar-foreground: #e6ecf7;
+  --sidebar-primary: #4f8ef7;
+  --sidebar-primary-foreground: #070d1a;
+  --sidebar-accent: #131e35;
+  --sidebar-accent-foreground: #e6ecf7;
+  --sidebar-border: #1a2744;
+  --sidebar-ring: #4f8ef7;
+}
+
+@theme inline {
+  --font-sans: var(--font-outfit), 'Outfit Fallback', system-ui, sans-serif;
+  --font-mono: var(--font-dm-mono), 'DM Mono Fallback', ui-monospace, monospace;
+  --font-serif: var(--font-outfit), 'Outfit Fallback', system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-teal: var(--teal);
+  --color-violet: var(--violet);
+  --color-pink: var(--pink);
+  --color-emerald: var(--emerald);
+  --color-orange: var(--orange);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body {
+    @apply bg-background text-foreground;
+    color-scheme: dark;
+  }
+
+  /* Subtle dot-grid texture on the main background */
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(79, 142, 247, 0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Custom thin scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1a2744;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #4f8ef7;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6ba0ff;
+  }
+
+  /* Smooth 200ms transitions */
+  button,
+  a,
+  input,
+  textarea,
+  [role='button'],
+  [role='tab'] {
+    transition: background-color 200ms ease-out, border-color 200ms ease-out,
+      color 200ms ease-out, box-shadow 200ms ease-out, transform 200ms ease-out,
+      opacity 200ms ease-out;
+  }
+}
+
+/* Pulsing glow for the Darwin button */
+@keyframes darwin-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+  }
+}
+.darwin-pulse {
+  animation: darwin-pulse 2.4s ease-out infinite;
+}
+
+/* Streaming cursor */
+@keyframes blink-caret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+.stream-caret::after {
+  content: '▍';
+  margin-left: 2px;
+  color: #4f8ef7;
+  animation: blink-caret 0.9s step-end infinite;
+}
+
+/* Soft inner ring for selected provider cards */
+.ring-glow-blue {
+  box-shadow: 0 0 0 1px #4f8ef7, 0 0 20px -2px rgba(79, 142, 247, 0.45);
+}
+.ring-glow-teal {
+  box-shadow: 0 0 0 1px #2dd4bf, 0 0 20px -2px rgba(45, 212, 191, 0.4);
+}
+
+/* Loading dot pulse */
+@keyframes dot-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+.dot-pulse {
+  animation: dot-pulse 1.6s ease-in-out infinite;
+}

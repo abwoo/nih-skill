@@ -1,0 +1,1 @@
+﻿app/api/skill-info/route.ts(24,7): error TS2698: Spread types may only be created from object types.
