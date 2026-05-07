@@ -876,24 +876,46 @@ function formatAndReturnResults(
 export async function GET() {
   return NextResponse.json({
     endpoint: '/api/search',
-    version: '6.0-FINAL',
-    description: 'REAL academic search connecting to 5 live databases',
-    databases: [
-      { name: 'PubMed', type: 'Biomedical', size: '36M+', status: 'LIVE' },
-      { name: 'Semantic Scholar', type: 'AI/CS', size: '200M+', status: 'LIVE' },
-      { name: 'OpenAlex', type: 'Multi-discipline', size: '250M+', status: 'LIVE' },
-      { name: 'arXiv', type: 'Preprints', size: '2M+', status: 'LIVE' },
-      { name: 'Crossref', type: 'DOI Registry', size: '140M+', status: 'LIVE' },
+    version: '7.0-PURE-PUBMED',
+    mode: 'PURE_PUBMED_ONLY',
+    description: 'REAL academic search using PubMed (NCBI E-utilities) as PRIMARY source',
+    primarySource: {
+      name: 'PubMed',
+      type: 'Biomedical Literature Database',
+      provider: 'NCBI (National Center for Biotechnology Information)',
+      size: '36M+ articles',
+      status: 'LIVE',
+      authentication: process.env.NCBI_API_KEY
+        ? '✅ Using NCBI API Key'
+        : '⚠️ No API Key (rate limited)',
+    },
+    supplementarySources: [
+      { name: 'OpenAlex', type: 'Open Science Database', status: 'OPTIONAL' },
+      { name: 'arXiv', type: 'Preprint Server', status: 'OPTIONAL' },
+      { name: 'Crossref', type: 'DOI Registry', status: 'OPTIONAL' },
+    ],
+    removedSources: [
+      {
+        name: 'Semantic Scholar',
+        status: '🚫 REMOVED - Not used in this system',
+        reason: 'User requirement: Use only PubMed',
+      },
     ],
     features: [
-      '✅ Parallel queries to 5 databases',
+      '✅ PRIMARY: Real-time PubMed (NCBI) API calls with user API key',
       '✅ Smart deduplication across sources',
       '✅ Year range filtering',
       '✅ Relevance/date/citations sorting',
-      '✅ PDF download links (arXiv + Semantic Scholar)',
       '✅ Detailed API status reporting',
       '✅ Performance metrics',
+      '✅ NCBI API Key authentication support',
     ],
+    architecture: {
+      primarySearch: '/api/search → PubMed (NCBI E-utilities) [REQUIRED]',
+      optionalSupplements: '[User can optionally enable: OpenAlex, arXiv, Crossref]',
+      note: '🚫 Semantic Scholar is completely removed and not used anywhere',
+    },
     diagnoseEndpoint: 'GET /api/diagnose-search',
+    verifyEndpoint: 'GET /api/verify-real-api',
   });
 }

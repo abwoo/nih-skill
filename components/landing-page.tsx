@@ -1,84 +1,83 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
+  ArrowDown,
   ArrowRight,
-  Sparkles,
-  Zap,
-  Shield,
+  Award,
   BookOpen,
-  Search,
-  FileText,
-  Microscope,
   Brain,
   CheckCircle2,
-  Star,
   ChevronRight,
-  Play,
+  ExternalLink,
+  FileText,
   Github,
   Globe,
   Heart,
+  Lightbulb,
+  Menu,
+  Microscope,
+  Play,
+  Rocket,
+  Search,
+  Shield,
+  Sparkles,
+  Star,
   Target,
   TrendingUp,
-  Users,
-  Award,
-  Lightbulb,
-  Rocket,
   Upload,
-  MousePointerClick,
-  ArrowDown,
-  ExternalLink,
-  Menu,
+  Users,
   X,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+  Zap,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import * as React from 'react';
 
 export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
-  const [scrolled, setScrolled] = React.useState(false)
-  const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 })
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
-  const [activeSection, setActiveSection] = React.useState("")
+  const [scrolled, setScrolled] = React.useState(false);
+  const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState('');
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      setScrolled(window.scrollY > 20);
 
-      const sections = ["features", "how-it-works", "use-cases", "pricing"]
+      const sections = ['features', 'how-it-works', 'use-cases', 'pricing'];
       for (const section of sections) {
-        const element = document.getElementById(section)
+        const element = document.getElementById(section);
         if (element) {
-          const rect = element.getBoundingClientRect()
+          const rect = element.getBoundingClientRect();
           if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(section)
-            break
+            setActiveSection(section);
+            break;
           }
         }
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll, { passive: true })
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener("mousemove", handleMouseMove, { passive: true })
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-      window.removeEventListener("mousemove", handleMouseMove)
-    }
-  }, [])
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
+    const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    setMobileMenuOpen(false)
-  }
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-[#030712] text-white overflow-x-hidden">
@@ -108,15 +107,18 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 
       {/* Floating orbs */}
       <div className="fixed top-20 left-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
-      <div className="fixed bottom-20 right-10 w-96 h-96 bg-purple-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      <div
+        className="fixed bottom-20 right-10 w-96 h-96 bg-purple-500/8 rounded-full blur-3xl animate-pulse"
+        style={{ animationDelay: '2s' }}
+      />
 
       {/* Navigation - Premium Glass Effect */}
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
           scrolled
-            ? "bg-[#030712]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-2xl shadow-black/20"
-            : "bg-transparent"
+            ? 'bg-[#030712]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-2xl shadow-black/20'
+            : 'bg-transparent'
         )}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -135,35 +137,38 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-bold tracking-tight text-white leading-none">
-                  Research<span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Accelerator</span>
+                  Research
+                  <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    Accelerator
+                  </span>
                 </span>
-                <span className="text-[10px] text-white/40 font-medium tracking-wider uppercase mt-0.5">BME Platform</span>
+                <span className="text-[10px] text-white/40 font-medium tracking-wider uppercase mt-0.5">
+                  BME Platform
+                </span>
               </div>
             </Link>
 
             {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-8">
               {[
-                { id: "features", label: "Features" },
-                { id: "how-it-works", label: "How it works" },
-                { id: "use-cases", label: "Use cases" },
-                { id: "pricing", label: "Pricing" },
+                { id: 'features', label: 'Features' },
+                { id: 'how-it-works', label: 'How it works' },
+                { id: 'use-cases', label: 'Use cases' },
+                { id: 'pricing', label: 'Pricing' },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={cn(
-                    "text-sm font-medium transition-all duration-300 relative py-1",
-                    activeSection === item.id
-                      ? "text-white"
-                      : "text-white/50 hover:text-white/80"
+                    'text-sm font-medium transition-all duration-300 relative py-1',
+                    activeSection === item.id ? 'text-white' : 'text-white/50 hover:text-white/80'
                   )}
                 >
                   {item.label}
                   <span
                     className={cn(
-                      "absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-indigo-400 to-purple-400 transition-all duration-300",
-                      activeSection === item.id ? "w-full" : "w-0 group-hover:w-full"
+                      'absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-indigo-400 to-purple-400 transition-all duration-300',
+                      activeSection === item.id ? 'w-full' : 'w-0 group-hover:w-full'
                     )}
                   />
                 </button>
@@ -178,7 +183,13 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                 asChild
                 className="text-white/60 hover:text-white hover:bg-white/5 font-medium"
               >
-                <a href="#documentation" onClick={(e) => { e.preventDefault(); scrollToSection('pricing') }}>
+                <a
+                  href="#documentation"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection('pricing');
+                  }}
+                >
                   Documentation
                   <ExternalLink className="h-3 w-3 ml-1" />
                 </a>
@@ -209,13 +220,13 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
           {mobileMenuOpen && (
             <div className="md:hidden absolute top-20 left-0 right-0 bg-[#0a0a0f]/95 backdrop-blur-xl border-t border-white/[0.06] shadow-2xl">
               <div className="px-6 py-6 space-y-4">
-                {["features", "how-it-works", "use-cases", "pricing"].map((item) => (
+                {['features', 'how-it-works', 'use-cases', 'pricing'].map((item) => (
                   <button
                     key={item}
                     onClick={() => scrollToSection(item)}
                     className="block w-full text-left text-base font-medium text-white/70 hover:text-white capitalize transition-colors py-2"
                   >
-                    {item.replace("-", " ")}
+                    {item.replace('-', ' ')}
                   </button>
                 ))}
                 <div className="pt-4 space-y-3">
@@ -230,8 +241,8 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                   </Button>
                   <Button
                     onClick={() => {
-                      setMobileMenuOpen(false)
-                      onGetStarted()
+                      setMobileMenuOpen(false);
+                      onGetStarted();
                     }}
                     className="w-full justify-center bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
                   >
@@ -259,20 +270,28 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 
             {/* Headline - Large, bold, with gradient accent */}
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-8 leading-[1.08] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-              <span className="text-white block mb-2">
-                Accelerate your
-              </span>
+              <span className="text-white block mb-2">Accelerate your</span>
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                   biomedical research
                 </span>
-                <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 8C50 2 250 2 298 8" stroke="url(#gradient)" strokeWidth="3" strokeLinecap="round"/>
+                <svg
+                  className="absolute -bottom-2 left-0 w-full"
+                  viewBox="0 0 300 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 8C50 2 250 2 298 8"
+                    stroke="url(#gradient)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
                   <defs>
                     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#818cf8" stopOpacity="0.6"/>
-                      <stop offset="50%" stopColor="#c084fc" stopOpacity="0.8"/>
-                      <stop offset="100%" stopColor="#f472b6" stopOpacity="0.6"/>
+                      <stop offset="0%" stopColor="#818cf8" stopOpacity="0.6" />
+                      <stop offset="50%" stopColor="#c084fc" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#f472b6" stopOpacity="0.6" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -282,7 +301,7 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             {/* Subheadline - More descriptive */}
             <p className="text-xl lg:text-2xl text-white/45 max-w-3xl mx-auto mb-14 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
               An intelligent research assistant that parses papers, evaluates innovation levels,
-              identifies fatal barriers, and accelerates experimental design —{" "}
+              identifies fatal barriers, and accelerates experimental design —{' '}
               <span className="text-white/65 font-medium">all powered by advanced AI</span>.
             </p>
 
@@ -314,17 +333,43 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             {/* Stats - Minimal, monospace with icons */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
               {[
-                { value: "200+", label: "Knowledge modules", icon: BookOpen, color: "from-blue-400 to-cyan-400" },
-                { value: "28", label: "BME domains", icon: Microscope, color: "from-violet-400 to-purple-400" },
-                { value: "6", label: "Analysis modes", icon: Zap, color: "from-orange-400 to-amber-400" },
-                { value: "10x", label: "Faster research", icon: TrendingUp, color: "from-emerald-400 to-green-400" },
+                {
+                  value: '200+',
+                  label: 'Knowledge modules',
+                  icon: BookOpen,
+                  color: 'from-blue-400 to-cyan-400',
+                },
+                {
+                  value: '28',
+                  label: 'BME domains',
+                  icon: Microscope,
+                  color: 'from-violet-400 to-purple-400',
+                },
+                {
+                  value: '6',
+                  label: 'Analysis modes',
+                  icon: Zap,
+                  color: 'from-orange-400 to-amber-400',
+                },
+                {
+                  value: '10x',
+                  label: 'Faster research',
+                  icon: TrendingUp,
+                  color: 'from-emerald-400 to-green-400',
+                },
               ].map((stat, idx) => (
                 <div key={idx} className="group text-center cursor-default">
-                  <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} mb-4 opacity-70 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110 shadow-lg`}>
+                  <div
+                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${stat.color} mb-4 opacity-70 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110 shadow-lg`}
+                  >
                     <stat.icon className="w-5 h-5 text-white" />
                   </div>
-                  <div className="text-3xl font-bold text-white mb-1 tabular-nums tracking-tight">{stat.value}</div>
-                  <div className="text-xs text-white/30 uppercase tracking-widest font-medium">{stat.label}</div>
+                  <div className="text-3xl font-bold text-white mb-1 tabular-nums tracking-tight">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs text-white/30 uppercase tracking-widest font-medium">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -349,7 +394,9 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                   <div className="flex-1 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/[0.04] border border-white/[0.06]">
                       <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-xs text-white/30 font-mono">BME Research Accelerator — Workspace</span>
+                      <span className="text-xs text-white/30 font-mono">
+                        BME Research Accelerator — Workspace
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -364,7 +411,10 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                     </div>
                     <div className="space-y-2.5">
                       {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className={`bg-white/[0.02] rounded-lg border border-white/[0.04] p-3 hover:border-white/[0.08] transition-colors ${i === 1 ? 'border-indigo-500/30 bg-indigo-500/5' : ''}`}>
+                        <div
+                          key={i}
+                          className={`bg-white/[0.02] rounded-lg border border-white/[0.04] p-3 hover:border-white/[0.08] transition-colors ${i === 1 ? 'border-indigo-500/30 bg-indigo-500/5' : ''}`}
+                        >
                           <div className="h-2.5 w-3/4 bg-white/[0.06] rounded mb-2" />
                           <div className="h-2 w-1/2 bg-white/[0.04] rounded" />
                         </div>
@@ -377,7 +427,10 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                     <div className="h-12 bg-gradient-to-r from-white/[0.05] to-white/[0.02] rounded-xl border border-white/[0.06] flex items-center px-4 gap-3">
                       <div className="flex gap-1.5">
                         {['Decompose', 'Compare', 'Evidence'].map((tab, i) => (
-                          <div key={tab} className={`px-3 py-1.5 rounded-md text-xs font-medium ${i === 0 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'text-white/30'}`}>
+                          <div
+                            key={tab}
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium ${i === 0 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'text-white/30'}`}
+                          >
                             {tab}
                           </div>
                         ))}
@@ -391,7 +444,11 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                       </div>
                       <div className="space-y-2.5">
                         {[1, 2, 3].map((i) => (
-                          <div key={i} className="bg-white/[0.02] rounded-lg border border-white/[0.04] p-4 hover:border-white/[0.06] transition-colors" style={{ height: `${64 + i * 16}px` }}>
+                          <div
+                            key={i}
+                            className="bg-white/[0.02] rounded-lg border border-white/[0.04] p-4 hover:border-white/[0.06] transition-colors"
+                            style={{ height: `${64 + i * 16}px` }}
+                          >
                             <div className="flex items-start gap-3">
                               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-purple-500/20 shrink-0 mt-0.5" />
                               <div className="flex-1 space-y-2">
@@ -411,7 +468,11 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                     <div className="h-10 bg-gradient-to-r from-white/[0.05] to-white/[0.02] rounded-lg border border-white/[0.06]" />
                     <div className="space-y-2.5">
                       {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="bg-white/[0.02] rounded-lg border border-white/[0.04] p-3 hover:border-white/[0.06] transition-colors" style={{ height: `${56 + (i % 2) * 12}px` }}>
+                        <div
+                          key={i}
+                          className="bg-white/[0.02] rounded-lg border border-white/[0.04] p-3 hover:border-white/[0.06] transition-colors"
+                          style={{ height: `${56 + (i % 2) * 12}px` }}
+                        >
                           <div className="h-2 w-full bg-white/[0.05] rounded mb-1.5" />
                           <div className="h-2 w-2/3 bg-white/[0.04] rounded" />
                         </div>
@@ -436,8 +497,20 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             Trusted by researchers at leading institutions
           </p>
           <div className="flex flex-wrap items-center justify-center gap-16 opacity-20 hover:opacity-40 transition-opacity duration-700">
-            {["Harvard Medical", "Stanford BME", "MIT", "Johns Hopkins", "Oxford", "Cambridge", "ETH Zurich", "Tsinghua"].map((name, idx) => (
-              <div key={idx} className="text-base font-semibold text-white/90 tracking-wide whitespace-nowrap transition-transform hover:scale-105">
+            {[
+              'Harvard Medical',
+              'Stanford BME',
+              'MIT',
+              'Johns Hopkins',
+              'Oxford',
+              'Cambridge',
+              'ETH Zurich',
+              'Tsinghua',
+            ].map((name, idx) => (
+              <div
+                key={idx}
+                className="text-base font-semibold text-white/90 tracking-wide whitespace-nowrap transition-transform hover:scale-105"
+              >
                 {name}
               </div>
             ))}
@@ -455,14 +528,14 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
               <Zap className="h-4 w-4" /> Core Capabilities
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8 text-white leading-tight">
-              Everything you need to{" "}
-              <br className="hidden sm:block" />
+              Everything you need to <br className="hidden sm:block" />
               <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 accelerate research
               </span>
             </h2>
             <p className="text-lg text-white/35 font-light max-w-2xl mx-auto leading-relaxed">
-              From paper parsing to experiment design — a complete toolkit for modern biomedical research.
+              From paper parsing to experiment design — a complete toolkit for modern biomedical
+              research.
             </p>
           </div>
 
@@ -471,66 +544,75 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             {[
               {
                 icon: FileText,
-                title: "Intelligent PDF Parsing",
-                description: "Extract full content including figures, tables, and references from complex multi-column layouts.",
-                gradient: "from-blue-500 to-cyan-500",
-                tag: "Core",
+                title: 'Intelligent PDF Parsing',
+                description:
+                  'Extract full content including figures, tables, and references from complex multi-column layouts.',
+                gradient: 'from-blue-500 to-cyan-500',
+                tag: 'Core',
               },
               {
                 icon: Search,
-                title: "DOI Resolution Engine",
-                description: "Input any DOI to retrieve metadata, citation counts, and discover related literature instantly.",
-                gradient: "from-violet-500 to-purple-500",
-                tag: "Auto",
+                title: 'DOI Resolution Engine',
+                description:
+                  'Input any DOI to retrieve metadata, citation counts, and discover related literature instantly.',
+                gradient: 'from-violet-500 to-purple-500',
+                tag: 'Auto',
               },
               {
                 icon: Brain,
-                title: "AI-Powered Analysis",
-                description: "LLM-driven structural analysis that evaluates innovation levels and identifies critical gaps.",
-                gradient: "from-orange-500 to-amber-500",
-                tag: "AI",
+                title: 'AI-Powered Analysis',
+                description:
+                  'LLM-driven structural analysis that evaluates innovation levels and identifies critical gaps.',
+                gradient: 'from-orange-500 to-amber-500',
+                tag: 'AI',
               },
               {
                 icon: Microscope,
-                title: "Innovation Classification",
-                description: "12-tier system from reproduction (L1) to cross-domain unification (L5c).",
-                gradient: "from-emerald-500 to-green-500",
-                tag: "Smart",
+                title: 'Innovation Classification',
+                description:
+                  '12-tier system from reproduction (L1) to cross-domain unification (L5c).',
+                gradient: 'from-emerald-500 to-green-500',
+                tag: 'Smart',
               },
               {
                 icon: Shield,
-                title: "Fatal Barrier Detection",
-                description: "11-dimension defect checker for data availability, code reproducibility, and validation.",
-                gradient: "from-red-500 to-rose-500",
-                tag: "Quality",
+                title: 'Fatal Barrier Detection',
+                description:
+                  '11-dimension defect checker for data availability, code reproducibility, and validation.',
+                gradient: 'from-red-500 to-rose-500',
+                tag: 'Quality',
               },
               {
                 icon: BookOpen,
-                title: "BME Knowledge Base",
-                description: "28 domain-specific modules covering gene editing, biomaterials, medical imaging, and more.",
-                gradient: "from-indigo-500 to-violet-500",
-                tag: "Rich",
+                title: 'BME Knowledge Base',
+                description:
+                  '28 domain-specific modules covering gene editing, biomaterials, medical imaging, and more.',
+                gradient: 'from-indigo-500 to-violet-500',
+                tag: 'Rich',
               },
               {
                 icon: Target,
-                title: "Multi-Mode Analysis",
-                description: "Six specialized modes: Decompose, Compare, Reproduce, Evidence, Datasets, Paradigm.",
-                gradient: "from-teal-500 to-emerald-500",
-                tag: "Flexible",
+                title: 'Multi-Mode Analysis',
+                description:
+                  'Six specialized modes: Decompose, Compare, Reproduce, Evidence, Datasets, Paradigm.',
+                gradient: 'from-teal-500 to-emerald-500',
+                tag: 'Flexible',
               },
               {
                 icon: Users,
-                title: "Contextual Dialogue",
-                description: "Multi-turn conversations with full context retention for deep exploration and understanding.",
-                gradient: "from-pink-500 to-fuchsia-500",
-                tag: "Chat",
+                title: 'Contextual Dialogue',
+                description:
+                  'Multi-turn conversations with full context retention for deep exploration and understanding.',
+                gradient: 'from-pink-500 to-fuchsia-500',
+                tag: 'Chat',
               },
               {
                 icon: Globe,
-                title: "Unified Literature Search",
-                description: "Single interface for PubMed, Semantic Scholar, OpenAlex, arXiv, and Crossref databases.",
-                gradient: "from-amber-500 to-yellow-500",
-                tag: "Unified",
+                title: 'Unified Literature Search',
+                description:
+                  'Single interface for PubMed, OpenAlex, arXiv, and Crossref databases.',
+                gradient: 'from-amber-500 to-yellow-500',
+                tag: 'Unified',
               },
             ].map((feature, idx) => (
               <div
@@ -544,7 +626,7 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 
                 <div
                   className={cn(
-                    "w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br shadow-lg",
+                    'w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br shadow-lg',
                     feature.gradient
                   )}
                 >
@@ -573,14 +655,17 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
       </section>
 
       {/* How It Works - Timeline style with animations */}
-      <section id="how-it-works" className="py-36 bg-gradient-to-b from-white/[0.01] to-transparent relative">
+      <section
+        id="how-it-works"
+        className="py-36 bg-gradient-to-b from-white/[0.01] to-transparent relative"
+      >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-24">
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-gradient-to-r from-white/[0.04] to-white/[0.02] border border-white/[0.08] text-xs font-bold text-indigo-400 mb-8 uppercase tracking-widest">
               <Rocket className="h-4 w-4" /> Workflow
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8 text-white">
-              Four steps to{" "}
+              Four steps to{' '}
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                 deep insights
               </span>
@@ -598,60 +683,80 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 
             {[
               {
-                step: "01",
+                step: '01',
                 icon: Upload,
-                title: "Upload Content",
-                description: "Drag & drop PDFs, paste DOIs, or describe your research question directly.",
-                color: "text-blue-400",
-                bgColor: "bg-blue-500/10",
-                borderColor: "border-blue-500/20",
-                gradient: "from-blue-500 to-cyan-500",
+                title: 'Upload Content',
+                description:
+                  'Drag & drop PDFs, paste DOIs, or describe your research question directly.',
+                color: 'text-blue-400',
+                bgColor: 'bg-blue-500/10',
+                borderColor: 'border-blue-500/20',
+                gradient: 'from-blue-500 to-cyan-500',
               },
               {
-                step: "02",
+                step: '02',
                 icon: Zap,
-                title: "Select Mode",
-                description: "Choose from six specialized analysis modes tailored to your specific goal.",
-                color: "text-violet-400",
-                bgColor: "bg-violet-500/10",
-                borderColor: "border-violet-500/20",
-                gradient: "from-violet-500 to-purple-500",
+                title: 'Select Mode',
+                description:
+                  'Choose from six specialized analysis modes tailored to your specific goal.',
+                color: 'text-violet-400',
+                bgColor: 'bg-violet-500/10',
+                borderColor: 'border-violet-500/20',
+                gradient: 'from-violet-500 to-purple-500',
               },
               {
-                step: "03",
+                step: '03',
                 icon: Brain,
-                title: "AI Analysis",
-                description: "System extracts information, evaluates innovation, identifies potential issues.",
-                color: "text-orange-400",
-                bgColor: "bg-orange-500/10",
-                borderColor: "border-orange-500/20",
-                gradient: "from-orange-500 to-amber-500",
+                title: 'AI Analysis',
+                description:
+                  'System extracts information, evaluates innovation, identifies potential issues.',
+                color: 'text-orange-400',
+                bgColor: 'bg-orange-500/10',
+                borderColor: 'border-orange-500/20',
+                gradient: 'from-orange-500 to-amber-500',
               },
               {
-                step: "04",
+                step: '04',
                 icon: CheckCircle2,
-                title: "Get Insights",
-                description: "Receive structured reports with actionable recommendations and related work.",
-                color: "text-emerald-400",
-                bgColor: "bg-emerald-500/10",
-                borderColor: "border-emerald-500/20",
-                gradient: "from-emerald-500 to-green-500",
+                title: 'Get Insights',
+                description:
+                  'Receive structured reports with actionable recommendations and related work.',
+                color: 'text-emerald-400',
+                bgColor: 'bg-emerald-500/10',
+                borderColor: 'border-emerald-500/20',
+                gradient: 'from-emerald-500 to-green-500',
               },
             ].map((item, idx) => (
               <div key={idx} className="relative group">
                 <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-500 hover:-translate-y-2 h-full">
                   {/* Step number with gradient ring */}
                   <div className="relative mb-6">
-                    <div className={cn("inline-flex items-center justify-center w-16 h-16 rounded-2xl border-2", item.bgColor, item.borderColor)}>
-                      <item.icon className={cn("w-8 h-8", item.color)} />
+                    <div
+                      className={cn(
+                        'inline-flex items-center justify-center w-16 h-16 rounded-2xl border-2',
+                        item.bgColor,
+                        item.borderColor
+                      )}
+                    >
+                      <item.icon className={cn('w-8 h-8', item.color)} />
                     </div>
-                    <div className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br flex items-center justify-center text-xs font-bold text-white shadow-lg" style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))`, background: `linear-gradient(to bottom right, ${item.gradient.includes('blue') ? '#3b82f6, #06b6d4' : item.gradient.includes('violet') ? '#8b5cf6, #a855f7' : item.gradient.includes('orange') ? '#f97316, #f59e0b' : '#10b981, #22c55e'})` }}>
+                    <div
+                      className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br flex items-center justify-center text-xs font-bold text-white shadow-lg"
+                      style={{
+                        backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))`,
+                        background: `linear-gradient(to bottom right, ${item.gradient.includes('blue') ? '#3b82f6, #06b6d4' : item.gradient.includes('violet') ? '#8b5cf6, #a855f7' : item.gradient.includes('orange') ? '#f97316, #f59e0b' : '#10b981, #22c55e'})`,
+                      }}
+                    >
                       {item.step}
                     </div>
                   </div>
-                  <div className="text-xs font-mono text-white/20 mb-3 uppercase tracking-[0.2em] font-bold">Step {item.step}</div>
+                  <div className="text-xs font-mono text-white/20 mb-3 uppercase tracking-[0.2em] font-bold">
+                    Step {item.step}
+                  </div>
                   <h3 className="text-2xl font-bold mb-3 text-white">{item.title}</h3>
-                  <p className="text-sm text-white/35 leading-relaxed font-light">{item.description}</p>
+                  <p className="text-sm text-white/35 leading-relaxed font-light">
+                    {item.description}
+                  </p>
 
                   {/* Step connector for mobile */}
                   {idx < 3 && (
@@ -678,7 +783,7 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
               <Lightbulb className="h-4 w-4" /> Use Cases
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8 text-white">
-              Built for every{" "}
+              Built for every{' '}
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                 research scenario
               </span>
@@ -692,39 +797,43 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             {[
               {
                 icon: BookOpen,
-                title: "Literature Review",
-                subtitle: "Comprehensive surveying",
-                description: "Rapidly understand the state of the art, identify research gaps, and discover high-impact papers in your field.",
-                tags: ["Paradigm Mode", "Citation Explorer"],
-                user: "PhD Students / Postdocs",
-                gradient: "from-blue-500 to-cyan-500",
+                title: 'Literature Review',
+                subtitle: 'Comprehensive surveying',
+                description:
+                  'Rapidly understand the state of the art, identify research gaps, and discover high-impact papers in your field.',
+                tags: ['Paradigm Mode', 'Citation Explorer'],
+                user: 'PhD Students / Postdocs',
+                gradient: 'from-blue-500 to-cyan-500',
               },
               {
                 icon: Microscope,
-                title: "Method Selection",
-                subtitle: "Comparative analysis",
-                description: "Compare multiple approaches side-by-side to select the optimal technical path for your research.",
-                tags: ["Compare Mode", "Innovation Levels"],
-                user: "Researchers / PIs",
-                gradient: "from-violet-500 to-purple-500",
+                title: 'Method Selection',
+                subtitle: 'Comparative analysis',
+                description:
+                  'Compare multiple approaches side-by-side to select the optimal technical path for your research.',
+                tags: ['Compare Mode', 'Innovation Levels'],
+                user: 'Researchers / PIs',
+                gradient: 'from-violet-500 to-purple-500',
               },
               {
                 icon: FileText,
-                title: "Paper Reviewing",
-                subtitle: "Quality assessment",
-                description: "Systematically evaluate manuscript quality, check for methodological flaws, provide improvement suggestions.",
-                tags: ["Evidence Mode", "Fatal Barriers"],
-                user: "Reviewers / Editors",
-                gradient: "from-orange-500 to-amber-500",
+                title: 'Paper Reviewing',
+                subtitle: 'Quality assessment',
+                description:
+                  'Systematically evaluate manuscript quality, check for methodological flaws, provide improvement suggestions.',
+                tags: ['Evidence Mode', 'Fatal Barriers'],
+                user: 'Reviewers / Editors',
+                gradient: 'from-orange-500 to-amber-500',
               },
               {
                 icon: Zap,
-                title: "Experiment Reproduction",
-                subtitle: "Blueprint generation",
-                description: "Generate detailed reproduction blueprints including parameter settings, code frameworks, and data requirements.",
-                tags: ["Reproduce Mode", "Dataset Recommendations"],
-                user: "Graduate Students / Engineers",
-                gradient: "from-emerald-500 to-green-500",
+                title: 'Experiment Reproduction',
+                subtitle: 'Blueprint generation',
+                description:
+                  'Generate detailed reproduction blueprints including parameter settings, code frameworks, and data requirements.',
+                tags: ['Reproduce Mode', 'Dataset Recommendations'],
+                user: 'Graduate Students / Engineers',
+                gradient: 'from-emerald-500 to-green-500',
               },
             ].map((useCase, idx) => (
               <div
@@ -732,24 +841,37 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                 className="group relative p-9 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-500 hover:-translate-y-2 cursor-pointer"
               >
                 <div className="flex items-start gap-5 mb-6">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${useCase.gradient} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${useCase.gradient} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <useCase.icon className="w-7 h-7 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-1 text-white group-hover:text-indigo-300 transition-colors">{useCase.title}</h3>
-                    <p className="text-sm text-white/25 font-mono font-medium">{useCase.subtitle}</p>
+                    <h3 className="text-2xl font-bold mb-1 text-white group-hover:text-indigo-300 transition-colors">
+                      {useCase.title}
+                    </h3>
+                    <p className="text-sm text-white/25 font-mono font-medium">
+                      {useCase.subtitle}
+                    </p>
                   </div>
                 </div>
-                <p className="text-white/45 mb-7 leading-relaxed font-light text-[15px]">{useCase.description}</p>
+                <p className="text-white/45 mb-7 leading-relaxed font-light text-[15px]">
+                  {useCase.description}
+                </p>
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">
                     {useCase.tags.map((tag, tagIdx) => (
-                      <span key={tagIdx} className="px-3 py-1.5 text-xs rounded-lg bg-white/[0.04] text-white/50 border border-white/[0.06] font-medium hover:bg-white/[0.06] transition-colors">
+                      <span
+                        key={tagIdx}
+                        className="px-3 py-1.5 text-xs rounded-lg bg-white/[0.04] text-white/50 border border-white/[0.06] font-medium hover:bg-white/[0.06] transition-colors"
+                      >
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <span className="text-xs text-indigo-400/70 font-bold uppercase tracking-wider">{useCase.user}</span>
+                  <span className="text-xs text-indigo-400/70 font-bold uppercase tracking-wider">
+                    {useCase.user}
+                  </span>
                 </div>
 
                 {/* Multi-layer hover effects */}
@@ -776,31 +898,37 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
             {[
               {
-                quote: "This tool has completely transformed my literature review workflow. What used to take a week now takes a day.",
-                author: "Dr. Sarah Chen",
-                role: "Postdoctoral Fellow, Stanford University",
-                avatar: "SC",
+                quote:
+                  'This tool has completely transformed my literature review workflow. What used to take a week now takes a day.',
+                author: 'Dr. Sarah Chen',
+                role: 'Postdoctoral Fellow, Stanford University',
+                avatar: 'SC',
                 rating: 5,
-                gradient: "from-blue-500 to-cyan-500",
+                gradient: 'from-blue-500 to-cyan-500',
               },
               {
-                quote: "The innovation classification system is incredibly precise. It helps me quickly determine which papers are worth reading deeply.",
-                author: "Prof. Michael Zhang",
-                role: "Principal Investigator, Harvard Medical School",
-                avatar: "MZ",
+                quote:
+                  'The innovation classification system is incredibly precise. It helps me quickly determine which papers are worth reading deeply.',
+                author: 'Prof. Michael Zhang',
+                role: 'Principal Investigator, Harvard Medical School',
+                avatar: 'MZ',
                 rating: 5,
-                gradient: "from-violet-500 to-purple-500",
+                gradient: 'from-violet-500 to-purple-500',
               },
               {
-                quote: "As a reviewer, the Fatal Barriers feature helped me discover hidden methodological issues in several manuscripts.",
-                author: "Dr. Emily Wang",
-                role: "Reviewer, Nature Biomedical Engineering",
-                avatar: "EW",
+                quote:
+                  'As a reviewer, the Fatal Barriers feature helped me discover hidden methodological issues in several manuscripts.',
+                author: 'Dr. Emily Wang',
+                role: 'Reviewer, Nature Biomedical Engineering',
+                avatar: 'EW',
                 rating: 5,
-                gradient: "from-orange-500 to-amber-500",
+                gradient: 'from-orange-500 to-amber-500',
               },
             ].map((testimonial, idx) => (
-              <div key={idx} className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-500 hover:-translate-y-1">
+              <div
+                key={idx}
+                className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-500 hover:-translate-y-1"
+              >
                 <div className="flex gap-1 mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-yellow-400/90 text-yellow-400/90" />
@@ -810,7 +938,9 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                   "{testimonial.quote}"
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white font-bold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`w-12 h-12 rounded-full bg-gradient-to-br ${testimonial.gradient} flex items-center justify-center text-white font-bold text-sm shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
                     {testimonial.avatar}
                   </div>
                   <div>
@@ -833,10 +963,10 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
               <Award className="h-4 w-4" /> Pricing
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8 text-white">
-              Simple,{" "}
+              Simple,{' '}
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                 transparent
-              </span>{" "}
+              </span>{' '}
               pricing
             </h2>
             <p className="text-lg text-white/35 font-light">
@@ -854,19 +984,21 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 
               <div className="text-center mb-10">
                 <h3 className="text-2xl font-bold mb-4 text-white">Free forever</h3>
-                <div className="text-7xl font-black mb-3 text-white">$0<span className="text-xl text-white/30 font-normal">/mo</span></div>
+                <div className="text-7xl font-black mb-3 text-white">
+                  $0<span className="text-xl text-white/30 font-normal">/mo</span>
+                </div>
                 <p className="text-white/40 text-sm font-medium">Bring your own API key</p>
               </div>
 
               <ul className="space-y-5 mb-12">
                 {[
-                  "Unlimited analyses",
-                  "All 6 analysis modes",
-                  "PDF parsing & DOI resolution",
-                  "28 BME knowledge modules",
-                  "Multi-turn AI conversations",
-                  "Literature search & citation explorer",
-                  "Priority support",
+                  'Unlimited analyses',
+                  'All 6 analysis modes',
+                  'PDF parsing & DOI resolution',
+                  '28 BME knowledge modules',
+                  'Multi-turn AI conversations',
+                  'Literature search & citation explorer',
+                  'Priority support',
                 ].map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-3.5 text-white/70 group/item">
                     <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 group-hover/item:bg-emerald-500/30 transition-colors">
@@ -914,7 +1046,8 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             </span>
           </h2>
           <p className="text-xl text-white/35 mb-14 max-w-2xl mx-auto font-light leading-relaxed">
-            Join thousands of researchers experiencing the new paradigm of AI-powered biomedical engineering research.
+            Join thousands of researchers experiencing the new paradigm of AI-powered biomedical
+            engineering research.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
@@ -977,20 +1110,36 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
                   height={36}
                   className="rounded-lg"
                 />
-                <span className="font-bold text-white/90 text-lg">Research<span className="text-indigo-400">Accelerator</span></span>
+                <span className="font-bold text-white/90 text-lg">
+                  Research<span className="text-indigo-400">Accelerator</span>
+                </span>
               </div>
               <p className="text-sm text-white/30 leading-relaxed font-light">
-                AI-powered biomedical engineering research platform for the next generation of scientists.
+                AI-powered biomedical engineering research platform for the next generation of
+                scientists.
               </p>
             </div>
 
             {/* Product links */}
             <div>
-              <h4 className="font-bold text-white text-sm mb-4 uppercase tracking-wider">Product</h4>
+              <h4 className="font-bold text-white text-sm mb-4 uppercase tracking-wider">
+                Product
+              </h4>
               <ul className="space-y-3">
-                {["Features", "Pricing", "Use Cases", "Changelog"].map((link) => (
+                {['Features', 'Pricing', 'Use Cases', 'Changelog'].map((link) => (
                   <li key={link}>
-                    <button onClick={() => scrollToSection(link.toLowerCase() === 'features' ? 'features' : link.toLowerCase() === 'pricing' ? 'pricing' : 'use-cases')} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium">
+                    <button
+                      onClick={() =>
+                        scrollToSection(
+                          link.toLowerCase() === 'features'
+                            ? 'features'
+                            : link.toLowerCase() === 'pricing'
+                              ? 'pricing'
+                              : 'use-cases'
+                        )
+                      }
+                      className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium"
+                    >
                       {link}
                     </button>
                   </li>
@@ -1000,28 +1149,47 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 
             {/* Resources links */}
             <div>
-              <h4 className="font-bold text-white text-sm mb-4 uppercase tracking-wider">Resources</h4>
+              <h4 className="font-bold text-white text-sm mb-4 uppercase tracking-wider">
+                Resources
+              </h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium flex items-center gap-1.5">
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium flex items-center gap-1.5"
+                  >
                     Documentation
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 </li>
                 <li>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium flex items-center gap-1.5">
+                  <a
+                    href="https://github.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium flex items-center gap-1.5"
+                  >
                     GitHub
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium flex items-center gap-1.5">
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium flex items-center gap-1.5"
+                  >
                     API Reference
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium">
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium"
+                  >
                     Status
                   </a>
                 </li>
@@ -1033,17 +1201,29 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
               <h4 className="font-bold text-white text-sm mb-4 uppercase tracking-wider">Legal</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium">
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium"
+                  >
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium">
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium"
+                  >
                     Terms of Service
                   </a>
                 </li>
                 <li>
-                  <a href="#" onClick={(e) => e.preventDefault()} className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium">
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="text-sm text-white/35 hover:text-white/70 transition-colors font-medium"
+                  >
                     Cookie Policy
                   </a>
                 </li>
@@ -1063,10 +1243,19 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
             </div>
 
             <div className="flex items-center gap-5">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white/25 hover:text-white/60 transition-colors">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/25 hover:text-white/60 transition-colors"
+              >
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" onClick={(e) => e.preventDefault()} className="text-white/25 hover:text-white/60 transition-colors">
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                className="text-white/25 hover:text-white/60 transition-colors"
+              >
                 <Globe className="h-5 w-5" />
               </a>
             </div>
@@ -1077,12 +1266,21 @@ export function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
       {/* CSS Animation keyframes */}
       <style jsx>{`
         @keyframes grid-move {
-          0%, 100% { transform: translate(0, 0); }
-          25% { transform: translate(-20px, 20px); }
-          50% { transform: translate(-20px, -20px); }
-          75% { transform: translate(20px, -20px); }
+          0%,
+          100% {
+            transform: translate(0, 0);
+          }
+          25% {
+            transform: translate(-20px, 20px);
+          }
+          50% {
+            transform: translate(-20px, -20px);
+          }
+          75% {
+            transform: translate(20px, -20px);
+          }
         }
       `}</style>
     </div>
-  )
+  );
 }

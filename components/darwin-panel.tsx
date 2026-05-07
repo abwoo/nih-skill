@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { useStore } from "@/lib/store"
-import { cn } from "@/lib/utils"
+import { useStore } from '@/lib/store';
+import { cn } from '@/lib/utils';
 import {
   AlertCircle,
   ArrowRight,
@@ -14,176 +14,171 @@ import {
   Target,
   X,
   Zap,
-} from "lucide-react"
-import * as React from "react"
-import { DnaSpinIcon } from "./brand-icons"
+} from 'lucide-react';
+import * as React from 'react';
+import { DnaSpinIcon } from './brand-icons';
 
-type Move =
-  | "transplant"
-  | "constrain"
-  | "fuse"
-  | "invert"
-  | "minimal"
-  | "extreme"
+type Move = 'transplant' | 'constrain' | 'fuse' | 'invert' | 'minimal' | 'extreme';
 
 type EvolvedIdea = {
-  title: string
-  rationale: string
-  novelty: string
-  difficulty: string
-  tags: string[]
-  operator: string
+  title: string;
+  rationale: string;
+  novelty: string;
+  difficulty: string;
+  tags: string[];
+  operator: string;
   references?: Array<{
-    doi?: string
-    pmid?: string
-    title: string
-    year?: number
-  }>
-}
+    doi?: string;
+    pmid?: string;
+    title: string;
+    year?: number;
+  }>;
+};
 
 interface LiteratureSources {
-  pubmedCount: number
-  semanticScholarCount: number
-  papers?: Array<{ pmid: string; title: string }>
-  semanticPapers?: Array<{ title: string; doi?: string; year?: number }>
+  pubmedCount: number;
+  papers?: Array<{ pmid: string; title: string }>;
 }
 
 interface AuditTrail {
-  timestamp: string
-  totalTimeMs: number
+  timestamp: string;
+  totalTimeMs: number;
   steps: Array<{
-    step: string
-    durationMs: number
-    [key: string]: any
-  }>
+    step: string;
+    durationMs: number;
+    [key: string]: any;
+  }>;
   verification: {
-    isRealData: boolean
-    usedLocalDatabase: boolean
-    usedReferencesFolder: boolean
+    isRealData: boolean;
+    usedLocalDatabase: boolean;
+    usedReferencesFolder: boolean;
     externalAPIsCalled: Array<{
-      name: string
-      url: string
-      status: string
-    }>
+      name: string;
+      url: string;
+      status: string;
+    }>;
     dataSources: {
-      literatureFrom: string
-      ideasGeneratedBy: string
-      notFrom: string[]
-    }
-    proofPoints: string[]
-  }
+      literatureFrom: string;
+      ideasGeneratedBy: string;
+      notFrom: string[];
+    };
+    proofPoints: string[];
+  };
 }
 
 const MOVES: {
-  id: Move
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-  desc: string
+  id: Move;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  desc: string;
 }[] = [
   {
-    id: "transplant",
-    label: "Transplant",
+    id: 'transplant',
+    label: 'Transplant',
     icon: GitBranch,
-    desc: "把 A 领域的方法迁移到 B 领域",
+    desc: '把 A 领域的方法迁移到 B 领域',
   },
   {
-    id: "constrain",
-    label: "Constrain",
+    id: 'constrain',
+    label: 'Constrain',
     icon: Target,
-    desc: "在更严苛的约束下重做（小数据、低算力）",
+    desc: '在更严苛的约束下重做（小数据、低算力）',
   },
   {
-    id: "fuse",
-    label: "Fuse",
+    id: 'fuse',
+    label: 'Fuse',
     icon: Shuffle,
-    desc: "融合两个独立 paradigm 的优势",
+    desc: '融合两个独立 paradigm 的优势',
   },
   {
-    id: "invert",
-    label: "Invert",
+    id: 'invert',
+    label: 'Invert',
     icon: Zap,
-    desc: "反转优化目标 / 因果方向",
+    desc: '反转优化目标 / 因果方向',
   },
   {
-    id: "minimal",
-    label: "Minimal",
+    id: 'minimal',
+    label: 'Minimal',
     icon: Beaker,
-    desc: "最小可行验证：1 周可完成的对照",
+    desc: '最小可行验证：1 周可完成的对照',
   },
   {
-    id: "extreme",
-    label: "Extreme",
+    id: 'extreme',
+    label: 'Extreme',
     icon: Lightbulb,
-    desc: "推到极端：scaling / regime shift",
+    desc: '推到极端：scaling / regime shift',
   },
-]
+];
 
 export function DarwinPanel({
   open,
   onOpenChange,
 }: {
-  open: boolean
-  onOpenChange: (v: boolean) => void
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
 }) {
-  const { config, prefillFor, showToast } = useStore()
+  const { config, prefillFor, showToast } = useStore();
   const [seed, setSeed] = React.useState(
-    "ECG arrhythmia detection · MIT-BIH · ResNet-1D + attention",
-  )
-  const [picked, setPicked] = React.useState<Move[]>(["transplant", "fuse"])
-  const [running, setRunning] = React.useState(false)
-  const [shown, setShown] = React.useState(false)
-  const [ideas, setIdeas] = React.useState<EvolvedIdea[]>([])
-  const [error, setError] = React.useState<string | null>(null)
-  const [performance, setPerformance] = React.useState<{ elapsedTimeMs: number; breakdown?: { literatureSearch: number; promptBuild: number; llmInference: number } } | null>(null)
-  const [literatureSources, setLiteratureSources] = React.useState<LiteratureSources | null>(null)
-  const [auditTrail, setAuditTrail] = React.useState<AuditTrail | null>(null)
+    'ECG arrhythmia detection · MIT-BIH · ResNet-1D + attention'
+  );
+  const [picked, setPicked] = React.useState<Move[]>(['transplant', 'fuse']);
+  const [running, setRunning] = React.useState(false);
+  const [shown, setShown] = React.useState(false);
+  const [ideas, setIdeas] = React.useState<EvolvedIdea[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [performance, setPerformance] = React.useState<{
+    elapsedTimeMs: number;
+    breakdown?: { literatureSearch: number; promptBuild: number; llmInference: number };
+  } | null>(null);
+  const [literatureSources, setLiteratureSources] = React.useState<LiteratureSources | null>(null);
+  const [auditTrail, setAuditTrail] = React.useState<AuditTrail | null>(null);
 
   function sendToDecompose(text: string) {
-    prefillFor("decompose", text)
-    onOpenChange(false)
-    showToast("已发送到 Decompose 并切换模块")
+    prefillFor('decompose', text);
+    onOpenChange(false);
+    showToast('已发送到 Decompose 并切换模块');
   }
 
   function toggle(id: Move) {
-    setPicked((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
-    )
+    setPicked((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
   }
 
   async function evolve() {
-    if (running || picked.length === 0) return
+    if (running || picked.length === 0) return;
 
     // Validate seed input
-    const trimmedSeed = seed.trim()
+    const trimmedSeed = seed.trim();
     if (!trimmedSeed || trimmedSeed.length < 5) {
-      setError("❌ Seed Idea 至少需要 5 个字符")
-      showToast("请输入研究想法（至少5个字符）")
-      return
+      setError('❌ Seed Idea 至少需要 5 个字符');
+      showToast('请输入研究想法（至少5个字符）');
+      return;
     }
 
     // Check for API key
     if (!config.apiKey) {
-      setError("❌ 请先配置 API Key（点击右上角 Settings）")
-      showToast("请先配置 API Key")
-      return
+      setError('❌ 请先配置 API Key（点击右上角 Settings）');
+      showToast('请先配置 API Key');
+      return;
     }
 
-    setRunning(true)
-    setShown(false)
-    setError(null)
-    setIdeas([])
-    setPerformance(null)
+    setRunning(true);
+    setShown(false);
+    setError(null);
+    setIdeas([]);
+    setPerformance(null);
 
-    console.log(`[Darwin] Starting evolution with seed: "${trimmedSeed}" and operators: [${picked.join(", ")}]`)
+    console.log(
+      `[Darwin] Starting evolution with seed: "${trimmedSeed}" and operators: [${picked.join(', ')}]`
+    );
 
     try {
-      const startTime = Date.now()
+      const startTime = Date.now();
 
-      const response = await fetch("/api/darwin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/darwin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          seed: trimmedSeed,  // Use trimmed version
+          seed: trimmedSeed, // Use trimmed version
           operators: picked,
           config: {
             provider: config.provider,
@@ -193,58 +188,61 @@ export function DarwinPanel({
             maxTokens: config.maxTokens || 4000,
           },
         }),
-      })
+      });
 
-      const data = await response.json()
-      const elapsed = Date.now() - startTime
+      const data = await response.json();
+      const elapsed = Date.now() - startTime;
       setPerformance({
         elapsedTimeMs: elapsed,
-        breakdown: data.performance?.breakdown
-      })
+        breakdown: data.performance?.breakdown,
+      });
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || data.details || `HTTP ${response.status}`)
+        throw new Error(data.error || data.details || `HTTP ${response.status}`);
       }
 
-      console.log(`[Darwin] ✅ Evolution completed! Generated ${data.count} ideas in ${elapsed}ms`)
+      console.log(`[Darwin] ✅ Evolution completed! Generated ${data.count} ideas in ${elapsed}ms`);
 
-      setIdeas(data.ideas || [])
-      setLiteratureSources(data.literatureSources || null)
-      setAuditTrail(data.auditTrail || null)
+      setIdeas(data.ideas || []);
+      setLiteratureSources(data.literatureSources || null);
+      setAuditTrail(data.auditTrail || null);
 
       // Log audit trail for verification
       if (data.auditTrail) {
-        console.log(`[Darwin] 🔍 AUDIT TRAIL:`)
-        console.log(`  - isRealData: ${data.auditTrail.verification.isRealData}`)
-        console.log(`  - usedLocalDatabase: ${data.auditTrail.verification.usedLocalDatabase}`)
-        console.log(`  - APIs called: ${data.auditTrail.verification.externalAPIsCalled.map(a => a.name).join(", ")}`)
-        console.log(`  - Proof points:`, data.auditTrail.verification.proofPoints)
+        console.log(`[Darwin] 🔍 AUDIT TRAIL:`);
+        console.log(`  - isRealData: ${data.auditTrail.verification.isRealData}`);
+        console.log(`  - usedLocalDatabase: ${data.auditTrail.verification.usedLocalDatabase}`);
+        console.log(
+          `  - APIs called: ${data.auditTrail.verification.externalAPIsCalled.map((a) => a.name).join(', ')}`
+        );
+        console.log(`  - Proof points:`, data.auditTrail.verification.proofPoints);
       }
-      setShown(true)
+      setShown(true);
 
       // Show literature info if available
-      const litInfo = data.literatureSources
-      if (litInfo && (litInfo.pubmedCount > 0 || litInfo.semanticScholarCount > 0)) {
-        showToast(`🧬 演化完成！${data.count}个想法 | 📚 ${litInfo.pubmedCount} PubMed + ${litInfo.semanticScholarCount} SS (${elapsed}ms)`)
+      const litInfo = data.literatureSources;
+      if (litInfo && litInfo.pubmedCount > 0) {
+        showToast(
+          `🧬 演化完成！${data.count}个想法 | 📚 ${litInfo.pubmedCount} PubMed论文 (${elapsed}ms)`
+        );
       } else {
-        showToast(`🧬 演化完成！生成 ${data.count} 个新研究想法 (${elapsed}ms)`)
+        showToast(`🧬 演化完成！生成 ${data.count} 个新研究想法 (${elapsed}ms)`);
       }
-
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : String(err)
-      console.error("[Darwin] ❌ Evolution failed:", errMsg)
-      setError(errMsg)
-      showToast(`演化失败: ${errMsg.slice(0, 100)}`)
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error('[Darwin] ❌ Evolution failed:', errMsg);
+      setError(errMsg);
+      showToast(`演化失败: ${errMsg.slice(0, 100)}`);
     } finally {
-      setRunning(false)
+      setRunning(false);
     }
   }
 
   function handleClose() {
-    onOpenChange(false)
+    onOpenChange(false);
   }
 
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <div
@@ -262,10 +260,10 @@ export function DarwinPanel({
       {/* Panel */}
       <div
         className={cn(
-          "absolute right-0 top-0 h-full w-full sm:max-w-[560px]",
-          "bg-card border-l border-border shadow-2xl",
-          "flex flex-col",
-          "animate-in slide-in-from-right duration-300 ease-out"
+          'absolute right-0 top-0 h-full w-full sm:max-w-[560px]',
+          'bg-card border-l border-border shadow-2xl',
+          'flex flex-col',
+          'animate-in slide-in-from-right duration-300 ease-out'
         )}
       >
         {/* Header */}
@@ -290,8 +288,8 @@ export function DarwinPanel({
             type="button"
             onClick={handleClose}
             className={cn(
-              "p-2 rounded-lg transition-colors",
-              "hover:bg-secondary text-muted-foreground hover:text-foreground"
+              'p-2 rounded-lg transition-colors',
+              'hover:bg-secondary text-muted-foreground hover:text-foreground'
             )}
             aria-label="关闭面板"
           >
@@ -311,10 +309,10 @@ export function DarwinPanel({
               onChange={(e) => setSeed(e.target.value)}
               rows={2}
               className={cn(
-                "w-full px-3 py-2 rounded-md",
-                "bg-secondary/40 border border-border text-sm font-mono",
-                "resize-none focus:outline-none focus:ring-2 focus:ring-warning/50",
-                "placeholder:text-muted-foreground/50"
+                'w-full px-3 py-2 rounded-md',
+                'bg-secondary/40 border border-border text-sm font-mono',
+                'resize-none focus:outline-none focus:ring-2 focus:ring-warning/50',
+                'placeholder:text-muted-foreground/50'
               )}
               placeholder="输入你的研究想法..."
             />
@@ -327,32 +325,32 @@ export function DarwinPanel({
             </h3>
             <div className="grid grid-cols-2 gap-2">
               {MOVES.map((m) => {
-                const active = picked.includes(m.id)
-                const Icon = m.icon
+                const active = picked.includes(m.id);
+                const Icon = m.icon;
                 return (
                   <button
                     key={m.id}
                     type="button"
                     onClick={() => toggle(m.id)}
                     className={cn(
-                      "text-left p-3 rounded-md border transition-all duration-150",
-                      "bg-secondary/30 hover:bg-secondary/60",
+                      'text-left p-3 rounded-md border transition-all duration-150',
+                      'bg-secondary/30 hover:bg-secondary/60',
                       active
-                        ? "border-warning/60 ring-1 ring-warning/40 bg-warning/5"
-                        : "border-border hover:border-primary/30"
+                        ? 'border-warning/60 ring-1 ring-warning/40 bg-warning/5'
+                        : 'border-border hover:border-primary/30'
                     )}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <Icon
                         className={cn(
-                          "h-4 w-4 transition-colors",
-                          active ? "text-warning" : "text-muted-foreground",
+                          'h-4 w-4 transition-colors',
+                          active ? 'text-warning' : 'text-muted-foreground'
                         )}
                       />
                       <span
                         className={cn(
-                          "text-sm font-medium transition-colors",
-                          active ? "text-warning" : "text-foreground",
+                          'text-sm font-medium transition-colors',
+                          active ? 'text-warning' : 'text-foreground'
                         )}
                       >
                         {m.label}
@@ -362,7 +360,7 @@ export function DarwinPanel({
                       {m.desc}
                     </div>
                   </button>
-                )
+                );
               })}
             </div>
           </section>
@@ -373,10 +371,10 @@ export function DarwinPanel({
             onClick={evolve}
             disabled={running || picked.length === 0}
             className={cn(
-              "w-full px-4 py-3 rounded-lg font-medium transition-all duration-200",
-              "bg-warning text-[#070d1a] hover:bg-warning/90",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              running && "animate-pulse"
+              'w-full px-4 py-3 rounded-lg font-medium transition-all duration-200',
+              'bg-warning text-[#070d1a] hover:bg-warning/90',
+              'disabled:opacity-50 disabled:cursor-not-allowed',
+              running && 'animate-pulse'
             )}
           >
             {running ? (
@@ -386,7 +384,7 @@ export function DarwinPanel({
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4 mr-1.5 inline-block" /> 🧬 Run Evolution (LLM + PubMed + SS)
+                <Sparkles className="h-4 w-4 mr-1.5 inline-block" /> 🧬 Run Evolution (LLM + PubMed)
               </>
             )}
           </button>
@@ -408,8 +406,8 @@ export function DarwinPanel({
               <button
                 type="button"
                 onClick={() => {
-                  const el = document.getElementById('audit-trail-details')
-                  if (el) el.classList.toggle('hidden')
+                  const el = document.getElementById('audit-trail-details');
+                  if (el) el.classList.toggle('hidden');
                 }}
                 className="w-full flex items-center justify-between text-[11px] font-mono text-success font-medium hover:text-success/80"
               >
@@ -419,32 +417,56 @@ export function DarwinPanel({
 
               {/* Quick Summary */}
               <div className="grid grid-cols-2 gap-2 text-[9px]">
-                <div className={cn(
-                  "px-2 py-1 rounded border",
-                  auditTrail.verification.isRealData ? "border-success/30 bg-success/10 text-success" : "border-danger/30 bg-danger/10 text-danger"
-                )}>
-                  ✅ Real External APIs: {auditTrail.verification.externalAPIsCalled.filter(a => a.status === "SUCCESS").length}/{auditTrail.verification.externalAPIsCalled.length}
+                <div
+                  className={cn(
+                    'px-2 py-1 rounded border',
+                    auditTrail.verification.isRealData
+                      ? 'border-success/30 bg-success/10 text-success'
+                      : 'border-danger/30 bg-danger/10 text-danger'
+                  )}
+                >
+                  ✅ Real External APIs:{' '}
+                  {
+                    auditTrail.verification.externalAPIsCalled.filter((a) => a.status === 'SUCCESS')
+                      .length
+                  }
+                  /{auditTrail.verification.externalAPIsCalled.length}
                 </div>
-                <div className={cn(
-                  "px-2 py-1 rounded border",
-                  !auditTrail.verification.usedLocalDatabase ? "border-success/30 bg-success/10 text-success" : "border-danger/30 bg-danger/10 text-danger"
-                )}>
-                  ❌ Local Database: {auditTrail.verification.usedLocalDatabase ? "YES (BAD)" : "NO (GOOD)"}
+                <div
+                  className={cn(
+                    'px-2 py-1 rounded border',
+                    !auditTrail.verification.usedLocalDatabase
+                      ? 'border-success/30 bg-success/10 text-success'
+                      : 'border-danger/30 bg-danger/10 text-danger'
+                  )}
+                >
+                  ❌ Local Database:{' '}
+                  {auditTrail.verification.usedLocalDatabase ? 'YES (BAD)' : 'NO (GOOD)'}
                 </div>
               </div>
 
               {/* Detailed Audit Trail (collapsible) */}
-              <div id="audit-trail-details" className="hidden space-y-2 mt-2 pt-2 border-t border-border/50">
-
+              <div
+                id="audit-trail-details"
+                className="hidden space-y-2 mt-2 pt-2 border-t border-border/50"
+              >
                 {/* APIs Called */}
                 <div className="space-y-1">
-                  <div className="text-[9px] font-mono text-muted-foreground">External APIs Called:</div>
+                  <div className="text-[9px] font-mono text-muted-foreground">
+                    External APIs Called:
+                  </div>
                   {auditTrail.verification.externalAPIsCalled.map((api, idx) => (
                     <div key={idx} className="text-[8px] font-mono pl-2 flex items-center gap-1">
-                      <span className={api.status === "SUCCESS" ? "text-success" : "text-warning"}>
-                        {api.status === "SUCCESS" ? "✅" : "⚠️"}
+                      <span className={api.status === 'SUCCESS' ? 'text-success' : 'text-warning'}>
+                        {api.status === 'SUCCESS' ? '✅' : '⚠️'}
                       </span>
-                      <a href={api.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-[200px]" title={api.url}>
+                      <a
+                        href={api.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline truncate max-w-[200px]"
+                        title={api.url}
+                      >
                         {api.name}
                       </a>
                       <span className="text-muted-foreground">({api.status})</span>
@@ -455,7 +477,9 @@ export function DarwinPanel({
                 {/* Time Breakdown */}
                 {performance?.breakdown && (
                   <div className="space-y-1">
-                    <div className="text-[9px] font-mono text-muted-foreground">Time Breakdown:</div>
+                    <div className="text-[9px] font-mono text-muted-foreground">
+                      Time Breakdown:
+                    </div>
                     <div className="grid grid-cols-3 gap-1 text-[8px] font-mono pl-2">
                       <div>📚 PubMed: {performance.breakdown.literatureSearch}ms</div>
                       <div>📝 Prompt: {performance.breakdown.promptBuild}ms</div>
@@ -478,9 +502,15 @@ export function DarwinPanel({
                 <div className="space-y-1">
                   <div className="text-[9px] font-mono text-muted-foreground">Data Sources:</div>
                   <div className="text-[8px] font-mono pl-2 space-y-0.5">
-                    <div className="text-primary">From: {auditTrail.verification.dataSources.literatureFrom}</div>
-                    <div className="text-primary">Generated by: {auditTrail.verification.dataSources.ideasGeneratedBy}</div>
-                    <div className="text-danger/60">NOT from: {auditTrail.verification.dataSources.notFrom.join(", ")}</div>
+                    <div className="text-primary">
+                      From: {auditTrail.verification.dataSources.literatureFrom}
+                    </div>
+                    <div className="text-primary">
+                      Generated by: {auditTrail.verification.dataSources.ideasGeneratedBy}
+                    </div>
+                    <div className="text-danger/60">
+                      NOT from: {auditTrail.verification.dataSources.notFrom.join(', ')}
+                    </div>
                   </div>
                 </div>
 
@@ -505,41 +535,45 @@ export function DarwinPanel({
                       ⏱️ {performance.elapsedTimeMs}ms
                     </span>
                   )}
-                  {literatureSources && ((literatureSources.pubmedCount || 0) + (literatureSources.semanticScholarCount || 0)) > 0 && (
+                  {literatureSources && literatureSources.pubmedCount > 0 && (
                     <span className="text-[9px] font-mono text-primary px-1.5 py-0.5 rounded bg-primary/10 border border-primary/20">
-                      📚 {literatureSources.pubmedCount || 0} PubMed + {literatureSources.semanticScholarCount || 0} SS
+                      📚 {literatureSources.pubmedCount} PubMed
                     </span>
                   )}
                 </div>
               </div>
 
               {/* Literature Sources Summary - Only show if we actually have papers */}
-              {literatureSources && ((literatureSources.papers?.length || 0) + (literatureSources.semanticPapers?.length || 0)) > 0 && (
-                <div className="rounded-md border border-primary/20 bg-primary/5 p-2.5 space-y-1.5">
-                  <div className="text-[10px] font-mono text-primary font-medium flex items-center gap-1">
-                    📚 Academic Literature Sources (Real-time)
-                  </div>
+              {literatureSources &&
+                literatureSources.papers &&
+                literatureSources.papers.length > 0 && (
+                  <div className="rounded-md border border-primary/20 bg-primary/5 p-2.5 space-y-1.5">
+                    <div className="text-[10px] font-mono text-primary font-medium flex items-center gap-1">
+                      📚 Academic Literature Sources (Real-time from PubMed)
+                    </div>
 
-                  {literatureSources.papers && literatureSources.papers.length > 0 && (
                     <div className="space-y-1">
                       <div className="text-[9px] text-muted-foreground">From PubMed:</div>
                       {literatureSources.papers.slice(0, 3).map((paper, idx) => (
-                        <div key={idx} className="text-[9px] font-mono text-muted-foreground pl-2 truncate" title={`PMID: ${paper.pmid} - ${paper.title}`}>
+                        <div
+                          key={idx}
+                          className="text-[9px] font-mono text-muted-foreground pl-2 truncate"
+                          title={`PMID: ${paper.pmid} - ${paper.title}`}
+                        >
                           • {paper.title.slice(0, 60)}...
                         </div>
                       ))}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
 
               <div className="space-y-3">
                 {ideas.map((idea, index) => (
                   <article
                     key={index}
                     className={cn(
-                      "rounded-md border border-border bg-secondary/30 p-3",
-                      "hover:border-primary/30 hover:bg-secondary/50 transition-all duration-200",
+                      'rounded-md border border-border bg-secondary/30 p-3',
+                      'hover:border-primary/30 hover:bg-secondary/50 transition-all duration-200'
                     )}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
@@ -582,8 +616,17 @@ export function DarwinPanel({
                                 PMID: {ref.pmid}
                               </a>
                             ) : null}
-                            {ref.title && <span className="ml-1 truncate inline-block max-w-[200px]" title={ref.title}>{ref.title}</span>}
-                            {ref.year && <span className="ml-1 text-muted-foreground/60">({ref.year})</span>}
+                            {ref.title && (
+                              <span
+                                className="ml-1 truncate inline-block max-w-[200px]"
+                                title={ref.title}
+                              >
+                                {ref.title}
+                              </span>
+                            )}
+                            {ref.year && (
+                              <span className="ml-1 text-muted-foreground/60">({ref.year})</span>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -611,8 +654,8 @@ export function DarwinPanel({
                       <button
                         type="button"
                         onClick={(e) => {
-                          e.stopPropagation()
-                          sendToDecompose(idea.title)
+                          e.stopPropagation();
+                          sendToDecompose(idea.title);
                         }}
                         className="text-[11px] inline-flex items-center gap-1 text-primary hover:text-primary/80 hover:underline transition-colors"
                       >
@@ -631,7 +674,7 @@ export function DarwinPanel({
             <div className="text-center py-8 text-muted-foreground text-sm space-y-2">
               <Sparkles className="h-8 w-8 mx-auto opacity-20" />
               <p>选择算子后点击按钮开始演化</p>
-              <p className="text-[10px]">将调用真实 LLM API + PubMed + Semantic Scholar 生成研究想法</p>
+              <p className="text-[10px]">将调用真实 LLM API + PubMed 生成研究想法</p>
             </div>
           )}
 
@@ -647,15 +690,15 @@ export function DarwinPanel({
 
         {/* Footer */}
         <footer className="px-5 py-3 border-t border-border text-[11px] text-muted-foreground font-mono flex items-center justify-between bg-secondary/20 shrink-0">
-          <span>Darwin v3.0 · LLM + PubMed + Semantic Scholar</span>
+          <span>Darwin v3.0 · LLM + PubMed</span>
           <div className="flex items-center gap-2">
-            {literatureSources && (literatureSources.pubmedCount || 0) + (literatureSources.semanticScholarCount || 0) > 0 && (
-              <span className="text-primary">📚 {(literatureSources.pubmedCount || 0) + (literatureSources.semanticScholarCount || 0)} refs</span>
+            {literatureSources && literatureSources.pubmedCount > 0 && (
+              <span className="text-primary">📚 {literatureSources.pubmedCount} refs</span>
             )}
             <span className="font-bold text-warning">{picked.length} ops</span>
           </div>
         </footer>
       </div>
     </div>
-  )
+  );
 }

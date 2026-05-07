@@ -128,7 +128,7 @@ type AnalysisDepth = 'quick' | 'standard' | 'deep'
 
 class LLMClient {
   private apiKey: string
-  private model: string = 'gpt-4o'
+  private model: string = 'gpt-5.5' // 2026: Updated from gpt-4o to GPT-5.5 Flagship (1M ctx, reasoning, vision)
   private baseUrl: string = 'https://api.openai.com/v1'
 
   constructor() {

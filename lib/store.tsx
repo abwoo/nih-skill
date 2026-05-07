@@ -93,9 +93,9 @@ type StoreAction =
 const DEFAULT_CONFIG: AppConfig = {
   provider: "openclaw",
   apiKey: "",
-  model: "gpt-4o-mini",
+  model: "gpt-5.5", // 2026: Updated from gpt-4o-mini to GPT-5.5 Flagship (1M ctx, reasoning, vision)
   temperature: 0.3,
-  maxTokens: 8000,
+  maxTokens: 16000, // 2026: Increased from 8000 to 16K for better analysis with new models
   stream: true,
   injectSkill: true,
   includeRefs: false,

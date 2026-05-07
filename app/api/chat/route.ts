@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import {
   BME_SPECIFIC_BLOCKERS,
   calculateBlockerVerdict,
@@ -10,894 +10,1197 @@ import {
   FATAL_BLOCKERS,
   FULL_TEXT_ACQUISITION_STRATEGY,
   LoadReferenceOptions,
-  REFERENCE_FILES
+  REFERENCE_FILES,
 } from '../../../lib/skill-execution-engine';
 
 // 🆕 Context Memory System - "网关式"持久化上下文记忆
 import { getRelevantContext } from '@/lib/context-memory';
 
 interface ChatMessage {
-  role: "system" | "user" | "assistant" | "tool"
-  content: string | Array<{ type: string; text?: string; tool_call_id?: string; tool_calls?: Array<{ id: string; type: string; function: { name: string; arguments: string } }> }>
-  tool_call_id?: string
-  name?: string
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content:
+    | string
+    | Array<{
+        type: string;
+        text?: string;
+        tool_call_id?: string;
+        tool_calls?: Array<{
+          id: string;
+          type: string;
+          function: { name: string; arguments: string };
+        }>;
+      }>;
+  tool_call_id?: string;
+  name?: string;
   tool_calls?: Array<{
-    id: string
-    type: string
-    function: { name: string; arguments: string }
-  }>
+    id: string;
+    type: string;
+    function: { name: string; arguments: string };
+  }>;
 }
 
 interface ChatRequestBody {
-  messages: ChatMessage[]
+  messages: ChatMessage[];
   config?: {
-    provider?: string
-    apiKey?: string
-    model?: string
-    baseUrl?: string
-    deployment?: string
-    temperature?: number
-    maxTokens?: number
-    stream?: boolean
-    injectSkill?: boolean
-    includeRefs?: boolean
-    enableTools?: boolean
-  }
-  customPrompt?: string
-  module?: string
-  input?: string
-  intent?: string
+    provider?: string;
+    apiKey?: string;
+    model?: string;
+    baseUrl?: string;
+    deployment?: string;
+    temperature?: number;
+    maxTokens?: number;
+    stream?: boolean;
+    injectSkill?: boolean;
+    includeRefs?: boolean;
+    enableTools?: boolean;
+  };
+  customPrompt?: string;
+  module?: string;
+  input?: string;
+  intent?: string;
 }
 
 // Agent Tool Definitions - Aligned with BME Research Accelerator Skill (ENHANCED)
 const AGENT_TOOLS = [
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "search_papers",
-      description: "Search for academic papers using keywords, authors, or DOI via PubMed (NCBI E-utilities). Returns paper metadata including title, authors, year, abstract, and DOI.",
+      name: 'search_papers',
+      description:
+        'Search for academic papers using keywords, authors, or DOI via PubMed (NCBI E-utilities). Returns paper metadata including title, authors, year, abstract, and DOI.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          query: { type: "string", description: "Search query (keywords, author names, or topics)" },
-          source: { type: "string", enum: ["pubmed"], description: "Database to search (PubMed only)" },
-          limit: { type: "number", description: "Number of results (default: 5)" }
+          query: {
+            type: 'string',
+            description: 'Search query (keywords, author names, or topics)',
+          },
+          source: {
+            type: 'string',
+            enum: ['pubmed'],
+            description: 'Database to search (PubMed only)',
+          },
+          limit: { type: 'number', description: 'Number of results (default: 5)' },
         },
-        required: ["query"]
-      }
-    }
+        required: ['query'],
+      },
+    },
   },
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "fetch_paper",
-      description: "Fetch FULL paper content from DOI, arXiv ID, PMID, PMC ID, or URL. Uses 6-level priority strategy: PMC → arXiv/bioRxiv/medRxiv → DOI redirect → Unpaywall → Publisher page. Returns text, abstract, and metadata.",
+      name: 'fetch_paper',
+      description:
+        'Fetch FULL paper content from DOI, arXiv ID, PMID, PMC ID, or URL. Uses 6-level priority strategy: PMC → arXiv/bioRxiv/medRxiv → DOI redirect → Unpaywall → Publisher page. Returns text, abstract, and metadata.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          input: { type: "string", description: "DOI (e.g., 10.1038/s41591-020-0987-6), arXiv ID (e.g., 2312.00765), PMID, PMC ID, or URL" }
+          input: {
+            type: 'string',
+            description:
+              'DOI (e.g., 10.1038/s41591-020-0987-6), arXiv ID (e.g., 2312.00765), PMID, PMC ID, or URL',
+          },
         },
-        required: ["input"]
-      }
-    }
+        required: ['input'],
+      },
+    },
   },
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "get_citations",
-      description: "Get citations or references for a paper by DOI. Shows which papers cite this paper or what this paper cites.",
+      name: 'get_citations',
+      description:
+        'Get citations or references for a paper by DOI. Shows which papers cite this paper or what this paper cites.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          doi: { type: "string", description: "Paper DOI" },
-          direction: { type: "string", enum: ["citations", "references"], description: "Get papers that cite this (citations) or papers this cites (references)" },
-          limit: { type: "number", description: "Number of results (default: 10)" }
+          doi: { type: 'string', description: 'Paper DOI' },
+          direction: {
+            type: 'string',
+            enum: ['citations', 'references'],
+            description: 'Get papers that cite this (citations) or papers this cites (references)',
+          },
+          limit: { type: 'number', description: 'Number of results (default: 10)' },
         },
-        required: ["doi"]
-      }
-    }
+        required: ['doi'],
+      },
+    },
   },
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "resolve_doi",
-      description: "Resolve a DOI to get full bibliographic metadata from CrossRef including title, authors, journal, year, abstract, citation count.",
+      name: 'resolve_doi',
+      description:
+        'Resolve a DOI to get full bibliographic metadata from CrossRef including title, authors, journal, year, abstract, citation count.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          doi: { type: "string", description: "DOI to resolve (e.g., 10.1038/s41591-020-0987-6)" }
+          doi: { type: 'string', description: 'DOI to resolve (e.g., 10.1038/s41591-020-0987-6)' },
         },
-        required: ["doi"]
-      }
-    }
+        required: ['doi'],
+      },
+    },
   },
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "parse_pdf_content",
-      description: "Parse and extract text content from uploaded PDF file data. Use when user uploads PDF files. Returns parsed content with metadata.",
+      name: 'parse_pdf_content',
+      description:
+        'Parse and extract text content from uploaded PDF file data. Use when user uploads PDF files. Returns parsed content with metadata.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          filename: { type: "string", description: "PDF filename" },
-          content_preview: { type: "string", description: "First 2000 characters of PDF text content" }
+          filename: { type: 'string', description: 'PDF filename' },
+          content_preview: {
+            type: 'string',
+            description: 'First 2000 characters of PDF text content',
+          },
         },
-        required: ["filename", "content_preview"]
-      }
-    }
+        required: ['filename', 'content_preview'],
+      },
+    },
   },
   // NEW: Reference loading tool aligned with SKILL.md
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "load_reference",
-      description: "Load domain-specific reference knowledge from the BME Research Accelerator skill's reference library. Use BEFORE analysis to get methodology guidance, evaluation protocols, and domain-specific thinking frameworks. Available domains: ecg-methodology, eeg-bci-methodology, deep-learning-bme, clinical-statistical-framework, signal-processing-foundations, physionet-datasets, database-api-guide, medical-imaging-methodology, clinical-nlp-llm-methodology, genomics-bioinformatics-methodology, research-synthesis-matching, reproducibility-infrastructure, research-ethics-fairness, clinical-documentation-decision-support, drug-discovery-pharmacology-methodology, precision-oncology-immunotherapy-methodology, network-pharmacology-systems-biology, clinical-trial-design-methodology, causal-genomics-methodology, crispr-design-methodology, experimental-design-methodology, immunoinformatics-methodology, hi-c-3d-genome-methodology, flow-cytometry-methodology, epitranscriptomics-methodology, liquid-biopsy-methodology",
+      name: 'load_reference',
+      description:
+        "Load domain-specific reference knowledge from the BME Research Accelerator skill's reference library. Use BEFORE analysis to get methodology guidance, evaluation protocols, and domain-specific thinking frameworks. Available domains: ecg-methodology, eeg-bci-methodology, deep-learning-bme, clinical-statistical-framework, signal-processing-foundations, physionet-datasets, database-api-guide, medical-imaging-methodology, clinical-nlp-llm-methodology, genomics-bioinformatics-methodology, research-synthesis-matching, reproducibility-infrastructure, research-ethics-fairness, clinical-documentation-decision-support, drug-discovery-pharmacology-methodology, precision-oncology-immunotherapy-methodology, network-pharmacology-systems-biology, clinical-trial-design-methodology, causal-genomics-methodology, crispr-design-methodology, experimental-design-methodology, immunoinformatics-methodology, hi-c-3d-genome-methodology, flow-cytometry-methodology, epitranscriptomics-methodology, liquid-biopsy-methodology",
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           domain: {
-            type: "string",
-            description: "Domain keyword(s) to match reference file. Examples: 'ECG', 'deep learning', 'clinical statistics', 'genomics', 'medical imaging', 'reproducibility'. Will auto-match to best reference files."
+            type: 'string',
+            description:
+              "Domain keyword(s) to match reference file. Examples: 'ECG', 'deep learning', 'clinical statistics', 'genomics', 'medical imaging', 'reproducibility'. Will auto-match to best reference files.",
           },
           purpose: {
-            type: "string",
-            enum: ["methodology", "evaluation", "datasets", "regulatory", "experimental_design", "all"],
-            description: "What you need from the reference (default: all)"
-          }
+            type: 'string',
+            enum: [
+              'methodology',
+              'evaluation',
+              'datasets',
+              'regulatory',
+              'experimental_design',
+              'all',
+            ],
+            description: 'What you need from the reference (default: all)',
+          },
         },
-        required: ["domain"]
-      }
-    }
+        required: ['domain'],
+      },
+    },
   },
   // NEW: Fatal Blocker detection tool
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "check_fatal_blockers",
-      description: "Run Fatal Blocker Detection (FB-1 to FB-11) on a paper. Checks: Data Availability (FB-1), Code Availability (FB-2), Conflict of Interest (FB-3), Ground Truth Quality (FB-4), Comparison Fairness (FB-5), External Validation (FB-6), Reproducibility Path (FB-7), Label Noise (FB-8), Demographic Bias (FB-9), Causality Claim (FB-10), Sample Size vs Complexity (FB-11). Also includes BME-specific checks. Returns verdict: YES/PARTIAL/NO with detailed findings.",
+      name: 'check_fatal_blockers',
+      description:
+        'Run Fatal Blocker Detection (FB-1 to FB-11) on a paper. Checks: Data Availability (FB-1), Code Availability (FB-2), Conflict of Interest (FB-3), Ground Truth Quality (FB-4), Comparison Fairness (FB-5), External Validation (FB-6), Reproducibility Path (FB-7), Label Noise (FB-8), Demographic Bias (FB-9), Causality Claim (FB-10), Sample Size vs Complexity (FB-11). Also includes BME-specific checks. Returns verdict: YES/PARTIAL/NO with detailed findings.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           paper_context: {
-            type: "string",
-            description: "Paper context including methods, dataset, comparison baselines, validation approach, sample size, author affiliations."
+            type: 'string',
+            description:
+              'Paper context including methods, dataset, comparison baselines, validation approach, sample size, author affiliations.',
           },
           bme_domain: {
-            type: "string",
-            description: "BME subdomain for specialized checks (e.g., 'biosensor', 'simulation', 'implantable', 'signal_processing', 'device')"
-          }
+            type: 'string',
+            description:
+              "BME subdomain for specialized checks (e.g., 'biosensor', 'simulation', 'implantable', 'signal_processing', 'device')",
+          },
         },
-        required: ["paper_context"]
-      }
-    }
+        required: ['paper_context'],
+      },
+    },
   },
   // NEW: Full-text deep learning extraction
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "extract_full_text_knowledge",
-      description: "Extract structured knowledge from full paper content following the SKILL.md Full-Text Deep Learning Template (10 sections): Research Problem, Experimental Design, Dataset Details, Complete Methods, Data Processing Pipeline, Results, Research Logic Chain, Limitations, Reproducibility Assessment, Knowledge Integration. MANDATORY before any deep analysis per Step 0 of reasoning protocol.",
+      name: 'extract_full_text_knowledge',
+      description:
+        'Extract structured knowledge from full paper content following the SKILL.md Full-Text Deep Learning Template (10 sections): Research Problem, Experimental Design, Dataset Details, Complete Methods, Data Processing Pipeline, Results, Research Logic Chain, Limitations, Reproducibility Assessment, Knowledge Integration. MANDATORY before any deep analysis per Step 0 of reasoning protocol.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
-          full_text_content: { type: "string", description: "Full paper text content" },
+          full_text_content: { type: 'string', description: 'Full paper text content' },
           focus_areas: {
-            type: "array",
-            items: { type: "string" },
-            description: "Specific sections to extract in detail (optional)"
-          }
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Specific sections to extract in detail (optional)',
+          },
         },
-        required: ["full_text_content"]
-      }
-    }
+        required: ['full_text_content'],
+      },
+    },
   },
   // NEW: Protocol execution tool
   {
-    type: "function" as const,
+    type: 'function' as const,
     function: {
-      name: "execute_skill_protocol",
-      description: "Execute complete SKILL protocol for given module. Available modules: decompose (Paper Decomposition & Analysis), compare (Multi-Paper Comparison), reproduce (Reproduction Blueprint), paradigm (Methodological Paradigm Mapping), evidence (Evidence Verification), datasets (Dataset Recommendation). Returns structured output following SKILL.md format specifications.",
+      name: 'execute_skill_protocol',
+      description:
+        'Execute complete SKILL protocol for given module. Available modules: decompose (Paper Decomposition & Analysis), compare (Multi-Paper Comparison), reproduce (Reproduction Blueprint), paradigm (Methodological Paradigm Mapping), evidence (Evidence Verification), datasets (Dataset Recommendation). Returns structured output following SKILL.md format specifications.',
       parameters: {
-        type: "object",
+        type: 'object',
         properties: {
           module_id: {
-            type: "string",
-            enum: ["decompose", "compare", "reproduce", "paradigm", "evidence", "datasets"],
-            description: "Which SKILL protocol module to execute"
+            type: 'string',
+            enum: ['decompose', 'compare', 'reproduce', 'paradigm', 'evidence', 'datasets'],
+            description: 'Which SKILL protocol module to execute',
           },
           input_context: {
-            type: "string",
-            description: "Context including paper DOIs, file contents, user query, etc."
+            type: 'string',
+            description: 'Context including paper DOIs, file contents, user query, etc.',
           },
           options: {
-            type: "object",
+            type: 'object',
             properties: {
-              domain: { type: "string", description: "Override auto-detected domain" },
-              intent: { type: "string", description: "Override auto-detected intent" },
-              focus_areas: { type: "array", items: { type: "string" }, description: "Specific areas to focus on" }
-            }
-          }
+              domain: { type: 'string', description: 'Override auto-detected domain' },
+              intent: { type: 'string', description: 'Override auto-detected intent' },
+              focus_areas: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Specific areas to focus on',
+              },
+            },
+          },
         },
-        required: ["module_id", "input_context"]
-      }
-    }
-  }
-]
+        required: ['module_id', 'input_context'],
+      },
+    },
+  },
+];
 
 // Provider configurations
-const PROVIDER_CONFIGS: Record<string, { url: string; headers: (apiKey: string) => Record<string, string> }> = {
+const PROVIDER_CONFIGS: Record<
+  string,
+  { url: string; headers: (apiKey: string) => Record<string, string> }
+> = {
   openclaw: {
-    url: "https://api.openclaw.com/v1/chat/completions",
+    url: 'https://api.openclaw.com/v1/chat/completions',
     headers: (apiKey) => ({
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     }),
   },
   anthropic: {
-    url: "https://api.anthropic.com/v1/messages",
+    url: 'https://api.anthropic.com/v1/messages',
     headers: (apiKey) => ({
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "Content-Type": "application/json",
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'Content-Type': 'application/json',
     }),
   },
   openai: {
-    url: "https://api.openai.com/v1/chat/completions",
+    url: 'https://api.openai.com/v1/chat/completions',
     headers: (apiKey) => ({
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     }),
   },
   google: {
-    url: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+    url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
     headers: (apiKey) => ({
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     }),
   },
   deepseek: {
-    url: "https://api.deepseek.com/chat/completions",
+    url: 'https://api.deepseek.com/chat/completions',
     headers: (apiKey) => ({
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     }),
   },
   groq: {
-    url: "https://api.groq.com/openai/v1/chat/completions",
+    url: 'https://api.groq.com/openai/v1/chat/completions',
     headers: (apiKey) => ({
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     }),
   },
-}
+};
 
 function getProviderConfig(provider: string, apiKey: string, baseUrl?: string) {
-  if (provider === "custom" && baseUrl) {
+  if (provider === 'custom' && baseUrl) {
     return {
-      url: baseUrl.endsWith("/v1/chat/completions") ? baseUrl : `${baseUrl.replace(/\/+$/, "")}/v1/chat/completions`,
+      url: baseUrl.endsWith('/v1/chat/completions')
+        ? baseUrl
+        : `${baseUrl.replace(/\/+$/, '')}/v1/chat/completions`,
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
-    }
+    };
   }
 
-  const config = PROVIDER_CONFIGS[provider] || PROVIDER_CONFIGS.openclaw
+  const config = PROVIDER_CONFIGS[provider] || PROVIDER_CONFIGS.openclaw;
   return {
     url: config.url,
     headers: config.headers(apiKey),
-  }
+  };
 }
 
 // ═══════════════════════════════════════════════════════════
 // 🔬 ENHANCED TOOL EXECUTION WITH SKILL ENGINE INTEGRATION
 // ═══════════════════════════════════════════════════════════
 
-let globalSkillEngine: ReturnType<typeof createSkillEngine> | null = null
+let globalSkillEngine: ReturnType<typeof createSkillEngine> | null = null;
 
 function getOrCreateSkillEngine() {
   if (!globalSkillEngine) {
     globalSkillEngine = createSkillEngine({
       enableLogging: true,
       defaultModule: 'decompose',
-      cacheTTLMinutes: 30
-    })
+      cacheTTLMinutes: 30,
+    });
   }
-  return globalSkillEngine
+  return globalSkillEngine;
+}
+
+// Security: Input sanitization for all agent tools
+function sanitizeToolInputs(
+  toolName: string,
+  args: Record<string, unknown>
+): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(args)) {
+    if (typeof value === 'string') {
+      // Remove null bytes and control characters (except newline, tab)
+      let cleaned = value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+      // Truncate excessively long strings
+      if (cleaned.length > 10000) {
+        console.warn(
+          `[security] ⚠️ Truncated long input for ${toolName}.${key}: ${cleaned.length} -> 10000 chars`
+        );
+        cleaned = cleaned.slice(0, 10000);
+      }
+      sanitized[key] = cleaned;
+    } else if (typeof value === 'number') {
+      // Clamp numbers to reasonable ranges
+      sanitized[key] = Math.max(-999999, Math.min(999999, value));
+    } else if (Array.isArray(value)) {
+      // Sanitize array elements and limit length
+      sanitized[key] = value
+        .slice(0, 100)
+        .map((item) =>
+          typeof item === 'string'
+            ? item.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '').slice(0, 5000)
+            : item
+        );
+    } else if (value && typeof value === 'object') {
+      // Recursively sanitize nested objects (1 level deep only to prevent infinite recursion)
+      const nestedObj: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+        if (typeof v === 'string') {
+          nestedObj[k] = v.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '').slice(0, 5000);
+        } else {
+          nestedObj[k] = v;
+        }
+      }
+      sanitized[key] = nestedObj;
+    } else {
+      sanitized[key] = value;
+    }
+  }
+
+  return sanitized;
 }
 
 async function executeTool(toolName: string, args: Record<string, unknown>): Promise<string> {
-  console.log(`[agent] 🛠️ Executing tool: ${toolName}`, args)
+  console.log(`[agent] 🛠️ Executing tool: ${toolName}`, args);
 
-  const skillEngine = getOrCreateSkillEngine()
+  const skillEngine = getOrCreateSkillEngine();
 
   try {
+    // Security: Input validation and sanitization for all tools
+    const sanitizedArgs = sanitizeToolInputs(toolName, args);
+
     switch (toolName) {
-      case "search_papers": {
-        const query = String(args.query || "")
-        const source = (args.source as string) || "pubmed"
-        const limit = Number(args.limit) || 5
+      case 'search_papers': {
+        const query = String(sanitizedArgs.query || '');
+        const source = (sanitizedArgs.source as string) || 'pubmed';
+        const limit = Math.min(Math.max(Number(sanitizedArgs.limit) || 5, 1), 20); // Clamp: 1-20
 
-        console.log(`[agent] 🔍 [SKILL Step 0] Searching papers with domain-aware query: "${query}"`)
-
-        const detectedDomain = detectDomainFromQuery(query)
-        console.log(`[agent] 📚 [SKILL Step 2] Detected domain: ${detectedDomain.domain}`)
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/search`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query, source, limit }),
-        })
-
-        if (!res.ok) throw new Error(`Search API error: ${res.status}`)
-        const data = await res.json()
-
-        return JSON.stringify({
-          success: true,
-          tool: "search_papers",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 0 + Step 2",
-            action: "Literature Search + Reference Matching",
-            detectedDomain: detectedDomain.domain,
-            confidence: detectedDomain.confidence,
-            methodologyGuidance: `Domain-specific methodology activated for: ${detectedDomain.domain}`,
-          },
-          results: data.results?.map((r: { title: string; authors: string; year: number | string; doi: string; abstract: string; url: string }) => ({
-            title: r.title,
-            authors: r.authors,
-            year: r.year,
-            doi: r.doi,
-            abstract: r.abstract?.slice(0, 500),
-            url: r.url,
-          })) || [],
-          count: data.count || 0,
-          _metadata: {
-            timestamp: new Date().toISOString(),
-            engineStatus: skillEngine.getStatus(),
-          },
-          nextSteps: [
-            "Use fetch_paper to get full text for relevant papers",
-            "Run extract_full_text_knowledge after obtaining full text",
-            "Check fatal_blockers before accepting conclusions",
-          ],
-        }, null, 2)
-      }
-
-      case "fetch_paper": {
-        const input = String(args.input || "")
-
-        console.log(`[agent] 📄 [SKILL Step 0] Fetching full text using 6-level acquisition strategy`)
-
-        const inputType = detectInputType(input)
-        let strategyUsed = ""
-
-        if (inputType === "doi") {
-          strategyUsed = "DOI Resolution Strategy (Priority 1-3: PMC → arXiv → DOI redirect)"
-        } else if (inputType === "arxiv") {
-          strategyUsed = "arXiv Direct Access (Priority 2)"
-        } else if (inputType === "pmid" || inputType === "pmcid") {
-          strategyUsed = "PubMed/PMC Database (Priority 1)"
-        } else if (inputType === "url") {
-          strategyUsed = "URL Content Extraction (Priority 6)"
+        // Validate query length and content
+        if (query.length < 2) {
+          return JSON.stringify({
+            success: false,
+            error: 'Query too short (minimum 2 characters)',
+            tool: 'search_papers',
+          });
+        }
+        if (query.length > 500) {
+          return JSON.stringify({
+            success: false,
+            error: 'Query too long (maximum 500 characters)',
+            tool: 'search_papers',
+          });
+        }
+        // Basic injection prevention
+        if (/[;'"\\<>]/.test(query) && query.length > 100) {
+          console.warn(`[agent] ⚠️ Suspicious query detected, sanitizing`);
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/fetch-paper`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ input }),
-        })
+        console.log(
+          `[agent] 🔍 [SKILL Step 0] Searching papers with domain-aware query: "${query.slice(0, 100)}"`
+        );
 
-        if (!res.ok) throw new Error(`Fetch paper error: ${res.status}`)
-        const data = await res.json()
+        const detectedDomain = detectDomainFromQuery(query);
+        console.log(`[agent] 📚 [SKILL Step 2] Detected domain: ${detectedDomain.domain}`);
 
-        return JSON.stringify({
-          success: data.success,
-          tool: "fetch_paper",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 0 (Full-Text Acquisition)",
-            inputType,
-            acquisitionStrategy: strategyUsed,
-            priorityLevels: FULL_TEXT_ACQUISITION_STRATEGY.map(s => `${s.priority}. ${s.source}`),
-            completenessGate: data.fullText ? "✅ PASSED - Full text obtained" : "⚠️ PARTIAL - Abstract/metadata only",
-          },
-          title: data.title,
-          authors: data.authors,
-          year: data.year,
-          journal: data.journal,
-          abstract: data.abstract?.slice(0, 2000),
-          fullText: data.fullText?.slice(0, 5000),
-          fullTextLength: data.fullText?.length || 0,
-          doi: data.doi,
-          pmid: data.pmid,
-          pmcid: data.pmcid,
-          url: data.url,
-          keywords: data.keywords,
-          citationCount: data.citationCount,
-          _metadata: {
-            timestamp: new Date().toISOString(),
-            acquisitionTime: Date.now(),
-          },
-          nextSteps: [
-            "Run extract_full_text_knowledge to get 10-section structured extraction",
-            "Check fatal_blockers before accepting conclusions",
-            "Load domain references for methodology comparison",
-          ],
-        }, null, 2)
-      }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, source, limit }),
+        });
 
-      case "get_citations": {
-        const doi = String(args.doi || "")
-        const direction = (args.direction as string) || "citations"
-        const limit = Number(args.limit) || 10
+        if (!res.ok) throw new Error(`Search API error: ${res.status}`);
+        const data = await res.json();
 
-        console.log(`[agent] 📊 [SKILL Step 5] Citation network analysis: ${direction} for DOI: ${doi}`)
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/citations`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ doi, direction, limit }),
-        })
-
-        if (!res.ok) throw new Error(`Citations API error: ${res.status}`)
-        const data = await res.json()
-
-        return JSON.stringify({
-          success: true,
-          tool: "get_citations",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 5 (Adversarial Scientific Checking)",
-            analysisType: direction === "citations" ? "Forward Citation Impact" : "Backward Reference Foundation",
-            ecosystemBiasCheck: "⚡ Check if multiple citing papers from same group/company",
-          },
-          paperTitle: data.paperTitle,
-          count: data.count,
-          direction,
-          results: data.results?.map((r: { title: string; authors: string; year: number | string; doi: string; citationCount?: number; abstract?: string }) => ({
-            title: r.title,
-            authors: r.authors,
-            year: r.year,
-            doi: r.doi,
-            citationCount: r.citationCount,
-            abstract: r.abstract?.slice(0, 300),
-          })) || [],
-          analysisInsights: [
-            "High citation count may indicate foundational work OR controversial work",
-            "Check for self-citation patterns (authors citing their own previous work)",
-            "Recent citations indicate active research area; stale citations may indicate superseded methods",
-          ],
-          _metadata: {
-            timestamp: new Date().toISOString(),
-          },
-        }, null, 2)
-      }
-
-      case "resolve_doi": {
-        const doi = String(args.doi || "")
-
-        console.log(`[agent] 🔗 [SKILL Step 0] Resolving DOI metadata: ${doi}`)
-
-        const crossrefRes = await fetch(
-          `https://api.crossref.org/works/${encodeURIComponent(doi)}`,
-          { headers: { "User-Agent": "BME-Research-Agent/2.0 (SKILL-aligned)" } }
-        )
-
-        if (!crossrefRes.ok) throw new Error(`CrossRef API error: ${crossrefRes.status}`)
-        const crossrefData = await crossrefRes.json()
-        const item = crossrefData.message
-
-        return JSON.stringify({
-          success: true,
-          tool: "resolve_doi",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 0 (DOI Metadata Extraction)",
-            source: "CrossRef API",
-          },
-          doi: item.DOI,
-          title: Array.isArray(item.title) ? item.title[0] : item.title,
-          authors: item.author?.map((a: { given?: string; family?: string }) =>
-            [a.given, a.family].filter(Boolean).join(" ")
-          ),
-          journal: item["container-title"]?.[0],
-          year: item.published?.["date-parts"]?.[0]?.[0],
-          volume: item.volume,
-          issue: item.issue,
-          pages: item.page,
-          abstract: item.abstract,
-          publisher: item.publisher,
-          type: item.type,
-          url: item.URL,
-          citationCount: item["is-referenced-by-count"],
-          isOpenAccess: item.is_oa,
-          references: item["reference-count"] || 0,
-          _metadata: {
-            timestamp: new Date().toISOString(),
-          },
-          nextSteps: [
-            "Use fetch_paper with this DOI to get full text",
-            "Check if this is a landmark paper (high citation count + recent)",
-            "Load domain-specific references for methodology context",
-          ],
-        }, null, 2)
-      }
-
-      case "parse_pdf_content": {
-        const filename = String(args.filename || "unknown.pdf")
-        const contentPreview = String(args.content_preview || "")
-
-        console.log(`[agent] 📑 [SKILL Step 0] Processing PDF: ${filename} (${contentPreview.length} chars preview)`)
-
-        const extractedDOIs = extractDOIsFromText(contentPreview)
-
-        // Return MORE content for better analysis (up to 15000 chars instead of 3000)
-        const extendedPreview = contentPreview.slice(0, 15000)
-
-        return JSON.stringify({
-          success: true,
-          tool: "parse_pdf_content",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 0 (PDF Content Extraction)",
-            processingComplete: true,
-            extractedDOIs: extractedDOIs.length,
-            contentLength: contentPreview.length,
-            previewLength: extendedPreview.length,
-          },
-          filename,
-          parsed: true,
-          contentLength: contentPreview.length,
-          // Return extended preview for comprehensive analysis
-          fullContent: extendedPreview,
-          preview: extendedPreview.slice(0, 5000), // Keep shorter preview for display
-          extractedDOIs,
-          message: extractedDOIs.length > 0
-            ? `✅ PDF processed successfully. Full content available (${contentPreview.length} chars). Found ${extractedDOIs.length} DOI(s) - will auto-resolve`
-            : `✅ PDF processed successfully. Full content available (${contentPreview.length} chars). No DOIs found in content.`,
-          _metadata: {
-            timestamp: new Date().toISOString(),
-            fileSize: contentPreview.length,
-            hasFullText: contentPreview.length > 5000, // Indicate if we have substantial content
-          },
-          nextSteps: extractedDOIs.length > 0
-            ? [`Resolve each DOI: ${extractedDOIs.join(", ")}`, "Then run extract_full_text_knowledge with COMPLETE paper content"]
-            : ["Proceed to extract_full_text_knowledge with the complete paper content provided"],
-        }, null, 2)
-      }
-
-      case "load_reference": {
-        const domain = String(args.domain || "").toLowerCase()
-        const purpose = (args.purpose as string) || "all"
-
-        console.log(`[agent] 📚 [SKILL Step 2] Loading reference for domain: ${domain}, purpose: ${purpose}`)
-
-        try {
-          const loader = new DynamicReferenceLoader()
-          const result = await loader.loadReferences({
-            domain,
-            purpose: purpose as LoadReferenceOptions['purpose'],
-            maxReferences: 4,
-          })
-
-          return JSON.stringify({
-            success: result.success,
-            tool: "load_reference",
+        return JSON.stringify(
+          {
+            success: true,
+            tool: 'search_papers',
             _skillStructured: true,
-            _formatVersion: "SKILL-v2.0",
+            _formatVersion: 'SKILL-v2.0',
             protocol: {
-              step: "Step 2 (Reference Matching - Automatic Brain)",
-              matchingAlgorithm: "Keyword extraction → Domain identification → File selection (max 4 files)",
-              loadingStrategy: "Dynamic file system loading with intelligent caching",
-              cacheStats: loader.getCacheStats(),
+              step: 'Step 0 + Step 2',
+              action: 'Literature Search + Reference Matching',
+              detectedDomain: detectedDomain.domain,
+              confidence: detectedDomain.confidence,
+              methodologyGuidance: `Domain-specific methodology activated for: ${detectedDomain.domain}`,
             },
-            domain,
-            loadedReferences: result.referencesLoaded.map(ref => ({
-              filename: ref.filename,
-              contentLength: ref.rawContent.length,
-              relevanceScore: ref.relevanceScore,
-              loadedAt: ref.loadedAt.toISOString(),
-              keyTopics: ref.processedContent.slice(0, 500).split('\n').slice(0, 5),
-            })),
-            totalContentSize: result.totalSize,
-            loadTime: `${result.loadTime}ms`,
-            recommendations: result.recommendations,
-            errors: result.errors,
-            applicableFrameworks: [
-              "Automatic Reasoning Protocol (Step 0-8)",
-              "Fatal Blocker Detection (FB-1 to FB-11)",
-              "Innovation Level Assessment (L1-L5c)",
-              "Clinical Validation Levels (V0-V5)",
-              "BME-Specific Checks (simulation/sensor/device/implantable)",
-            ],
+            results:
+              data.results?.map(
+                (r: {
+                  title: string;
+                  authors: string;
+                  year: number | string;
+                  doi: string;
+                  abstract: string;
+                  url: string;
+                }) => ({
+                  title: r.title,
+                  authors: r.authors,
+                  year: r.year,
+                  doi: r.doi,
+                  abstract: r.abstract?.slice(0, 500),
+                  url: r.url,
+                })
+              ) || [],
+            count: data.count || 0,
             _metadata: {
               timestamp: new Date().toISOString(),
               engineStatus: skillEngine.getStatus(),
             },
-            message: `Loaded ${result.referencesLoaded.length} reference(s) for domain "${domain}"`,
-          }, null, 2)
+            nextSteps: [
+              'Use fetch_paper to get full text for relevant papers',
+              'Run extract_full_text_knowledge after obtaining full text',
+              'Check fatal_blockers before accepting conclusions',
+            ],
+          },
+          null,
+          2
+        );
+      }
+
+      case 'fetch_paper': {
+        const input = String(sanitizedArgs.input || '');
+
+        // Security: Validate input length and format
+        if (input.length < 3) {
+          return JSON.stringify({
+            success: false,
+            error: 'Input too short (minimum 3 characters)',
+            tool: 'fetch_paper',
+          });
+        }
+        if (input.length > 2000) {
+          return JSON.stringify({
+            success: false,
+            error: 'Input too long (maximum 2000 characters)',
+            tool: 'fetch_paper',
+          });
+        }
+
+        // Security: URL/DOI validation for SSRF prevention
+        if (input.startsWith('http://') || input.startsWith('https://')) {
+          try {
+            const urlObj = new URL(input);
+            // Block private/internal IPs and non-standard ports
+            const blockedHosts = [
+              'localhost',
+              '127.0.0.1',
+              '0.0.0.0',
+              '::1',
+              '10.',
+              '172.16.',
+              '192.168.',
+            ];
+            if (blockedHosts.some((h) => urlObj.hostname === h || urlObj.hostname.startsWith(h))) {
+              return JSON.stringify({
+                success: false,
+                error: 'Blocked: Internal/private network access not allowed',
+                tool: 'fetch_paper',
+              });
+            }
+            // Allow only standard HTTP/HTTPS ports
+            if (urlObj.port && ![80, 443, 8080, 8443].includes(Number(urlObj.port))) {
+              return JSON.stringify({
+                success: false,
+                error: 'Blocked: Non-standard port not allowed',
+                tool: 'fetch_paper',
+              });
+            }
+          } catch {
+            return JSON.stringify({
+              success: false,
+              error: 'Invalid URL format',
+              tool: 'fetch_paper',
+            });
+          }
+        }
+
+        console.log(
+          `[agent] 📄 [SKILL Step 0] Fetching full text using 6-level acquisition strategy`
+        );
+
+        const inputType = detectInputType(input);
+        let strategyUsed = '';
+
+        if (inputType === 'doi') {
+          strategyUsed = 'DOI Resolution Strategy (Priority 1-3: PMC → arXiv → DOI redirect)';
+        } else if (inputType === 'arxiv') {
+          strategyUsed = 'arXiv Direct Access (Priority 2)';
+        } else if (inputType === 'pmid' || inputType === 'pmcid') {
+          strategyUsed = 'PubMed/PMC Database (Priority 1)';
+        } else if (inputType === 'url') {
+          strategyUsed = 'URL Content Extraction (Priority 6)';
+        }
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/fetch-paper`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input }),
+        });
+
+        if (!res.ok) throw new Error(`Fetch paper error: ${res.status}`);
+        const data = await res.json();
+
+        return JSON.stringify(
+          {
+            success: data.success,
+            tool: 'fetch_paper',
+            _skillStructured: true,
+            _formatVersion: 'SKILL-v2.0',
+            protocol: {
+              step: 'Step 0 (Full-Text Acquisition)',
+              inputType,
+              acquisitionStrategy: strategyUsed,
+              priorityLevels: FULL_TEXT_ACQUISITION_STRATEGY.map(
+                (s) => `${s.priority}. ${s.source}`
+              ),
+              completenessGate: data.fullText
+                ? '✅ PASSED - Full text obtained'
+                : '⚠️ PARTIAL - Abstract/metadata only',
+            },
+            title: data.title,
+            authors: data.authors,
+            year: data.year,
+            journal: data.journal,
+            abstract: data.abstract?.slice(0, 2000),
+            fullText: data.fullText?.slice(0, 5000),
+            fullTextLength: data.fullText?.length || 0,
+            doi: data.doi,
+            pmid: data.pmid,
+            pmcid: data.pmcid,
+            url: data.url,
+            keywords: data.keywords,
+            citationCount: data.citationCount,
+            _metadata: {
+              timestamp: new Date().toISOString(),
+              acquisitionTime: Date.now(),
+            },
+            nextSteps: [
+              'Run extract_full_text_knowledge to get 10-section structured extraction',
+              'Check fatal_blockers before accepting conclusions',
+              'Load domain references for methodology comparison',
+            ],
+          },
+          null,
+          2
+        );
+      }
+
+      case 'get_citations': {
+        const doi = String(args.doi || '');
+        const direction = (args.direction as string) || 'citations';
+        const limit = Number(args.limit) || 10;
+
+        console.log(
+          `[agent] 📊 [SKILL Step 5] Citation network analysis: ${direction} for DOI: ${doi}`
+        );
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/citations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ doi, direction, limit }),
+        });
+
+        if (!res.ok) throw new Error(`Citations API error: ${res.status}`);
+        const data = await res.json();
+
+        return JSON.stringify(
+          {
+            success: true,
+            tool: 'get_citations',
+            _skillStructured: true,
+            _formatVersion: 'SKILL-v2.0',
+            protocol: {
+              step: 'Step 5 (Adversarial Scientific Checking)',
+              analysisType:
+                direction === 'citations'
+                  ? 'Forward Citation Impact'
+                  : 'Backward Reference Foundation',
+              ecosystemBiasCheck: '⚡ Check if multiple citing papers from same group/company',
+            },
+            paperTitle: data.paperTitle,
+            count: data.count,
+            direction,
+            results:
+              data.results?.map(
+                (r: {
+                  title: string;
+                  authors: string;
+                  year: number | string;
+                  doi: string;
+                  citationCount?: number;
+                  abstract?: string;
+                }) => ({
+                  title: r.title,
+                  authors: r.authors,
+                  year: r.year,
+                  doi: r.doi,
+                  citationCount: r.citationCount,
+                  abstract: r.abstract?.slice(0, 300),
+                })
+              ) || [],
+            analysisInsights: [
+              'High citation count may indicate foundational work OR controversial work',
+              'Check for self-citation patterns (authors citing their own previous work)',
+              'Recent citations indicate active research area; stale citations may indicate superseded methods',
+            ],
+            _metadata: {
+              timestamp: new Date().toISOString(),
+            },
+          },
+          null,
+          2
+        );
+      }
+
+      case 'resolve_doi': {
+        const doi = String(args.doi || '');
+
+        console.log(`[agent] 🔗 [SKILL Step 0] Resolving DOI metadata: ${doi}`);
+
+        const crossrefRes = await fetch(
+          `https://api.crossref.org/works/${encodeURIComponent(doi)}`,
+          { headers: { 'User-Agent': 'BME-Research-Agent/2.0 (SKILL-aligned)' } }
+        );
+
+        if (!crossrefRes.ok) throw new Error(`CrossRef API error: ${crossrefRes.status}`);
+        const crossrefData = await crossrefRes.json();
+        const item = crossrefData.message;
+
+        return JSON.stringify(
+          {
+            success: true,
+            tool: 'resolve_doi',
+            _skillStructured: true,
+            _formatVersion: 'SKILL-v2.0',
+            protocol: {
+              step: 'Step 0 (DOI Metadata Extraction)',
+              source: 'CrossRef API',
+            },
+            doi: item.DOI,
+            title: Array.isArray(item.title) ? item.title[0] : item.title,
+            authors: item.author?.map((a: { given?: string; family?: string }) =>
+              [a.given, a.family].filter(Boolean).join(' ')
+            ),
+            journal: item['container-title']?.[0],
+            year: item.published?.['date-parts']?.[0]?.[0],
+            volume: item.volume,
+            issue: item.issue,
+            pages: item.page,
+            abstract: item.abstract,
+            publisher: item.publisher,
+            type: item.type,
+            url: item.URL,
+            citationCount: item['is-referenced-by-count'],
+            isOpenAccess: item.is_oa,
+            references: item['reference-count'] || 0,
+            _metadata: {
+              timestamp: new Date().toISOString(),
+            },
+            nextSteps: [
+              'Use fetch_paper with this DOI to get full text',
+              'Check if this is a landmark paper (high citation count + recent)',
+              'Load domain-specific references for methodology context',
+            ],
+          },
+          null,
+          2
+        );
+      }
+
+      case 'parse_pdf_content': {
+        const filename = String(args.filename || 'unknown.pdf');
+        const contentPreview = String(args.content_preview || '');
+
+        console.log(
+          `[agent] 📑 [SKILL Step 0] Processing PDF: ${filename} (${contentPreview.length} chars preview)`
+        );
+
+        const extractedDOIs = extractDOIsFromText(contentPreview);
+
+        // Return MORE content for better analysis (up to 15000 chars instead of 3000)
+        const extendedPreview = contentPreview.slice(0, 15000);
+
+        return JSON.stringify(
+          {
+            success: true,
+            tool: 'parse_pdf_content',
+            _skillStructured: true,
+            _formatVersion: 'SKILL-v2.0',
+            protocol: {
+              step: 'Step 0 (PDF Content Extraction)',
+              processingComplete: true,
+              extractedDOIs: extractedDOIs.length,
+              contentLength: contentPreview.length,
+              previewLength: extendedPreview.length,
+            },
+            filename,
+            parsed: true,
+            contentLength: contentPreview.length,
+            // Return extended preview for comprehensive analysis
+            fullContent: extendedPreview,
+            preview: extendedPreview.slice(0, 5000), // Keep shorter preview for display
+            extractedDOIs,
+            message:
+              extractedDOIs.length > 0
+                ? `✅ PDF processed successfully. Full content available (${contentPreview.length} chars). Found ${extractedDOIs.length} DOI(s) - will auto-resolve`
+                : `✅ PDF processed successfully. Full content available (${contentPreview.length} chars). No DOIs found in content.`,
+            _metadata: {
+              timestamp: new Date().toISOString(),
+              fileSize: contentPreview.length,
+              hasFullText: contentPreview.length > 5000, // Indicate if we have substantial content
+            },
+            nextSteps:
+              extractedDOIs.length > 0
+                ? [
+                    `Resolve each DOI: ${extractedDOIs.join(', ')}`,
+                    'Then run extract_full_text_knowledge with COMPLETE paper content',
+                  ]
+                : [
+                    'Proceed to extract_full_text_knowledge with the complete paper content provided',
+                  ],
+          },
+          null,
+          2
+        );
+      }
+
+      case 'load_reference': {
+        const domain = String(args.domain || '').toLowerCase();
+        const purpose = (args.purpose as string) || 'all';
+
+        console.log(
+          `[agent] 📚 [SKILL Step 2] Loading reference for domain: ${domain}, purpose: ${purpose}`
+        );
+
+        try {
+          const loader = new DynamicReferenceLoader();
+          const result = await loader.loadReferences({
+            domain,
+            purpose: purpose as LoadReferenceOptions['purpose'],
+            maxReferences: 4,
+          });
+
+          return JSON.stringify(
+            {
+              success: result.success,
+              tool: 'load_reference',
+              _skillStructured: true,
+              _formatVersion: 'SKILL-v2.0',
+              protocol: {
+                step: 'Step 2 (Reference Matching - Automatic Brain)',
+                matchingAlgorithm:
+                  'Keyword extraction → Domain identification → File selection (max 4 files)',
+                loadingStrategy: 'Dynamic file system loading with intelligent caching',
+                cacheStats: loader.getCacheStats(),
+              },
+              domain,
+              loadedReferences: result.referencesLoaded.map((ref) => ({
+                filename: ref.filename,
+                contentLength: ref.rawContent.length,
+                relevanceScore: ref.relevanceScore,
+                loadedAt: ref.loadedAt.toISOString(),
+                keyTopics: ref.processedContent.slice(0, 500).split('\n').slice(0, 5),
+              })),
+              totalContentSize: result.totalSize,
+              loadTime: `${result.loadTime}ms`,
+              recommendations: result.recommendations,
+              errors: result.errors,
+              applicableFrameworks: [
+                'Automatic Reasoning Protocol (Step 0-8)',
+                'Fatal Blocker Detection (FB-1 to FB-11)',
+                'Innovation Level Assessment (L1-L5c)',
+                'Clinical Validation Levels (V0-V5)',
+                'BME-Specific Checks (simulation/sensor/device/implantable)',
+              ],
+              _metadata: {
+                timestamp: new Date().toISOString(),
+                engineStatus: skillEngine.getStatus(),
+              },
+              message: `Loaded ${result.referencesLoaded.length} reference(s) for domain "${domain}"`,
+            },
+            null,
+            2
+          );
         } catch (refError) {
-          console.warn(`[agent] Reference API failed, using built-in fallback`)
+          console.warn(`[agent] Reference API failed, using built-in fallback`);
 
           const fallbackRefs = Object.entries(REFERENCE_FILES)
-            .filter(([key, config]) =>
-              config.loadWhen.some(condition => domain.includes(condition.toLowerCase())) ||
-              config.keywords.some(kw => domain.includes(kw.toLowerCase()))
+            .filter(
+              ([key, config]) =>
+                config.loadWhen.some((condition) => domain.includes(condition.toLowerCase())) ||
+                config.keywords.some((kw) => domain.includes(kw.toLowerCase()))
             )
             .slice(0, 4)
             .map(([key, config]) => ({
               filename: config.filename,
               contentSummary: config.content.slice(0, 300),
               keywords: config.keywords,
-            }))
+            }));
 
-          return JSON.stringify({
-            success: true,
-            domain,
-            tool: "load_reference",
-            _skillStructured: true,
-            _formatVersion: "SKILL-v2.0",
-            protocol: { step: "Step 2 (Fallback Mode - Built-in Knowledge)" },
-            loadedReferences: fallbackRefs,
-            availableDomains: Object.keys(REFERENCE_FILES),
-            message: "Reference loading completed (built-in knowledge activated)",
-            _metadata: {
-              timestamp: new Date().toISOString(),
-              fallbackMode: true,
+          return JSON.stringify(
+            {
+              success: true,
+              domain,
+              tool: 'load_reference',
+              _skillStructured: true,
+              _formatVersion: 'SKILL-v2.0',
+              protocol: { step: 'Step 2 (Fallback Mode - Built-in Knowledge)' },
+              loadedReferences: fallbackRefs,
+              availableDomains: Object.keys(REFERENCE_FILES),
+              message: 'Reference loading completed (built-in knowledge activated)',
+              _metadata: {
+                timestamp: new Date().toISOString(),
+                fallbackMode: true,
+              },
             },
-          }, null, 2)
+            null,
+            2
+          );
         }
       }
 
-      case "check_fatal_blockers": {
-        const paperContext = String(args.paper_context || "")
-        const bmeDomain = String(args.bme_domain || "")
+      case 'check_fatal_blockers': {
+        const paperContext = String(args.paper_context || '');
+        const bmeDomain = String(args.bme_domain || '');
 
-        console.log(`[agent] ⛔ [SKILL Step 3] Running Fatal Blocker detection for BME domain: ${bmeDomain}`)
+        console.log(
+          `[agent] ⛔ [SKILL Step 3] Running Fatal Blocker detection for BME domain: ${bmeDomain}`
+        );
 
-        const blockerFindings = FATAL_BLOCKERS.map(blocker => {
-          const randomStatus = blocker.severity_levels[Math.floor(Math.random() * blocker.severity_levels.length)]
+        const blockerFindings = FATAL_BLOCKERS.map((blocker) => {
+          const randomStatus =
+            blocker.severity_levels[Math.floor(Math.random() * blocker.severity_levels.length)];
           return {
             ...blocker,
             status: randomStatus,
             assessment: `${blocker.check} — Analyzed based on provided paper context`,
             impact: blocker.impact,
-          }
-        })
+          };
+        });
 
-        const bmeFindings: Array<Record<string, unknown>> = []
+        const bmeFindings: Array<Record<string, unknown>> = [];
         if (bmeDomain) {
-          const domainLower = bmeDomain.toLowerCase()
+          const domainLower = bmeDomain.toLowerCase();
           Object.entries(BME_SPECIFIC_BLOCKERS).forEach(([key, check]) => {
-            if (domainLower.includes(key.toLowerCase()) || key.toLowerCase().includes(domainLower)) {
+            if (
+              domainLower.includes(key.toLowerCase()) ||
+              key.toLowerCase().includes(domainLower)
+            ) {
               bmeFindings.push({
                 ...check,
-                status: check.status === "CRITICAL" ? "🔴 CRITICAL" : check.status === "WARNING" ? "🟡 WARNING" : "ℹ️ INFO",
+                status:
+                  check.status === 'CRITICAL'
+                    ? '🔴 CRITICAL'
+                    : check.status === 'WARNING'
+                      ? '🟡 WARNING'
+                      : 'ℹ️ INFO',
                 assessment: check.check,
                 impact: check.detail,
-              })
+              });
             }
-          })
+          });
         }
 
-        const verdict = calculateBlockerVerdict([...blockerFindings, ...bmeFindings] as Array<{ status: string }>)
+        const verdict = calculateBlockerVerdict([...blockerFindings, ...bmeFindings] as Array<{
+          status: string;
+        }>);
 
-        return JSON.stringify({
-          success: true,
-          tool: "check_fatal_blockers",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 3 (Fatal Blocker Detection - MANDATORY FIRST)",
-            rule: "If ANY 🔴 exists: Output fatal blockers FIRST before any other analysis",
-            bmeChecksApplied: bmeFindings.length > 0,
-            totalChecksPerformed: FATAL_BLOCKERS.length + bmeFindings.length,
+        return JSON.stringify(
+          {
+            success: true,
+            tool: 'check_fatal_blockers',
+            _skillStructured: true,
+            _formatVersion: 'SKILL-v2.0',
+            protocol: {
+              step: 'Step 3 (Fatal Blocker Detection - MANDATORY FIRST)',
+              rule: 'If ANY 🔴 exists: Output fatal blockers FIRST before any other analysis',
+              bmeChecksApplied: bmeFindings.length > 0,
+              totalChecksPerformed: FATAL_BLOCKERS.length + bmeFindings.length,
+            },
+            verdict,
+            verdictMeaning:
+              verdict === 'YES'
+                ? '✅ Paper passes basic reproducibility checks - proceed to deeper analysis'
+                : verdict === 'PARTIAL'
+                  ? '⚠️ Proceed with caution - address warnings before publication/deployment'
+                  : '❌ DO NOT accept conclusions without addressing critical blockers first',
+            summary: `Found ${blockerFindings.filter((f) => f.status.includes('🔴')).length} critical, ${blockerFindings.filter((f) => f.status.includes('🟡')).length} warning issues`,
+            findings: blockerFindings,
+            bmeSpecificFindings: bmeFindings,
+            reproducibilityVerdict: verdict,
+            recommendation:
+              verdict !== 'YES'
+                ? verdict === 'NO'
+                  ? '🔴 Address CRITICAL blockers before proceeding'
+                  : '⚠️ Review and address WARNING items'
+                : '✅ Safe to proceed to deeper analysis',
+            nextSteps:
+              verdict !== 'YES'
+                ? ['Address critical/warning items before proceeding']
+                : [
+                    'Proceed to Step 4: Deep Probe Layer',
+                    'Then Step 5: Adversarial Scientific Checking',
+                  ],
+            _metadata: {
+              timestamp: new Date().toISOString(),
+              assessmentConfidence: 'MEDIUM-HIGH',
+            },
           },
-          verdict,
-          verdictMeaning: verdict === "YES"
-            ? "✅ Paper passes basic reproducibility checks - proceed to deeper analysis"
-            : verdict === "PARTIAL"
-            ? "⚠️ Proceed with caution - address warnings before publication/deployment"
-            : "❌ DO NOT accept conclusions without addressing critical blockers first",
-          summary: `Found ${blockerFindings.filter(f => f.status.includes("🔴")).length} critical, ${blockerFindings.filter(f => f.status.includes("🟡")).length} warning issues`,
-          findings: blockerFindings,
-          bmeSpecificFindings: bmeFindings,
-          reproducibilityVerdict: verdict,
-          recommendation: verdict !== "YES"
-            ? verdict === "NO"
-              ? "🔴 Address CRITICAL blockers before proceeding"
-              : "⚠️ Review and address WARNING items"
-            : "✅ Safe to proceed to deeper analysis",
-          nextSteps: verdict !== "YES"
-            ? ["Address critical/warning items before proceeding"]
-            : ["Proceed to Step 4: Deep Probe Layer", "Then Step 5: Adversarial Scientific Checking"],
-          _metadata: {
-            timestamp: new Date().toISOString(),
-            assessmentConfidence: "MEDIUM-HIGH",
-          },
-        }, null, 2)
+          null,
+          2
+        );
       }
 
-      case "extract_full_text_knowledge": {
-        const fullTextContent = String(args.full_text_content || "")
-        const focusAreas = args.focus_areas as string[] | undefined
+      case 'extract_full_text_knowledge': {
+        const fullTextContent = String(args.full_text_content || '');
+        const focusAreas = args.focus_areas as string[] | undefined;
 
-        console.log(`[agent] 📖 [SKILL Step 0] Extracting structured knowledge (${fullTextContent.length} chars)`)
+        console.log(
+          `[agent] 📖 [SKILL Step 0] Extracting structured knowledge (${fullTextContent.length} chars)`
+        );
 
         const extractionTemplate = {
           section_1_research_problem: {
-            title: "Research Problem and Motivation",
+            title: 'Research Problem and Motivation',
             extracted: fullTextContent.slice(0, 500),
             keyQuestions: [
-              "What is the core problem being addressed?",
-              "What clinical/engineering gap does this address?",
-              "Why are existing approaches insufficient?",
+              'What is the core problem being addressed?',
+              'What clinical/engineering gap does this address?',
+              'Why are existing approaches insufficient?',
             ],
           },
           section_2_experimental_design: {
-            title: "Complete Experimental Design",
+            title: 'Complete Experimental Design',
             extracted: fullTextContent.slice(500, 1000),
             checklist: [
-              "Study design type (RCT/retrospective/prospective/cross-sectional)",
-              "Inclusion/exclusion criteria with exact thresholds",
-              "Sample size and power analysis (if reported)",
-              "Study timeline and follow-up duration",
-              "Ethical approval and informed consent details",
+              'Study design type (RCT/retrospective/prospective/cross-sectional)',
+              'Inclusion/exclusion criteria with exact thresholds',
+              'Sample size and power analysis (if reported)',
+              'Study timeline and follow-up duration',
+              'Ethical approval and informed consent details',
             ],
           },
           section_3_dataset_details: {
-            title: "Data Sources and Dataset Details",
+            title: 'Data Sources and Dataset Details',
             extracted: fullTextContent.slice(1000, 1500),
-            crossCheck: "Verify against physionet-datasets.md / database-api-guide.md",
+            crossCheck: 'Verify against physionet-datasets.md / database-api-guide.md',
           },
           section_4_complete_methods: {
-            title: "Methods and Algorithms (COMPLETE)",
+            title: 'Methods and Algorithms (COMPLETE)',
             extracted: fullTextContent.slice(1500, 2500),
             requiredDetails: [
-              "Algorithm/architecture design with exact specifications",
-              "Input representation and feature engineering",
-              "Preprocessing pipeline (filtering, normalization, augmentation)",
-              "Model architecture (layers, dimensions, activation functions)",
-              "Training protocol (optimizer, LR, schedule, batch size, epochs)",
+              'Algorithm/architecture design with exact specifications',
+              'Input representation and feature engineering',
+              'Preprocessing pipeline (filtering, normalization, augmentation)',
+              'Model architecture (layers, dimensions, activation functions)',
+              'Training protocol (optimizer, LR, schedule, batch size, epochs)',
             ],
           },
           section_5_data_processing: {
-            title: "Data Processing and Analysis Pipeline",
+            title: 'Data Processing and Analysis Pipeline',
             extracted: fullTextContent.slice(2500, 3200),
           },
           section_6_results: {
-            title: "Results (COMPLETE — All Reported)",
+            title: 'Results (COMPLETE — All Reported)',
             extracted: fullTextContent.slice(3200, 4200),
             requiredMetrics: [
-              "Primary outcome with exact numbers (mean±SD, median[IQR], effect size, CI, p-value)",
-              "Secondary outcomes with exact numbers",
-              "Subgroup analysis results",
-              "Ablation study results",
-              "Comparison with baselines/SOTA (exact metrics, CIs, statistical significance)",
+              'Primary outcome with exact numbers (mean±SD, median[IQR], effect size, CI, p-value)',
+              'Secondary outcomes with exact numbers',
+              'Subgroup analysis results',
+              'Ablation study results',
+              'Comparison with baselines/SOTA (exact metrics, CIs, statistical significance)',
             ],
           },
           section_7_logic_chain: {
-            title: "Research Reasoning and Logic Chain",
+            title: 'Research Reasoning and Logic Chain',
             extracted: fullTextContent.slice(4200, 4700),
-            chain: "problem → hypothesis → design → evidence → conclusion",
+            chain: 'problem → hypothesis → design → evidence → conclusion',
           },
           section_8_limitations: {
-            title: "Limitations and Future Directions",
+            title: 'Limitations and Future Directions',
             extracted: fullTextContent.slice(4700, 5200),
-            categories: ["Author-stated limitations", "Reviewer-identified gaps", "Generalizability constraints", "Clinical translation barriers"],
+            categories: [
+              'Author-stated limitations',
+              'Reviewer-identified gaps',
+              'Generalizability constraints',
+              'Clinical translation barriers',
+            ],
           },
           section_9_reproducibility: {
-            title: "Reproducibility Assessment",
+            title: 'Reproducibility Assessment',
             extracted: fullTextContent.slice(5200, 5600),
             checklist: [
-              "Code availability (GitHub, supplementary, none)",
-              "Data availability (public, restricted, proprietary)",
-              "Hyperparameter completeness",
-              "Protocol detail sufficiency for independent reproduction",
-              "Computational requirements (GPU hours, memory, training time)",
+              'Code availability (GitHub, supplementary, none)',
+              'Data availability (public, restricted, proprietary)',
+              'Hyperparameter completeness',
+              'Protocol detail sufficiency for independent reproduction',
+              'Computational requirements (GPU hours, memory, training time)',
             ],
           },
           section_10_knowledge_integration: {
-            title: "Knowledge Integration into Skill",
+            title: 'Knowledge Integration into Skill',
             extracted: fullTextContent.slice(5600, Math.min(fullTextContent.length, 6000)),
-            innovationAssessment: "L1-L5 scale to be determined by Step 7 protocol",
+            innovationAssessment: 'L1-L5 scale to be determined by Step 7 protocol',
             referenceFilesToUpdate: [],
           },
-        }
+        };
 
-        return JSON.stringify({
-          success: true,
-          tool: "extract_full_text_knowledge",
-          _skillStructured: true,
-          _formatVersion: "SKILL-v2.0",
-          protocol: {
-            step: "Step 0 (Full-Text Deep Learning - MANDATORY GATE)",
-            rule: "NEVER analyze a paper based on title+abstract alone when user requests analysis",
-            templateVersion: "SKILL.md v2.0 - 10-section extraction",
-            completenessGate: fullTextContent.length > 2000 ? "✅ PASSED" : "⚠️ INSUFFICIENT CONTENT",
+        return JSON.stringify(
+          {
+            success: true,
+            tool: 'extract_full_text_knowledge',
+            _skillStructured: true,
+            _formatVersion: 'SKILL-v2.0',
+            protocol: {
+              step: 'Step 0 (Full-Text Deep Learning - MANDATORY GATE)',
+              rule: 'NEVER analyze a paper based on title+abstract alone when user requests analysis',
+              templateVersion: 'SKILL.md v2.0 - 10-section extraction',
+              completenessGate:
+                fullTextContent.length > 2000 ? '✅ PASSED' : '⚠️ INSUFFICIENT CONTENT',
+            },
+            extractionComplete: true,
+            totalSections: 10,
+            focusAreas: focusAreas || 'all',
+            characterAnalyzed: fullTextContent.length,
+            template: extractionTemplate,
+            nextSteps: [
+              '⛒ Run check_fatal_blockers (Step 3) BEFORE any other analysis',
+              '📚 Load domain references using load_reference (Step 2)',
+              '🎯 Proceed to Step 1: Literature Intent Recognition',
+              '🔍 Then Step 4: Deep Probe Layer with adversarial questions',
+            ],
+            _metadata: {
+              timestamp: new Date().toISOString(),
+              extractionQuality:
+                fullTextContent.length > 5000
+                  ? 'HIGH'
+                  : fullTextContent.length > 2000
+                    ? 'MEDIUM'
+                    : 'LOW',
+            },
           },
-          extractionComplete: true,
-          totalSections: 10,
-          focusAreas: focusAreas || "all",
-          characterAnalyzed: fullTextContent.length,
-          template: extractionTemplate,
-          nextSteps: [
-            "⛒ Run check_fatal_blockers (Step 3) BEFORE any other analysis",
-            "📚 Load domain references using load_reference (Step 2)",
-            "🎯 Proceed to Step 1: Literature Intent Recognition",
-            "🔍 Then Step 4: Deep Probe Layer with adversarial questions",
-          ],
-          _metadata: {
-            timestamp: new Date().toISOString(),
-            extractionQuality: fullTextContent.length > 5000 ? "HIGH" : fullTextContent.length > 2000 ? "MEDIUM" : "LOW",
-          },
-        }, null, 2)
+          null,
+          2
+        );
       }
 
-      case "execute_skill_protocol": {
-        const moduleId = String(args.module_id || "decompose")
-        const inputContext = String(args.input_context || "")
-        const options = args.options as Record<string, unknown> | undefined
+      case 'execute_skill_protocol': {
+        const moduleId = String(args.module_id || 'decompose');
+        const inputContext = String(args.input_context || '');
+        const options = args.options as Record<string, unknown> | undefined;
 
-        console.log(`[agent] 🎯 [SKILL PROTOCOL] Executing protocol: ${moduleId}`)
+        console.log(`[agent] 🎯 [SKILL PROTOCOL] Executing protocol: ${moduleId}`);
 
         try {
-          const result = await skillEngine.execute(moduleId, inputContext)
+          const result = await skillEngine.execute(moduleId, inputContext);
 
-          return JSON.stringify({
-            success: result.success,
-            tool: "execute_skill_protocol",
-            _skillStructured: true,
-            _formatVersion: "SKILL-v2.0",
-            protocol: {
-              moduleId: result.moduleId,
-              protocolFollowed: result.protocolFollowed,
-              stepsExecuted: result.stepsExecuted.length,
-              stepsCompleted: result.metrics.stepsCompleted,
-              stepsFailed: result.metrics.stepsFailed,
+          return JSON.stringify(
+            {
+              success: result.success,
+              tool: 'execute_skill_protocol',
+              _skillStructured: true,
+              _formatVersion: 'SKILL-v2.0',
+              protocol: {
+                moduleId: result.moduleId,
+                protocolFollowed: result.protocolFollowed,
+                stepsExecuted: result.stepsExecuted.length,
+                stepsCompleted: result.metrics.stepsCompleted,
+                stepsFailed: result.metrics.stepsFailed,
+              },
+              output: result.output,
+              metrics: result.metrics,
+              _metadata: {
+                timestamp: result.timestamp.toISOString(),
+                engineStatus: skillEngine.getStatus(),
+                executionId: `exec-${Date.now()}`,
+              },
             },
-            output: result.output,
-            metrics: result.metrics,
-            _metadata: {
-              timestamp: result.timestamp.toISOString(),
-              engineStatus: skillEngine.getStatus(),
-              executionId: `exec-${Date.now()}`,
-            },
-          }, null, 2)
+            null,
+            2
+          );
         } catch (protocolError) {
-          console.error(`[agent] Protocol execution failed:`, protocolError)
+          console.error(`[agent] Protocol execution failed:`, protocolError);
           return JSON.stringify({
             success: false,
-            error: protocolError instanceof Error ? protocolError.message : "Protocol execution failed",
-            tool: "execute_skill_protocol",
+            error:
+              protocolError instanceof Error ? protocolError.message : 'Protocol execution failed',
+            tool: 'execute_skill_protocol',
             _skillStructured: true,
             fallbackAvailable: true,
-          })
+          });
         }
       }
 
       default:
-        throw new Error(`Unknown tool: ${toolName}`)
+        throw new Error(`Unknown tool: ${toolName}`);
     }
   } catch (error) {
-    console.error(`[agent] ❌ Tool execution failed (${toolName}):`, error)
+    console.error(`[agent] ❌ Tool execution failed (${toolName}):`, error);
     return JSON.stringify({
       success: false,
-      error: error instanceof Error ? error.message : "Tool execution failed",
+      error: error instanceof Error ? error.message : 'Tool execution failed',
       tool: toolName,
       _skillStructured: true,
-      _formatVersion: "SKILL-v2.0",
+      _formatVersion: 'SKILL-v2.0',
       _errorMetadata: {
         timestamp: new Date().toISOString(),
         toolName,
       },
-    })
+    });
   }
 }
 
@@ -905,30 +1208,30 @@ async function fetchWithRetry(
   url: string,
   options: RequestInit,
   maxRetries: number = 2,
-  timeoutMs: number = 120000,
+  timeoutMs: number = 120000
 ): Promise<Response> {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
-      })
-      clearTimeout(timer)
-      return response
+      });
+      clearTimeout(timer);
+      return response;
     } catch (err) {
       if (attempt === maxRetries) {
-        clearTimeout(timer)
-        throw err
+        clearTimeout(timer);
+        throw err;
       }
-      console.warn(`[chat] Attempt ${attempt + 1} failed, retrying...`)
-      await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)))
+      console.warn(`[chat] Attempt ${attempt + 1} failed, retrying...`);
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
     }
   }
-  clearTimeout(timer)
-  throw new Error("Max retries exceeded")
+  clearTimeout(timer);
+  throw new Error('Max retries exceeded');
 }
 
 async function callLLM(
@@ -937,84 +1240,85 @@ async function callLLM(
   model: string,
   messages: ChatMessage[],
   options: {
-    temperature?: number
-    maxTokens?: number
-    stream?: boolean
+    temperature?: number;
+    maxTokens?: number;
+    stream?: boolean;
   },
-  baseUrl?: string,
+  baseUrl?: string
 ): Promise<Response> {
-  const { url, headers } = getProviderConfig(provider, apiKey, baseUrl)
+  const { url, headers } = getProviderConfig(provider, apiKey, baseUrl);
 
-  const body = provider === "anthropic"
-    ? {
-        model: model || "claude-sonnet-4-20250514",
-        max_tokens: options.maxTokens || 4096,
-        messages: messages.filter(m => m.role !== "system"),
-        system: messages.find(m => m.role === "system")?.content || "",
-        stream: options.stream ?? true,
-      }
-    : {
-        model: model || "gpt-4o-mini",
-        messages: messages,
-        temperature: options.temperature ?? 0.7,
-        max_tokens: options.maxTokens || 4096,
-        stream: options.stream ?? true,
-      }
+  const body =
+    provider === 'anthropic'
+      ? {
+          model: model || 'claude-opus-4-7', // 2026: Updated to Claude Opus 4.7 Flagship
+          max_tokens: options.maxTokens || 4096,
+          messages: messages.filter((m) => m.role !== 'system'),
+          system: messages.find((m) => m.role === 'system')?.content || '',
+          stream: options.stream ?? true,
+        }
+      : {
+          model: model || 'gpt-5.5', // 2026: Updated to GPT-5.5 Flagship (1M ctx, reasoning, vision)
+          messages: messages,
+          temperature: options.temperature ?? 0.7,
+          max_tokens: options.maxTokens || 4096,
+          stream: options.stream ?? true,
+        };
 
   const response = await fetchWithRetry(url, {
-    method: "POST",
+    method: 'POST',
     headers,
     body: JSON.stringify(body),
-  })
+  });
 
-  return response
+  return response;
 }
 
 // ========== SSE BUFFER TO TEXT ==========
 async function bufferSSEToText(response: Response): Promise<string> {
-  const reader = response.body?.getReader()
+  const reader = response.body?.getReader();
   if (!reader) {
-    console.warn("[bufferSSE] No response body, returning empty string")
-    return ""
+    console.warn('[bufferSSE] No response body, returning empty string');
+    return '';
   }
 
-  const decoder = new TextDecoder()
-  let accumulated = ""
+  const decoder = new TextDecoder();
+  let accumulated = '';
 
   try {
     while (true) {
-      const { done, value } = await reader.read()
+      const { done, value } = await reader.read();
 
-      if (done) break
+      if (done) break;
 
-      accumulated += decoder.decode(value, { stream: true })
+      accumulated += decoder.decode(value, { stream: true });
     }
   } catch (e) {
-    console.error("[bufferSSE] Error reading stream:", e)
+    console.error('[bufferSSE] Error reading stream:', e);
   }
 
-  return extractContentFromSSE(accumulated)
+  return extractContentFromSSE(accumulated);
 }
 
 // ========== SSE CONTENT EXTRACTOR ==========
 function extractContentFromSSE(sseData: string): string {
-  const lines = sseData.split("\n")
-  let content = ""
+  const lines = sseData.split('\n');
+  let content = '';
 
   for (const line of lines) {
-    if (line.startsWith("data: ") && line !== "data: [DONE]") {
+    if (line.startsWith('data: ') && line !== 'data: [DONE]') {
       try {
-        const jsonStr = line.replace("data: ", "")
-        const parsed = JSON.parse(jsonStr)
+        const jsonStr = line.replace('data: ', '');
+        const parsed = JSON.parse(jsonStr);
 
         if (parsed.choices?.[0]?.delta?.content) {
-          content += parsed.choices[0].delta.content
+          content += parsed.choices[0].delta.content;
         } else if (parsed.choices?.[0]?.message?.content) {
-          content += parsed.choices[0].message.content
-        } else if (parsed.content && typeof parsed.content === "string") {
-          content += parsed.content
+          content += parsed.choices[0].message.content;
+        } else if (parsed.content && typeof parsed.content === 'string') {
+          content += parsed.content;
         } else if (parsed.delta?.text) {
-          content += parsed.delta.text
+          content += parsed.delta.text;
         }
       } catch (e) {
         // Skip malformed JSON lines
@@ -1022,48 +1326,49 @@ function extractContentFromSSE(sseData: string): string {
     }
   }
 
-  return content
+  return content;
 }
 
 // ========== DSML TOOL CALL PARSER ==========
 function detectAndParseDSToolCalls(content: string): Array<{
-  name: string
-  args: Record<string, string>
-  fullMatch: string
+  name: string;
+  args: Record<string, string>;
+  fullMatch: string;
 }> | null {
   if (!content.includes('<｜｜DSML｜｜tool_calls>')) {
-    return null
+    return null;
   }
 
-  console.log("[dsml] 🔍 Detected DSML tool calls in response")
+  console.log('[dsml] 🔍 Detected DSML tool calls in response');
 
-  const toolCalls: Array<{ name: string; args: Record<string, string>; fullMatch: string }> = []
+  const toolCalls: Array<{ name: string; args: Record<string, string>; fullMatch: string }> = [];
 
-  const invokePattern = /<｜｜DSML｜｜invoke\s+name="([^"]+)"([^>]*)>([\s\S]*?)<\/｜｜DSML｜｜invoke>/g
+  const invokePattern =
+    /<｜｜DSML｜｜invoke\s+name="([^"]+)"([^>]*)>([\s\S]*?)<\/｜｜DSML｜｜invoke>/g;
 
-  let match
+  let match;
   while ((match = invokePattern.exec(content)) !== null) {
-    const toolName = match[1]
-    const paramsStr = match[2]
-    const bodyStr = match[3]
-    const fullMatch = match[0]
+    const toolName = match[1];
+    const paramsStr = match[2];
+    const bodyStr = match[3];
+    const fullMatch = match[0];
 
-    const args: Record<string, string> = {}
+    const args: Record<string, string> = {};
 
-    const attrPattern = /parameter\s+name="([^"]+)"\s+(?:string="([^"]*)"|number="([^"]*)")/g
-    let paramMatch
+    const attrPattern = /parameter\s+name="([^"]+)"\s+(?:string="([^"]*)"|number="([^"]*)")/g;
+    let paramMatch;
     while ((paramMatch = attrPattern.exec(paramsStr)) !== null) {
-      args[paramMatch[1]] = paramMatch[2] || paramMatch[3] || ""
+      args[paramMatch[1]] = paramMatch[2] || paramMatch[3] || '';
     }
 
     if (bodyStr.trim() && !args['content']) {
       const cleanBody = bodyStr
         .replace(/<｜｜DSML｜｜parameter[^>]*>/g, '')
         .replace(/<\/｜｜DSML｜｜parameter>/g, '')
-        .trim()
+        .trim();
 
       if (cleanBody) {
-        args['content'] = cleanBody
+        args['content'] = cleanBody;
       }
     }
 
@@ -1071,12 +1376,12 @@ function detectAndParseDSToolCalls(content: string): Array<{
       name: toolName,
       args,
       fullMatch,
-    })
+    });
 
-    console.log(`[dsml] 🛠️ Parsed tool call: ${toolName}`, args)
+    console.log(`[dsml] 🛠️ Parsed tool call: ${toolName}`, args);
   }
 
-  return toolCalls.length > 0 ? toolCalls : null
+  return toolCalls.length > 0 ? toolCalls : null;
 }
 
 async function processDSToolCalls(
@@ -1084,43 +1389,42 @@ async function processDSToolCalls(
   toolCalls: Array<{ name: string; args: Record<string, string>; fullMatch: string }>,
   messages: ChatMessage[],
   options: {
-    provider: string
-    apiKey: string
-    model: string
-    userConfig?: { temperature?: number; maxTokens?: number; stream?: boolean; baseUrl?: string }
+    provider: string;
+    apiKey: string;
+    model: string;
+    userConfig?: { temperature?: number; maxTokens?: number; stream?: boolean; baseUrl?: string };
   }
 ): Promise<{ success: boolean; content: string; usedTools: boolean }> {
-
-  const { provider, apiKey, model, userConfig } = options
-  let currentMessages = [...messages]
+  const { provider, apiKey, model, userConfig } = options;
+  let currentMessages = [...messages];
 
   currentMessages.push({
-    role: "assistant",
+    role: 'assistant',
     content: originalContent,
-  })
+  });
 
   for (const toolCall of toolCalls) {
-    console.log(`[dsml] ⚡ Executing DSML tool: ${toolCall.name}`)
+    console.log(`[dsml] ⚡ Executing DSML tool: ${toolCall.name}`);
 
     try {
-      const result = await executeTool(toolCall.name, toolCall.args)
+      const result = await executeTool(toolCall.name, toolCall.args);
 
       currentMessages.push({
-        role: "user",
+        role: 'user',
         content: `[Tool Result for ${toolCall.name}]:\n${result}`,
-      })
+      });
 
-      console.log(`[dsml] ✅ Tool ${toolCall.name} completed`)
+      console.log(`[dsml] ✅ Tool ${toolCall.name} completed`);
     } catch (error) {
-      console.error(`[dsml] ❌ Tool ${toolCall.name} failed:`, error)
+      console.error(`[dsml] ❌ Tool ${toolCall.name} failed:`, error);
       currentMessages.push({
-        role: "user",
-        content: `[Tool Error for ${toolCall.name}]: ${error instanceof Error ? error.message : "Unknown error"}`,
-      })
+        role: 'user',
+        content: `[Tool Error for ${toolCall.name}]: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
   }
 
-  console.log("[dsml] 🔄 Getting final response after tool execution...")
+  console.log('[dsml] 🔄 Getting final response after tool execution...');
 
   const finalResponse = await callLLM(
     provider,
@@ -1132,78 +1436,80 @@ async function processDSToolCalls(
       maxTokens: userConfig?.maxTokens || 4096,
       stream: false,
     },
-    userConfig?.baseUrl,
-  )
+    userConfig?.baseUrl
+  );
 
   if (!finalResponse.ok) {
-    throw new Error(`Final LLM call failed: ${finalResponse.status}`)
+    throw new Error(`Final LLM call failed: ${finalResponse.status}`);
   }
 
-  const finalData = await finalResponse.json()
-  const finalContent = finalData.choices?.[0]?.message?.content || ""
+  const finalData = await finalResponse.json();
+  const finalContent = finalData.choices?.[0]?.message?.content || '';
 
-  const nestedToolCalls = detectAndParseDSToolCalls(finalContent)
+  const nestedToolCalls = detectAndParseDSToolCalls(finalContent);
   if (nestedToolCalls && nestedToolCalls.length > 0) {
-    console.log("[dsml] 🔄 Detected nested tool calls, processing...")
-    return processDSToolCalls(finalContent, nestedToolCalls, currentMessages, options)
+    console.log('[dsml] 🔄 Detected nested tool calls, processing...');
+    return processDSToolCalls(finalContent, nestedToolCalls, currentMessages, options);
   }
 
   return {
     success: true,
     content: finalContent,
     usedTools: true,
-  }
+  };
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body: ChatRequestBody = await request.json()
-    const { messages, config: userConfig, customPrompt, module, input, intent } = body
+    const body: ChatRequestBody = await request.json();
+    const { messages, config: userConfig, customPrompt, module, input, intent } = body;
 
-    console.log("[chat] 📥 Received request:", {
+    console.log('[chat] 📥 Received request:', {
       hasMessages: Boolean(messages && messages.length > 0),
       messagesCount: messages?.length,
       hasConfig: Boolean(userConfig),
       provider: userConfig?.provider,
       model: userConfig?.model,
       streamSetting: userConfig?.stream,
-    })
+    });
 
     const forcedConfig = {
       ...userConfig,
-    }
+    };
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
-        { error: "Messages array is required and must not be empty" },
+        { error: 'Messages array is required and must not be empty' },
         { status: 400 }
-      )
+      );
     }
 
-    const provider = forcedConfig?.provider || "openclaw"
-    const apiKey = (forcedConfig?.apiKey || "").trim()
-    const model = forcedConfig?.model || ""
-    const enableTools = forcedConfig?.enableTools !== false
+    const provider = forcedConfig?.provider || 'openclaw';
+    const apiKey = (forcedConfig?.apiKey || '').trim();
+    const model = forcedConfig?.model || '';
+    const enableTools = forcedConfig?.enableTools !== false;
 
     if (!apiKey) {
-      console.error("[chat] ❌ API Key missing!")
+      console.error('[chat] ❌ API Key missing!');
 
       return NextResponse.json(
         {
-          error: "API key is required. Please configure your API key in Settings.",
+          error: 'API key is required. Please configure your API key in Settings.',
           debug: {
             receivedConfig: userConfig,
-            hint: "Make sure you're sending { config: { apiKey: 'your-key' }, messages: [...] }"
-          }
+            hint: "Make sure you're sending { config: { apiKey: 'your-key' }, messages: [...] }",
+          },
         },
         { status: 400 }
-      )
+      );
     }
 
-    console.log(`[chat] ✅ Valid config - Provider: ${provider}, Model: ${model}, Messages: ${messages.length}, Tools: ${enableTools}`)
+    console.log(
+      `[chat] ✅ Valid config - Provider: ${provider}, Model: ${model}, Messages: ${messages.length}, Tools: ${enableTools}`
+    );
 
     const systemMessage: ChatMessage = {
-      role: "system",
+      role: 'system',
       content: `You are the BME Research Accelerator AI Agent — a senior biomedical engineering research advisor with deep expertise in literature analysis, experiment reproduction, methodology reverse-engineering, and research ideation.
 
 🎯 CORE MISSION: Transform passive literature reading into actionable research execution — enabling researchers to rapidly understand, verify, reproduce, and extend published work.
@@ -1361,10 +1667,10 @@ Regardless of the selected mode, you MUST:
 3. ✅ Base your analysis on FULL CONTENT, never just abstract
 
 ${(() => {
-  const currentIntent = intent || "QUICK_READ"
+  const currentIntent = intent || 'QUICK_READ';
 
   switch (currentIntent) {
-    case "QUICK_READ":
+    case 'QUICK_READ':
       return `⚡ QUICK_READ MODE - Full Content Overview
 
 GOAL: Provide comprehensive paper analysis with complete content understanding
@@ -1402,9 +1708,9 @@ OUTPUT FORMAT:
 ## 🎯 Innovation Level: L1-L5
 [Brief justification]
 
-⏱️ Focus on completeness over speed!`
+⏱️ Focus on completeness over speed!`;
 
-    case "EVIDENCE_VERIFY":
+    case 'EVIDENCE_VERIFY':
       return `🔍 EVIDENCE_VERIFY MODE - Full-Text Fact-Checking
 
 GOAL: Verify scientific claims with COMPLETE content evidence assessment
@@ -1434,9 +1740,9 @@ OUTPUT FORMAT:
 ### Evidence Strength: ⭐⭐⭐⭐⭐ (1-5 stars)
 ### Statistical Validity: ✅ PASS / ⚠️ WEAK / ❌ FAIL
 ### Key Issues Found: [list with specific page/section references]
-### Conclusion: VERIFIED / PARTIALLY VALIDATED / REFUTED`
+### Conclusion: VERIFIED / PARTIALLY VALIDATED / REFUTED`;
 
-    case "EXPERIMENT_REPRODUCE":
+    case 'EXPERIMENT_REPRODUCE':
       return `🔬 EXPERIMENT_REPRODUCE MODE - Blueprint Generation
 
 GOAL: Create step-by-step reproduction plan
@@ -1464,9 +1770,9 @@ OUTPUT FORMAT:
 ## ⚙️ Training Protocol
 ## 📈 Evaluation Framework
 ## ⚠️ Known Challenges & Solutions
-## ✅ Success Criteria`
+## ✅ Success Criteria`;
 
-    case "METHOD_COMPARE":
+    case 'METHOD_COMPARE':
       return `⚖️ METHOD_COMPARE MODE - Comparative Analysis
 
 GOAL: Compare multiple methods/papers side-by-side
@@ -1496,9 +1802,9 @@ OUTPUT FORMAT:
 | Speed | X ms | Y ms | ... |
 ## 📊 Head-to-Head Comparison
 ## 💡 Recommendation: [clear winner or use-case dependent]
-## 🎯 Best For: [specific scenarios]`
+## 🎯 Best For: [specific scenarios]`;
 
-    case "RESEARCH_IDEATION":
+    case 'RESEARCH_IDEATION':
       return `💡 RESEARCH_IDEATION MODE - Full-Text Gap Analysis
 
 GOAL: Identify research gaps from COMPLETE paper understanding and propose novel directions
@@ -1533,9 +1839,9 @@ Gap 1: [from Section 8] → Impact: high/medium/low
 - Expected Impact: [description]
 
 ## 🗺️ Research Roadmap (6-12 months)
-## 📚 Key References to Build Upon`
+## 📚 Key References to Build Upon`;
 
-    case "DATASET_MATCH":
+    case 'DATASET_MATCH':
       return `📊 DATASET_MATCH_MODE - Context-Aware Dataset Recommendations
 
 GOAL: Recommend optimal datasets based on COMPLETE understanding of paper's data needs
@@ -1568,96 +1874,103 @@ OUTPUT FORMAT:
 [List 2-3 for advanced users]
 
 ## 🔗 Quick Start Guide
-## ⚠️ Common Pitfalls to Avoid`
+## ⚠️ Common Pitfalls to Avoid`;
 
     default:
-      return `⚡ DEFAULT MODE - Standard Analysis`
+      return `⚡ DEFAULT MODE - Standard Analysis`;
   }
 })()}
 
-Current analysis mode: ${module || "decompose"}
-Analysis intent: ${intent || "QUICK_READ"}
+Current analysis mode: ${module || 'decompose'}
+Analysis intent: ${intent || 'QUICK_READ'}
 Engine version: SKILL-EXECUTION-ENGINE-v3.0 (Intent-Aware)
-${customPrompt ? `\n📝 User's specific instruction:\n${customPrompt}` : ""}`,
-    }
+${customPrompt ? `\n📝 User's specific instruction:\n${customPrompt}` : ''}`,
+    };
 
     // 🆕 Extract user's last message content FIRST (needed for context memory)
-    const lastUserMessage = messages[messages.length - 1]
-    const lastUserContent = typeof lastUserMessage?.content === 'string'
-      ? lastUserMessage.content
-      : Array.isArray(lastUserMessage?.content)
-        ? lastUserMessage.content.map(c => typeof c === 'string' ? c : c.text || '').join(' ')
-        : ''
+    const lastUserMessage = messages[messages.length - 1];
+    const lastUserContent =
+      typeof lastUserMessage?.content === 'string'
+        ? lastUserMessage.content
+        : Array.isArray(lastUserMessage?.content)
+          ? lastUserMessage.content.map((c) => (typeof c === 'string' ? c : c.text || '')).join(' ')
+          : '';
 
     // 🆕 Inject relevant context memory (网关式持久化记忆)
-    const contextMemory = getRelevantContext(lastUserContent || '')
+    const contextMemory = getRelevantContext(lastUserContent || '');
 
-    let allMessages: ChatMessage[]
+    let allMessages: ChatMessage[];
 
     if (contextMemory) {
-      console.log(`[chat] 🧠 Context memory injected (${contextMemory.length} chars)`)
+      console.log(`[chat] 🧠 Context memory injected (${contextMemory.length} chars)`);
       // Add context memory as a system message before user messages
-      allMessages = [
-        systemMessage,
-        { role: 'system', content: contextMemory },
-        ...messages
-      ]
+      allMessages = [systemMessage, { role: 'system', content: contextMemory }, ...messages];
     } else {
-      allMessages = [systemMessage, ...messages]
+      allMessages = [systemMessage, ...messages];
     }
 
-    const hasFileAttachments = /📎 ATTACHED FILES|📋 USER REQUEST|FILE:|Content preview|DOIs found|parse_pdf_content|resolve_doi/i.test(lastUserContent)
+    const hasFileAttachments =
+      /📎 ATTACHED FILES|📋 USER REQUEST|FILE:|Content preview|DOIs found|parse_pdf_content|resolve_doi/i.test(
+        lastUserContent
+      );
 
-    console.log(`[chat] 📎 File attachment detected: ${hasFileAttachments}`)
+    console.log(`[chat] 📎 File attachment detected: ${hasFileAttachments}`);
 
-    if (enableTools && provider !== "anthropic" && hasFileAttachments) {
-      console.log("[chat] 🤖 Attempting Agent mode with tool calling...")
+    if (enableTools && provider !== 'anthropic' && hasFileAttachments) {
+      console.log('[chat] 🤖 Attempting Agent mode with tool calling...');
 
       // 🚀 SPEED OPTIMIZATION: Adjust maxRounds based on intent
-      const currentIntent = intent || "QUICK_READ"
+      const currentIntent = intent || 'QUICK_READ';
       const maxRoundsByIntent: Record<string, number> = {
-        "QUICK_READ": 1,           // Fastest: only 1 round for quick overview
-        "EVIDENCE_VERIFY": 2,     // Medium: verify + check blockers
-        "EXPERIMENT_REPRODUCE": 3, // Full: need complete extraction
-        "METHOD_COMPARE": 3,      // Full: compare multiple papers
-        "RESEARCH_IDEATION": 2,   // Medium-High: search + ideate
-        "DATASET_MATCH": 2,       // Medium: find datasets
-      }
-      const optimizedMaxRounds = maxRoundsByIntent[currentIntent] || 2
+        QUICK_READ: 1, // Fastest: only 1 round for quick overview
+        EVIDENCE_VERIFY: 2, // Medium: verify + check blockers
+        EXPERIMENT_REPRODUCE: 3, // Full: need complete extraction
+        METHOD_COMPARE: 3, // Full: compare multiple papers
+        RESEARCH_IDEATION: 2, // Medium-High: search + ideate
+        DATASET_MATCH: 2, // Medium: find datasets
+      };
+      const optimizedMaxRounds = maxRoundsByIntent[currentIntent] || 2;
 
-      console.log(`[chat] ⚡ Intent-optimized maxRounds: ${optimizedMaxRounds} (for ${currentIntent})`)
+      console.log(
+        `[chat] ⚡ Intent-optimized maxRounds: ${optimizedMaxRounds} (for ${currentIntent})`
+      );
 
       try {
         const agentResult = await attemptAgentMode(allMessages, {
-          provider, apiKey, model,
+          provider,
+          apiKey,
+          model,
           userConfig: forcedConfig,
-          maxRounds: optimizedMaxRounds  // Use intent-optimized rounds
-        })
+          maxRounds: optimizedMaxRounds, // Use intent-optimized rounds
+        });
 
         if (agentResult.success && agentResult.usedTools) {
-          console.log("[chat] ✅ Agent mode succeeded with tool execution")
+          console.log('[chat] ✅ Agent mode succeeded with tool execution');
           return streamFinalResponse(
             { choices: [{ message: { content: agentResult.content } }] },
             provider
-          )
+          );
         } else if (agentResult.success && !agentResult.usedTools) {
-          const responseIndicatesNoFiles = /don't see|no file|no attachment|please upload|provide.*doi|provide.*file/i.test(agentResult.content)
+          const responseIndicatesNoFiles =
+            /don't see|no file|no attachment|please upload|provide.*doi|provide.*file/i.test(
+              agentResult.content
+            );
 
           if (responseIndicatesNoFiles) {
-            console.log("[chat] ⚠️ Agent didn't detect files, falling back to direct embedding...")
-            return await directEmbeddingMode(allMessages, { provider, apiKey, model, userConfig })
+            console.log("[chat] ⚠️ Agent didn't detect files, falling back to direct embedding...");
+            return await directEmbeddingMode(allMessages, { provider, apiKey, model, userConfig });
           } else {
-            console.log("[chat] ✅ Agent mode returned valid response without tools")
+            console.log('[chat] ✅ Agent mode returned valid response without tools');
             return streamFinalResponse(
               { choices: [{ message: { content: agentResult.content } }] },
               provider
-            )
+            );
           }
         }
       } catch (agentError) {
-        console.error("[chat] ❌ Agent mode failed:", agentError)
-        console.log("[chat] 🔄 Falling back to direct embedding mode...")
-        return await directEmbeddingMode(allMessages, { provider, apiKey, model, userConfig })
+        console.error('[chat] ❌ Agent mode failed:', agentError);
+        console.log('[chat] 🔄 Falling back to direct embedding mode...');
+        return await directEmbeddingMode(allMessages, { provider, apiKey, model, userConfig });
       }
     }
 
@@ -1671,106 +1984,128 @@ ${customPrompt ? `\n📝 User's specific instruction:\n${customPrompt}` : ""}`,
         maxTokens: forcedConfig?.maxTokens,
         stream: forcedConfig?.stream ?? true,
       },
-      forcedConfig?.baseUrl,
-    )
+      forcedConfig?.baseUrl
+    );
 
     if (!response.ok) {
-      const errorBody = await response.text().catch(() => "Unknown error")
-      console.error(`[chat] LLM API error (${response.status}):`, errorBody)
+      const errorBody = await response.text().catch(() => 'Unknown error');
+      console.error(`[chat] LLM API error (${response.status}):`, errorBody);
 
-      let errorMessage = `LLM API error (${response.status})`
+      let errorMessage = `LLM API error (${response.status})`;
 
       if (response.status === 401) {
-        errorMessage = "Invalid API key. Please check your configuration."
+        errorMessage = 'Invalid API key. Please check your configuration in Settings.';
       } else if (response.status === 429) {
-        errorMessage = "Rate limited. Please wait a moment and try again."
+        errorMessage =
+          'Rate limited. Please wait a moment and try again, or switch to a different model.';
+      } else if (response.status === 404) {
+        errorMessage = `Model "${model}" not found. This model may not be available yet. Try: gpt-5.5, claude-opus-4-7, gemini-2.5-pro, or deepseek-v4-pro`;
+      } else if (response.status === 422) {
+        errorMessage =
+          'Invalid request. The model may not support this feature. Check if your model supports tool calling/function calling.';
       } else if (response.status >= 500) {
-        errorMessage = "LLM provider server error. Please try again later."
+        errorMessage = `LLM provider server error (${provider}/${model}). Please try again later or switch to a different provider.`;
       }
 
       return NextResponse.json(
-        { error: errorMessage, detail: errorBody },
+        { error: errorMessage, detail: errorBody, provider, model },
         { status: response.status }
-      )
+      );
     }
 
-    const isExplicitlyNonStreaming = forcedConfig?.stream === false
-    const isSSEResponse = response.headers.get("content-type")?.includes("text/event-stream")
+    const isExplicitlyNonStreaming = forcedConfig?.stream === false;
+    const isSSEResponse = response.headers.get('content-type')?.includes('text/event-stream');
 
-    console.log(`[chat] 📊 Response type check:`)
-    console.log(`  - Requested streaming: ${forcedConfig?.stream}`)
-    console.log(`  - Explicitly non-streaming: ${isExplicitlyNonStreaming}`)
-    console.log(`  - Response is SSE: ${isSSEResponse}`)
+    console.log(`[chat] 📊 Response type check:`);
+    console.log(`  - Requested streaming: ${forcedConfig?.stream}`);
+    console.log(`  - Explicitly non-streaming: ${isExplicitlyNonStreaming}`);
+    console.log(`  - Response is SSE: ${isSSEResponse}`);
 
     if (isExplicitlyNonStreaming && isSSEResponse) {
-      console.log("[chat] ⚠️ Requested non-streaming but received SSE, buffering and converting...")
+      console.log(
+        '[chat] ⚠️ Requested non-streaming but received SSE, buffering and converting...'
+      );
 
-      const bufferedContent = await bufferSSEToText(response)
+      const bufferedContent = await bufferSSEToText(response);
 
-      console.log(`[chat] ✅ Buffered content length: ${bufferedContent.length} chars`)
+      console.log(`[chat] ✅ Buffered content length: ${bufferedContent.length} chars`);
 
-      const dsmlToolCalls = detectAndParseDSToolCalls(bufferedContent)
+      const dsmlToolCalls = detectAndParseDSToolCalls(bufferedContent);
 
       if (dsmlToolCalls && dsmlToolCalls.length > 0) {
-        console.log(`[dsml] 🎯 Found ${dsmlToolCalls.length} DSML tool call(s) in forced non-streaming mode!`)
+        console.log(
+          `[dsml] 🎯 Found ${dsmlToolCalls.length} DSML tool call(s) in forced non-streaming mode!`
+        );
 
         try {
-          const dsmlResult = await processDSToolCalls(
-            bufferedContent,
-            dsmlToolCalls,
-            allMessages,
-            { provider, apiKey, model, userConfig }
-          )
+          const dsmlResult = await processDSToolCalls(bufferedContent, dsmlToolCalls, allMessages, {
+            provider,
+            apiKey,
+            model,
+            userConfig,
+          });
 
           if (dsmlResult.success && dsmlResult.usedTools) {
             return NextResponse.json({
               choices: [{ message: { content: dsmlResult.content } }],
-              _meta: { mode: "non-streaming-with-dsml", toolsExecuted: dsmlToolCalls.length }
-            })
+              _meta: { mode: 'non-streaming-with-dsml', toolsExecuted: dsmlToolCalls.length },
+            });
           }
         } catch (e) {
-          console.error("[dsml] ❌ DSML processing failed:", e)
+          console.error('[dsml] ❌ DSML processing failed:', e);
         }
       }
 
       return NextResponse.json({
         choices: [{ message: { content: bufferedContent } }],
-        _meta: { mode: "converted-from-sse" }
-      })
+        _meta: { mode: 'converted-from-sse' },
+      });
     }
 
     if (!isExplicitlyNonStreaming && isSSEResponse) {
-      console.log("[chat] 🔄 Buffering stream to check for DSML tool calls...")
+      console.log('[chat] 🔄 Buffering stream to check for DSML tool calls...');
 
       const fullText = await new Promise<string>((resolve) => {
-        const reader = response.body?.getReader()
-        if (!reader) { resolve(""); return }
+        const reader = response.body?.getReader();
+        if (!reader) {
+          resolve('');
+          return;
+        }
 
-        const decoder = new TextDecoder()
-        let accumulated = ""
+        const decoder = new TextDecoder();
+        let accumulated = '';
 
-        reader.read().then(function process({ done, value }): Promise<void> | void {
-          if (done) {
-            resolve(accumulated)
-            return
-          }
+        reader
+          .read()
+          .then(function process({ done, value }): Promise<void> | void {
+            if (done) {
+              resolve(accumulated);
+              return;
+            }
 
-          accumulated += decoder.decode(value, { stream: true })
-          return reader.read().then(process)
-        }).catch(() => resolve(accumulated))
-      })
+            accumulated += decoder.decode(value, { stream: true });
+            return reader.read().then(process);
+          })
+          .catch(() => resolve(accumulated));
+      });
 
-      console.log("[chat] 📊 Stream buffered, checking for DSML...")
-      console.log(`[chat] 🏷️ Buffered text length: ${fullText.length} chars`)
+      console.log('[chat] 📊 Stream buffered, checking for DSML...');
+      console.log(`[chat] 🏷️ Buffered text length: ${fullText.length} chars`);
 
-      const extractedContent = extractContentFromSSE(fullText)
-      console.log(`[chat] 📝 Extracted content length: ${extractedContent.length} chars`)
+      const extractedContent = extractContentFromSSE(fullText);
+      console.log(`[chat] 📝 Extracted content length: ${extractedContent.length} chars`);
 
-      const dsmlToolCallsRaw = detectAndParseDSToolCalls(extractedContent)
-      const dsmlToolCalls = (dsmlToolCallsRaw !== null ? dsmlToolCallsRaw : []) as Array<{ name: string; args: Record<string, string>; fullMatch: string }>
+      const dsmlToolCallsRaw = detectAndParseDSToolCalls(extractedContent);
+      const dsmlToolCalls = (dsmlToolCallsRaw !== null ? dsmlToolCallsRaw : []) as Array<{
+        name: string;
+        args: Record<string, string>;
+        fullMatch: string;
+      }>;
 
       if (dsmlToolCalls.length > 0) {
-        console.log(`[dsml] 🎯🎯🎯 Found ${dsmlToolCalls.length} DSML tool call(s) in streamed response!`)
+        console.log(
+          `[dsml] 🎯🎯🎯 Found ${dsmlToolCalls.length} DSML tool call(s) in streamed response!`
+        );
 
         try {
           const dsmlResult = await processDSToolCalls(
@@ -1778,297 +2113,316 @@ ${customPrompt ? `\n📝 User's specific instruction:\n${customPrompt}` : ""}`,
             dsmlToolCalls,
             allMessages,
             { provider, apiKey, model, userConfig }
-          )
+          );
 
           if (dsmlResult.success && dsmlResult.usedTools) {
-            console.log("[dsml] ✅ DSML tool calls processed successfully, streaming final result")
+            console.log('[dsml] ✅ DSML tool calls processed successfully, streaming final result');
 
             return streamFinalResponse(
               { choices: [{ message: { content: dsmlResult.content } }] },
               provider
-            )
+            );
           }
         } catch (dsmlError) {
-          console.error("[dsml] ❌ DSML processing failed:", dsmlError)
+          console.error('[dsml] ❌ DSML processing failed:', dsmlError);
         }
       }
 
-      console.log("[chat] ✅ No DSML tool calls detected, proceeding with normal stream")
+      console.log('[chat] ✅ No DSML tool calls detected, proceeding with normal stream');
 
-      const encoder = new TextEncoder()
+      const encoder = new TextEncoder();
       const stream = new ReadableStream({
         async start(controller) {
-          const lines = fullText.split("\n").filter(line => line.startsWith("data: ") && line !== "data: [DONE]")
+          const lines = fullText
+            .split('\n')
+            .filter((line) => line.startsWith('data: ') && line !== 'data: [DONE]');
 
           for (const line of lines) {
             try {
-              const data = line.replace("data: ", "")
-              const parsed = JSON.parse(data)
-              let content = ""
+              const data = line.replace('data: ', '');
+              const parsed = JSON.parse(data);
+              let content = '';
 
               if (parsed.choices?.[0]?.delta?.content) {
-                content = parsed.choices[0].delta.content
-              } else if (parsed.content && typeof parsed.content === "string") {
-                content = parsed.content
+                content = parsed.choices[0].delta.content;
+              } else if (parsed.content && typeof parsed.content === 'string') {
+                content = parsed.content;
               } else if (parsed.delta?.text) {
-                content = parsed.delta.text
+                content = parsed.delta.text;
               }
 
               if (content) {
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
               }
             } catch (e) {
               // Skip malformed chunks
             }
           }
 
-          controller.enqueue(encoder.encode("data: [DONE]\n\n"))
-          controller.close()
+          controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+          controller.close();
         },
-      })
+      });
 
       return new Response(stream, {
         headers: {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-          Connection: "keep-alive",
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          Connection: 'keep-alive',
         },
-      })
+      });
     }
 
-    const data = await response.json()
+    const data = await response.json();
 
-    let content = ""
+    let content = '';
 
     if (data.choices?.[0]?.message?.content) {
-      content = data.choices[0].message.content
+      content = data.choices[0].message.content;
     } else if (data.content?.[0]?.text) {
-      content = data.content[0].text
-    } else if (typeof data.content === "string") {
-      content = data.content
+      content = data.content[0].text;
+    } else if (typeof data.content === 'string') {
+      content = data.content;
     }
 
-    console.log("[chat] 📝 Checking non-streaming response for DSML tool calls...")
-    console.log(`[chat] 📊 Response content length: ${content.length} chars`)
+    console.log('[chat] 📝 Checking non-streaming response for DSML tool calls...');
+    console.log(`[chat] 📊 Response content length: ${content.length} chars`);
 
-    const dsmlToolCallsNonStream = detectAndParseDSToolCalls(content)
+    const dsmlToolCallsNonStream = detectAndParseDSToolCalls(content);
 
     if (dsmlToolCallsNonStream && dsmlToolCallsNonStream.length > 0) {
-      console.log(`[dsml] 🎯🎯🎯 FOUND ${dsmlToolCallsNonStream.length} DSML tool call(s) in NON-STREAMING response! Processing...`)
+      console.log(
+        `[dsml] 🎯🎯🎯 FOUND ${dsmlToolCallsNonStream.length} DSML tool call(s) in NON-STREAMING response! Processing...`
+      );
 
       try {
-        const dsmlResult = await processDSToolCalls(
-          content,
-          dsmlToolCallsNonStream,
-          allMessages,
-          { provider, apiKey, model, userConfig }
-        )
+        const dsmlResult = await processDSToolCalls(content, dsmlToolCallsNonStream, allMessages, {
+          provider,
+          apiKey,
+          model,
+          userConfig,
+        });
 
         if (dsmlResult.success && dsmlResult.usedTools) {
-          console.log("[dsml] ✅✅✅ DSML tool calls processed successfully in non-streaming mode!")
+          console.log(
+            '[dsml] ✅✅✅ DSML tool calls processed successfully in non-streaming mode!'
+          );
 
           return NextResponse.json({
-            choices: [{
-              message: {
-                content: dsmlResult.content,
-              }
-            }],
+            choices: [
+              {
+                message: {
+                  content: dsmlResult.content,
+                },
+              },
+            ],
             usage: data.usage,
             model: data.model || model,
             _meta: {
               agentMode: true,
               toolsExecuted: dsmlToolCallsNonStream.length,
               originalHadDSML: true,
-              skillEngineVersion: "v2.0",
-            }
-          })
+              skillEngineVersion: 'v2.0',
+            },
+          });
         }
       } catch (dsmlError) {
-        console.error("[dsml] ❌❌❌ DSML processing failed in non-streaming mode:", dsmlError)
+        console.error('[dsml] ❌❌❌ DSML processing failed in non-streaming mode:', dsmlError);
       }
     } else {
-      console.log("[chat] ✅ No DSML tool calls found in non-streaming response")
+      console.log('[chat] ✅ No DSML tool calls found in non-streaming response');
     }
 
-    console.log(`[chat] 🚀 Returning response - Content length: ${content.length} chars, Format: standard OpenAI JSON`)
+    console.log(
+      `[chat] 🚀 Returning response - Content length: ${content.length} chars, Format: standard OpenAI JSON`
+    );
     return NextResponse.json({
-      choices: [{
-        message: {
-          content: content,
-        }
-      }],
+      choices: [
+        {
+          message: {
+            content: content,
+          },
+        },
+      ],
       usage: data.usage,
       model: data.model || model,
       _meta: {
         skillEngineActive: true,
-        version: "v2.0",
-      }
-    })
+        version: 'v2.0',
+      },
+    });
   } catch (error) {
-    console.error("[chat] Error:", error)
+    console.error('[chat] Error:', error);
 
-    let message = error instanceof Error ? error.message : "Chat failed"
-    let statusCode = 500
+    let message = error instanceof Error ? error.message : 'Chat failed';
+    let statusCode = 500;
 
-    if (message.includes("fetch")) {
-      message = "Network error: Unable to reach LLM provider. Check your connection."
-      statusCode = 502
-    } else if (message.includes("timeout")) {
-      message = "Request timeout: LLM provider did not respond in time."
-      statusCode = 504
+    if (message.includes('fetch')) {
+      message = 'Network error: Unable to reach LLM provider. Check your connection.';
+      statusCode = 502;
+    } else if (message.includes('timeout')) {
+      message = 'Request timeout: LLM provider did not respond in time.';
+      statusCode = 504;
     }
 
-    return NextResponse.json(
-      { error: message },
-      { status: statusCode }
-    )
+    return NextResponse.json({ error: message }, { status: statusCode });
   }
 }
 
-async function streamFinalResponse(data: Record<string, unknown>, provider: string): Promise<Response> {
-  const encoder = new TextEncoder()
-  const choices = data.choices as Array<{ message?: { content?: string } }> | undefined
-  const content = choices?.[0]?.message?.content || ""
+async function streamFinalResponse(
+  data: Record<string, unknown>,
+  provider: string
+): Promise<Response> {
+  const encoder = new TextEncoder();
+  const choices = data.choices as Array<{ message?: { content?: string } }> | undefined;
+  const content = choices?.[0]?.message?.content || '';
 
   const stream = new ReadableStream({
     async start(controller) {
-      const chunkSize = 20
+      const chunkSize = 20;
       for (let i = 0; i < content.length; i += chunkSize) {
-        const chunk = content.slice(i, i + chunkSize)
+        const chunk = content.slice(i, i + chunkSize);
 
         const sseData = {
-          choices: [{
-            delta: {
-              content: chunk
-            }
-          }]
-        }
+          choices: [
+            {
+              delta: {
+                content: chunk,
+              },
+            },
+          ],
+        };
 
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(sseData)}\n\n`))
-        await new Promise(resolve => setTimeout(resolve, 10))
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(sseData)}\n\n`));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
-      controller.enqueue(encoder.encode("data: [DONE]\n\n"))
-      controller.close()
+      controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+      controller.close();
     },
-  })
+  });
 
   return new Response(stream, {
     headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
     },
-  })
+  });
 }
 
 async function attemptAgentMode(
   messages: ChatMessage[],
   options: {
-    provider: string
-    apiKey: string
-    model: string
-    userConfig?: { temperature?: number; maxTokens?: number; stream?: boolean; baseUrl?: string }
-    maxRounds?: number
+    provider: string;
+    apiKey: string;
+    model: string;
+    userConfig?: { temperature?: number; maxTokens?: number; stream?: boolean; baseUrl?: string };
+    maxRounds?: number;
   }
 ): Promise<{ success: boolean; content: string; usedTools: boolean }> {
-
-  const { provider, apiKey, model, userConfig, maxRounds = 3 } = options
-  let currentMessages = [...messages]
+  const { provider, apiKey, model, userConfig, maxRounds = 3 } = options;
+  let currentMessages = [...messages];
 
   for (let round = 0; round < maxRounds; round++) {
-    console.log(`[agent] 🔄 Round ${round + 1}/${maxRounds}`)
+    console.log(`[agent] 🔄 Round ${round + 1}/${maxRounds}`);
 
     const llmBody = {
-      model: model || "gpt-4o-mini",
+      model: model || 'gpt-5.5', // 2026: Updated to GPT-5.5 Flagship (1M ctx, reasoning, vision)
       messages: currentMessages,
       temperature: userConfig?.temperature ?? 0.7,
       max_tokens: userConfig?.maxTokens || 4096,
       stream: false,
       tools: AGENT_TOOLS,
-      tool_choice: "auto",
-    }
+      tool_choice: 'auto',
+    };
 
-    const { url, headers } = getProviderConfig(provider, apiKey, userConfig?.baseUrl)
+    const { url, headers } = getProviderConfig(provider, apiKey, userConfig?.baseUrl);
 
     const response = await fetchWithRetry(url, {
-      method: "POST",
+      method: 'POST',
       headers,
       body: JSON.stringify(llmBody),
-    })
+    });
 
     if (!response.ok) {
-      throw new Error(`Agent API error: ${response.status}`)
+      throw new Error(`Agent API error: ${response.status}`);
     }
 
-    const data = await response.json()
-    const toolCalls = data.choices?.[0]?.message?.tool_calls
+    const data = await response.json();
+    const toolCalls = data.choices?.[0]?.message?.tool_calls;
 
     if (!toolCalls || toolCalls.length === 0) {
-      const content = data.choices?.[0]?.message?.content || ""
-      return { success: true, content, usedTools: false }
+      const content = data.choices?.[0]?.message?.content || '';
+      return { success: true, content, usedTools: false };
     }
 
-    console.log(`[agent] 🛠️ Executing ${toolCalls.length} tool(s)`)
+    console.log(`[agent] 🛠️ Executing ${toolCalls.length} tool(s)`);
 
     const assistantMessage: ChatMessage = {
-      role: "assistant",
+      role: 'assistant',
       content: data.choices?.[0]?.message?.content || null,
       tool_calls: toolCalls,
-    }
-    currentMessages.push(assistantMessage)
+    };
+    currentMessages.push(assistantMessage);
 
     for (const toolCall of toolCalls) {
-      const toolName = toolCall.function.name
-      let toolArgs: Record<string, unknown>
+      const toolName = toolCall.function.name;
+      let toolArgs: Record<string, unknown>;
 
       try {
-        toolArgs = JSON.parse(toolCall.function.arguments)
+        toolArgs = JSON.parse(toolCall.function.arguments);
       } catch (e) {
-        toolArgs = { raw: toolCall.function.arguments }
+        toolArgs = { raw: toolCall.function.arguments };
       }
 
-      const toolResult = await executeTool(toolName, toolArgs)
+      const toolResult = await executeTool(toolName, toolArgs);
 
       currentMessages.push({
-        role: "tool",
+        role: 'tool',
         tool_call_id: toolCall.id,
         name: toolName,
         content: toolResult,
-      })
+      });
     }
   }
 
-  const finalResponse = await callLLM(provider, apiKey, model, currentMessages, {
-    temperature: userConfig?.temperature,
-    maxTokens: userConfig?.maxTokens,
-    stream: false,
-  }, userConfig?.baseUrl)
+  const finalResponse = await callLLM(
+    provider,
+    apiKey,
+    model,
+    currentMessages,
+    {
+      temperature: userConfig?.temperature,
+      maxTokens: userConfig?.maxTokens,
+      stream: false,
+    },
+    userConfig?.baseUrl
+  );
 
-  const finalData = await finalResponse.json()
-  const content = finalData.choices?.[0]?.message?.content || ""
+  const finalData = await finalResponse.json();
+  const content = finalData.choices?.[0]?.message?.content || '';
 
-  return { success: true, content, usedTools: true }
+  return { success: true, content, usedTools: true };
 }
 
 async function directEmbeddingMode(
   messages: ChatMessage[],
   options: {
-    provider: string
-    apiKey: string
-    model: string
-    userConfig?: { temperature?: number; maxTokens?: number; stream?: boolean; baseUrl?: string }
+    provider: string;
+    apiKey: string;
+    model: string;
+    userConfig?: { temperature?: number; maxTokens?: number; stream?: boolean; baseUrl?: string };
   }
 ): Promise<Response> {
+  const { provider, apiKey, model, userConfig } = options;
 
-  const { provider, apiKey, model, userConfig } = options
+  console.log('[chat] 📄 Using direct embedding mode - injecting file content into context');
 
-  console.log("[chat] 📄 Using direct embedding mode - injecting file content into context")
-
-  const lastUserMsg = messages[messages.length - 1]
-  const fileContent = lastUserMsg?.content || ""
+  const lastUserMsg = messages[messages.length - 1];
+  const fileContent = lastUserMsg?.content || '';
 
   const enhancedSystemPrompt: ChatMessage = {
-    role: "system",
+    role: 'system',
     content: `You are the BME Research Accelerator AI Agent - Powered by SKILL ENGINE v2.0
 
 🚨 CRITICAL: The user has uploaded file(s) with the following content. You MUST analyze this content now!
@@ -2092,9 +2446,9 @@ ${fileContent}
 ⚠️ Do NOT say you don't see any files. Analyze the content that is explicitly provided.
 ⚠️ Respond in Chinese if the user writes in Chinese.
 ⚠️ This analysis is powered by SKILL ENGINE v2.0 with dynamic reference loading.`,
-  }
+  };
 
-  const enhancedMessages = [enhancedSystemPrompt, ...messages.slice(1)]
+  const enhancedMessages = [enhancedSystemPrompt, ...messages.slice(1)];
 
   const response = await callLLM(
     provider,
@@ -2106,75 +2460,80 @@ ${fileContent}
       maxTokens: userConfig?.maxTokens || 4096,
       stream: userConfig?.stream ?? true,
     },
-    userConfig?.baseUrl,
-  )
+    userConfig?.baseUrl
+  );
 
   if (!response.ok) {
-    throw new Error(`Direct embedding API error: ${response.status}`)
+    throw new Error(`Direct embedding API error: ${response.status}`);
   }
 
-  if (userConfig?.stream !== false && response.headers.get("content-type")?.includes("text/event-stream")) {
-    console.warn("[directEmbedding] ⚠️ Unexpected streaming response detected!")
-    return streamSSEResponse(response)
+  if (
+    userConfig?.stream !== false &&
+    response.headers.get('content-type')?.includes('text/event-stream')
+  ) {
+    console.warn('[directEmbedding] ⚠️ Unexpected streaming response detected!');
+    return streamSSEResponse(response);
   }
 
-  const data = await response.json()
-  const content = data.choices?.[0]?.message?.content || ""
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content || '';
 
   return NextResponse.json({
-    choices: [{
-      message: {
-        content: content,
-      }
-    }],
+    choices: [
+      {
+        message: {
+          content: content,
+        },
+      },
+    ],
     usage: data.usage,
     model: data.model || model,
     _meta: {
-      mode: "direct-embedding",
-      skillEngineVersion: "v2.0",
-    }
-  })
+      mode: 'direct-embedding',
+      skillEngineVersion: 'v2.0',
+    },
+  });
 }
 
 async function streamSSEResponse(response: Response): Promise<Response> {
-  const encoder = new TextEncoder()
+  const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
     async start(controller) {
-      const reader = response.body?.getReader()
+      const reader = response.body?.getReader();
       if (!reader) {
-        controller.close()
-        return
+        controller.close();
+        return;
       }
 
       try {
         while (true) {
-          const { done, value } = await reader.read()
+          const { done, value } = await reader.read();
 
           if (done) {
-            controller.close()
-            break
+            controller.close();
+            break;
           }
 
-          const chunk = new TextDecoder().decode(value)
-          const lines = chunk.split("\n").filter(line => line.startsWith("data: "))
+          const chunk = new TextDecoder().decode(value);
+          const lines = chunk.split('\n').filter((line) => line.startsWith('data: '));
 
           for (const line of lines) {
-            const data = line.replace("data: ", "")
-            if (data === "[DONE]") continue
+            const data = line.replace('data: ', '');
+            if (data === '[DONE]') continue;
 
             try {
-              const parsed = JSON.parse(data)
-              let content = ""
+              const parsed = JSON.parse(data);
+              let content = '';
 
               if (parsed.choices?.[0]?.delta?.content) {
-                content = parsed.choices[0].delta.content
-              } else if (parsed.content && typeof parsed.content === "string") {
-                content = parsed.content
+                content = parsed.choices[0].delta.content;
+              } else if (parsed.content && typeof parsed.content === 'string') {
+                content = parsed.content;
               }
 
               if (content) {
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
               }
             } catch (e) {
               // Skip malformed chunks
@@ -2182,46 +2541,46 @@ async function streamSSEResponse(response: Response): Promise<Response> {
           }
         }
       } catch (error) {
-        console.error("[directEmbedding] Stream error:", error)
-        controller.error(error)
+        console.error('[directEmbedding] Stream error:', error);
+        controller.error(error);
       }
     },
-  })
+  });
 
   return new Response(stream, {
     headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
     },
-  })
+  });
 }
 
 export async function GET() {
   return NextResponse.json({
-    endpoint: "/api/chat",
-    method: "POST",
-    contentType: "application/json",
-    description: "Chat with LLM for BME research analysis - Powered by SKILL ENGINE v2.0",
+    endpoint: '/api/chat',
+    method: 'POST',
+    contentType: 'application/json',
+    description: 'Chat with LLM for BME research analysis - Powered by SKILL ENGINE v2.0',
     parameters: {
-      messages: "Array of chat messages [{role, content}]",
-      config: "Optional: {provider, apiKey, model, temperature, maxTokens, stream}",
-      customPrompt: "Optional: Custom system prompt override",
-      module: "Optional: Current analysis module (decompose/compare/reproduce/etc.)",
-      intent: "Optional: Analysis intent (QUICK_READ/EVIDENCE_VERIFY/etc.)",
+      messages: 'Array of chat messages [{role, content}]',
+      config: 'Optional: {provider, apiKey, model, temperature, maxTokens, stream}',
+      customPrompt: 'Optional: Custom system prompt override',
+      module: 'Optional: Current analysis module (decompose/compare/reproduce/etc.)',
+      intent: 'Optional: Analysis intent (QUICK_READ/EVIDENCE_VERIFY/etc.)',
     },
     supportedProviders: Object.keys(PROVIDER_CONFIGS),
     features: [
-      "Streaming responses (SSE)",
-      "Multi-provider support",
-      "BME-specific system prompt",
-      "SKILL ENGINE v2.0 integration",
-      "Dynamic reference loading",
-      "Protocol executor (6 modules)",
-      "10 specialized tools",
-      "Error handling with helpful messages",
-      "Automatic format detection",
+      'Streaming responses (SSE)',
+      'Multi-provider support',
+      'BME-specific system prompt',
+      'SKILL ENGINE v2.0 integration',
+      'Dynamic reference loading',
+      'Protocol executor (6 modules)',
+      '10 specialized tools',
+      'Error handling with helpful messages',
+      'Automatic format detection',
     ],
-    version: "2.0.0-skill-engine",
-  })
+    version: '2.0.0-skill-engine',
+  });
 }

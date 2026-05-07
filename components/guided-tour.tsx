@@ -453,7 +453,7 @@ AI 会结合两者给出综合分析
 **右侧栏 - 研究工具：**
 
 🔍 **Paper Search**
-支持 PubMed / Semantic Scholar / OpenAlex
+支持 PubMed / OpenAlex
 可按关键词、作者、期刊搜索
 
 📚 **Citation Explorer**

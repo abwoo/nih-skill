@@ -135,7 +135,7 @@ export function ReferenceManager() {
           options: {
             maxPapers: 10,
             analyzeDepth,
-            sources: ['pubmed', 'semantic_scholar'],
+            sources: ['pubmed'],
             domain: undefined, // Auto-detect from query
             verifyResults: true  // Enable data verification
           }
@@ -378,7 +378,7 @@ export function ReferenceManager() {
             {!papers.length && !isSearching && (
               <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg text-sm text-blue-700 dark:text-blue-300">
                 <strong>💡 提示：</strong>
-                输入研究主题（如"transformer medical imaging 2024"），系统将实时从PubMed/Semantic Scholar搜索论文，并用AI进行深度分析。
+                输入研究主题（如"transformer medical imaging 2024"），系统将实时从PubMed搜索论文，并用AI进行深度分析。
               </div>
             )}
           </CardContent>
