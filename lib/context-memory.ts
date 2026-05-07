@@ -8,6 +8,8 @@
  * 4. 服务端安全（Vercel/Node.js 环境下自动降级）
  */
 
+import logger from './logger'
+
 const CONTEXT_MEMORY_KEY = 'bme-context-memory'
 const MAX_MEMORY_ENTRIES = 50
 const MAX_CONTEXT_LENGTH = 8000
@@ -58,7 +60,7 @@ export function loadContextMemory(): ContextMemoryState {
       }
     }
   } catch (e) {
-    console.warn('[ContextMemory] Failed to load:', e)
+    logger.warn('[ContextMemory] Failed to load:', e)
   }
   return defaultState
 }
@@ -85,7 +87,7 @@ function saveContextMemory(state: ContextMemoryState): void {
       lastUpdated: Date.now()
     }))
   } catch (e) {
-    console.warn('[ContextMemory] Failed to save:', e)
+    logger.warn('[ContextMemory] Failed to save:', e)
   }
 }
 
@@ -113,7 +115,7 @@ export function addContextMemory(
     state.totalInteractions++
     saveContextMemory(state)
 
-    console.log(`[ContextMemory] ✅ Added ${memory.type}: ${memory.title}`)
+    logger.debug('ContextMemory', `✅ Added ${memory.type}: ${memory.title}`)
   }
 }
 
@@ -170,7 +172,7 @@ export function addPaperAnalysisToMemory(paperData: {
     })
   }
 
-  console.log(`[ContextMemory] 📄 Paper analysis saved to memory`)
+  logger.debug('ContextMemory', '📄 Paper analysis saved to memory')
 }
 
 /**
@@ -229,7 +231,7 @@ export function getRelevantContext(query: string, maxChars: number = MAX_CONTEXT
 
   contextStr += '═══════════════════════════════════════\n'
 
-  console.log(`[ContextMemory] 📝 Injected ${relevantMemories.length} memories (${contextStr.length} chars)`)
+  logger.debug('ContextMemory', `📝 Injected ${relevantMemories.length} memories (${contextStr.length} chars)`)
 
   return contextStr
 }
@@ -244,9 +246,9 @@ export function clearContextMemory(): void {
 
   try {
     localStorage.removeItem(CONTEXT_MEMORY_KEY)
-    console.log('[ContextMemory] 🗑️ All memories cleared')
+    logger.debug('ContextMemory', '🗑️ All memories cleared')
   } catch (e) {
-    console.error('[ContextMemory] Failed to clear:', e)
+    logger.error('[ContextMemory] Failed to clear:', e)
   }
 }
 

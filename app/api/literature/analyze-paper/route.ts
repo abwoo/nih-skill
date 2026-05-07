@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { PaperAnalyzer } from '@/lib/llm-analysis-engine'
 import { searchPapersDirect } from '@/lib/search-service'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log(`Received analyze paper request for: ${doi || pmid}`)
+    logger.debug('AnalyzePaper', `Received analyze paper request for: ${doi || pmid}`)
 
-    let paper: SearchResult | null = null
+    let paper: PaperResult | null = null
 
     if (doi) {
       const result = await searchPapersDirect(doi, 'semantic_scholar', 1)

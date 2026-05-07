@@ -1,8 +1,8 @@
+import logger from "@/lib/logger"
 import { NextResponse } from "next/server"
 
 function logSearch(source: string, message: string, data?: unknown) {
-  var timestamp = new Date().toISOString()
-  console.log("[" + timestamp + "] [search][" + source + "] " + message, data || "")
+  logger.debug('Search', `[${source}] ${message}`, data || "")
 }
 
 // ═════════════════════════════════════════════════════
@@ -591,7 +591,7 @@ export async function POST(request: Request) {
       }),
     })
   } catch (error) {
-    console.error("[search] Fatal ERROR:", error)
+    logger.error("[search] Fatal ERROR:", error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Search failed" },
       { status: 500 }

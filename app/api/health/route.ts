@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
 import { logger } from "@/lib/logger"
+import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
 
 export async function GET() {
   const startTime = Date.now()
-  
+
   try {
     // System information
     const systemInfo = {
@@ -15,14 +15,14 @@ export async function GET() {
       memoryUsage: process.memoryUsage(),
       uptime: process.uptime(),
     }
-    
+
     // Check critical dependencies
     const dependencyChecks = await Promise.allSettled([
       checkDependency("pdf-parse"),
       checkDependency("pdfjs-dist"),
       checkDependency("cheerio"),
     ])
-    
+
     // API endpoints status
     const apiEndpoints = [
       { path: "/api/parse-pdf", method: "POST", description: "PDF parsing" },
@@ -35,36 +35,36 @@ export async function GET() {
       { path: "/api/gateway", method: "POST", description: "DOI gateway" },
       { path: "/api/skill-info", method: "GET", description: "Skill information" },
     ]
-    
+
     // Environment info (sanitized)
     const environmentInfo = {
       nodeEnv: process.env.NODE_ENV || "development",
       nextVersion: process.env.npm_package_next_version || "unknown",
       hasEnvFile: typeof process.env.NEXT_PUBLIC_DEFAULT_PROVIDER !== 'undefined',
     }
-    
+
     const responseTime = Date.now() - startTime
-    
-    logger.store.log('Health check completed', { responseTime, status: 'ok' })
-    
+
+    logger.debug('Health', 'Health check completed', { responseTime, status: 'ok' })
+
     return NextResponse.json({
       status: "healthy",
       timestamp: new Date().toISOString(),
       responseTimeMs: responseTime,
-      
+
       system: systemInfo,
-      
+
       dependencies: {
         "pdf-parse": dependencyChecks[0].status === 'fulfilled',
         "pdfjs-dist": dependencyChecks[1].status === 'fulfilled',
         "cheerio": dependencyChecks[2].status === 'fulfilled',
         allOk: dependencyChecks.every(d => d.status === 'fulfilled'),
       },
-      
+
       endpoints: apiEndpoints,
-      
+
       environment: environmentInfo,
-      
+
       features: {
         pdfParsing: true,
         doiResolution: true,
@@ -74,16 +74,16 @@ export async function GET() {
         datasetRecommendations: true,
         inputDetection: true,
       },
-      
+
       version: "1.0.0",
       name: "BME Research Accelerator",
-      
+
       performance: {
         memoryUsedMB: Math.round(systemInfo.memoryUsage.heapUsed / 1024 / 1024),
         memoryTotalMB: Math.round(systemInfo.memoryUsage.heapTotal / 1024 / 1024),
         uptimeSeconds: Math.round(systemInfo.uptime),
       },
-      
+
       recommendations: [
         "✅ PDF parser configured with dual-engine (pdf-parse + PDF.js)",
         "✅ Worker disabled for server-side compatibility",
@@ -91,7 +91,7 @@ export async function GET() {
         "✅ Structured logging enabled for debugging",
         "✅ Environment configuration template available (.env.example)",
       ],
-      
+
       recentImprovements: [
         "🔧 Fixed PDF.js worker path error (server-side compatibility)",
         "🔧 Updated Next.js config with webpack optimizations",
@@ -100,10 +100,10 @@ export async function GET() {
         "⚡ Improved error handling and recovery",
       ],
     })
-    
+
   } catch (error) {
-    logger.store.error('Health check failed', error)
-    
+    logger.error('Health', 'Health check failed', error)
+
     return NextResponse.json({
       status: "unhealthy",
       timestamp: new Date().toISOString(),
