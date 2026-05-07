@@ -356,8 +356,8 @@ function WelcomeTipBubble({
   );
 
   return (
-    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="px-5 py-3 rounded-xl bg-card border border-border shadow-xl max-w-md">
+    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] animate-in fade-in slide-in-from-bottom-4 duration-500 pointer-events-none">
+      <div className="px-5 py-3 rounded-xl bg-card border border-border shadow-xl max-w-md pointer-events-auto">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
             <TipIcon className="h-4 w-4 text-primary" />

@@ -75,4 +75,21 @@ class Logger {
 }
 
 export const logger = new Logger()
+
+// Named loggers for different modules (prevents "Cannot read properties of undefined" errors)
+export const namedLoggers = {
+  pdf: new Logger(true, 50),      // PDF parsing logger
+  doi: new Logger(true, 50),      // DOI resolution logger
+  api: new Logger(true, 100),     // API request logger
+  search: new Logger(true, 80),  // Search service logger
+  llm: new Logger(true, 60),     // LLM analysis logger
+}
+
+// Backward compatibility: add pdf property to main logger
+;(logger as any).pdf = namedLoggers.pdf
+;(logger as any).doi = namedLoggers.doi
+;(logger as any).api = namedLoggers.api
+;(logger as any).search = namedLoggers.search
+;(logger as any).llm = namedLoggers.llm
+
 export default logger
