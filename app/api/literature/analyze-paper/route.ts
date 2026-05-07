@@ -1,5 +1,7 @@
 import { PaperAnalyzer } from '@/lib/llm-analysis-engine'
 import { searchPapersDirect } from '@/lib/search-service'
+import type { PaperResult } from '@/lib/types/api'
+import logger from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
