@@ -1,47 +1,44 @@
 'use client'
 
-import { useCallback, useState } from 'react'
-import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  useToast,
-} from '@/components/ui/use-toast'  // 添加 Toast 支持
+    useToast,
+} from '@/components/ui/use-toast'; // 添加 Toast 支持
 import {
-  AlertTriangle,
-  ArrowLeft,
-  BookOpen,
-  Brain,
-  CheckCircle2,
-  Download,
-  ExternalLink,
-  FileText,
-  Filter,
-  Grid3X3,
-  Home,
-  Lightbulb,
-  List,
-  Loader2,
-  Plus,
-  Search,
-  Share2,
-  Star,
-  Tag,
-  Target,
-  TrendingUp,
-  Trash2,
-  XCircle
+    AlertTriangle,
+    ArrowLeft,
+    BookOpen,
+    Brain,
+    CheckCircle2,
+    Download,
+    ExternalLink,
+    FileText,
+    Grid3X3,
+    Home,
+    Lightbulb,
+    List,
+    Loader2,
+    Plus,
+    Search,
+    Share2,
+    Star,
+    Tag,
+    Target,
+    TrendingUp
 } from 'lucide-react'
+import Link from 'next/link'
+import { useCallback, useState } from 'react'
 
 interface PaperData {
   id: string

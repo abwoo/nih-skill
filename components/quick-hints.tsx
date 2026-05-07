@@ -1,7 +1,20 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { ArrowRight, BookOpen, FileText, Search, Sparkles, Upload, X, Zap } from 'lucide-react';
+import {
+  ArrowRight,
+  Brain,
+  Dna,
+  FileText,
+  Keyboard,
+  Library,
+  Lightbulb,
+  Microscope,
+  ShieldCheck,
+  Upload,
+  X,
+  Zap,
+} from 'lucide-react';
 import * as React from 'react';
 
 type ContextualHint = {
@@ -16,60 +29,162 @@ type ContextualHint = {
     onClick: () => void;
   };
   priority: 'high' | 'medium' | 'low';
+  scenario?: string; // 新增：使用场景
 };
 
+// 完全重写的上下文提示系统 - 基于真实BME研究场景
 const CONTEXTUAL_HINTS: ContextualHint[] = [
   {
-    id: 'first-upload',
+    id: 'first-input-hint',
     target: 'input-area',
-    title: '📎 开始你的第一次分析',
-    content: '上传 PDF 论文或输入 DOI 开始分析。支持拖拽文件到此处！',
+    title: '开始你的第一个分析',
+    content: `有3种方式可以开始：
+
+1️⃣ 直接输入研究问题或DOI
+   例："分析这篇论文：10.1038/nature12345"
+
+2️⃣ 上传PDF论文（支持拖拽）
+   最大30MB，支持批量上传
+
+3️⃣ 使用右侧的Quick Start模板
+   预设的真实研究场景，一键启动`,
     icon: Upload,
     position: 'top',
     priority: 'high',
-    action: {
-      label: '查看示例',
-      onClick: () => {},
-    },
+    scenario: '首次使用 / 新手入门',
   },
   {
-    id: 'try-search',
-    target: 'right-sidebar',
-    title: '🔍 发现相关论文',
-    content: '使用右侧搜索工具查找 PubMed 或 OpenAlex 上的文献',
-    icon: Search,
+    id: 'module-selection-hint',
+    target: 'module-buttons',
+    title: '选择合适的分析模式',
+    content: `根据你的目标选择：
+
+🔬 Decompose → 深入读懂单篇论文
+⚖️ Compare → 对比2-4篇方法的优劣
+🧪 Reproduce → 生成实验复现蓝图
+📦 Paradigm → 绘制领域方法全景图
+✅ Evidence → 验证科学声明的可靠性
+📊 Datasets → 推荐数据集和实验路线
+
+💡 不确定？先用Decompose（默认）`,
+    icon: Brain,
+    position: 'bottom',
+    priority: 'high',
+    scenario: '选择分析模式时',
+  },
+  {
+    id: 'templates-hint',
+    target: 'templates',
+    title: '快速开始模板',
+    content: `这些是真实的研究场景示例：
+
+• ECG arrhythmia detection with attention
+  → 分析注意力机制在心电图中的应用
+
+• CheXNet vs AlphaFold2 innovation delta
+  → 比较两个系统的创新差异
+
+点击任意模板自动填充输入框`,
+    icon: Zap,
     position: 'left',
     priority: 'medium',
+    scenario: '不知道如何开始时',
   },
   {
-    id: 'explore-modules',
-    target: 'left-sidebar',
-    title: '📚 探索知识库',
-    content: '点击左侧的创新等级或参考模块，快速了解 BME 领域知识体系',
-    icon: BookOpen,
+    id: 'innovation-level-hint',
+    target: 'innovation-levels',
+    title: '创新等级参考体系',
+    content: `L1-L5c 是标准化的创新等级分类：
+
+L1-L2: 增量改进（新技巧/新模块）
+L3: 新方法解决老问题（AlphaFold级别）
+L4: 定义新任务/新问题
+L5a-c: 范式转变/奠基理论/跨领域统一
+
+💡 点击任意等级查看详细解释和经典案例`,
+    icon: Microscope,
     position: 'right',
+    priority: 'medium',
+    scenario: '评估论文创新性时',
+  },
+  {
+    id: 'fatal-blockers-hint',
+    target: 'fatal-blockers',
+    title: '致命缺陷检测清单',
+    content: `11项质量检测维度（来自顶级期刊审稿标准）：
+
+FB-1 数据可用性 | FB-2 代码可用性
+FB-3 利益冲突 | FB-4 标注质量
+FB-5 对比公平性 | ...共11项
+
+🔴 红色 = 必须关注的问题
+🟡 黄色 = 需要留意
+🟢 绿色 = 通过检测`,
+    icon: ShieldCheck,
+    position: 'left',
+    priority: 'medium',
+    scenario: '审稿/评估论文质量时',
+  },
+  {
+    id: 'darwin-hint',
+    target: 'darwin-button',
+    title: 'Darwin: 研究想法进化器',
+    content: `从已有工作中催生新的研究方向：
+
+🧬 Transplant - 把A领域方法搬到B领域
+🎯 Constrain - 在更苛刻条件下重做
+🔀 Fuse - 融合两个paradigm的优势
+↩️ Invert - 反转优化目标
+🧪 Minimal - 1周内可完成的对照
+💡 Extreme - 把方法推到极限
+
+适合：Research Ideation阶段`,
+    icon: Dna,
+    position: 'bottom',
     priority: 'low',
+    scenario: '寻找研究方向/产生新idea时',
+  },
+  {
+    id: 'references-hint',
+    target: 'references-button',
+    title: 'References: 文献管理器',
+    content: `集中管理你的参考文献库：
+
+📚 通过DOI/PubMed搜索添加文献
+🏷️ 按项目分组 + 标签管理
+🔗 直接发送到各分析模式
+📊 追踪阅读进度和研究趋势
+
+适合：文献综述、写Related Work`,
+    icon: Library,
+    position: 'bottom',
+    priority: 'low',
+    scenario: '管理大量参考文献时',
   },
 ];
 
+// 重写的欢迎提示 - 更加实用和具体
 const WELCOME_TIPS = [
   {
     id: 'welcome-1',
-    icon: Zap,
-    text: '💡 新手？试试右侧的「Quick Start Templates」',
+    icon: Lightbulb,
+    text: '💡 新手推荐：先试试右侧的「ECG arrhythmia detection」模板',
     delay: 2000,
+    action: '点击右侧模板区域',
   },
   {
     id: 'welcome-2',
     icon: FileText,
-    text: '📄 可以直接粘贴 DOI：10.1038/nature12345',
+    text: '📄 快速方式：直接粘贴DOI到输入框，如 10.1038/nature12345',
     delay: 5000,
+    action: '在中间输入框粘贴',
   },
   {
     id: 'welcome-3',
-    icon: Sparkles,
-    text: '✨ 按 ? 键可随时重新打开引导教程',
+    icon: Keyboard,
+    text: '⌨️ 按 ? 键可打开完整的交互式引导教程（10分钟掌握全部功能）',
     delay: 8000,
+    action: '按键盘 ? 键',
   },
 ];
 
@@ -99,282 +214,138 @@ export function QuickHints() {
     }
   }, []); // Empty dependency array - runs only once
 
-  // Show contextual hints after initialization - use a separate effect with proper guards
+  // Show welcome tips sequentially after mount
   React.useEffect(() => {
     if (isMountingRef.current) {
       isMountingRef.current = false;
-      return; // Skip on first render to avoid loops
-    }
 
-    try {
-      // Check if tour was completed (don't show hints if tour not done)
-      const tourCompleted = localStorage.getItem('bme_tour_completed') === 'true';
-      if (!tourCompleted) return;
+      // Show tips one by one with delays
+      WELCOME_TIPS.forEach((tip, index) => {
+        setTimeout(() => {
+          setWelcomeTips((prev) => [...prev, index]);
+          setVisibleHints((prev) => new Set([...prev, tip.id]));
 
-      // Only show hints that haven't been dismissed
-      const newHints = new Set<string>();
-      CONTEXTUAL_HINTS.forEach((hint) => {
-        if (!dismissedHints.has(hint.id)) {
-          newHints.add(hint.id);
-        }
-      });
-
-      if (newHints.size > 0) {
-        const timer = setTimeout(() => {
-          setVisibleHints(newHints);
-        }, 3000);
-        return () => clearTimeout(timer);
-      }
-    } catch {
-      // Silently fail
-    }
-  }, [dismissedHints]); // This is okay now because we guard against initial render
-
-  // Rotate welcome tips - fixed to avoid infinite loop
-  React.useEffect(() => {
-    let tipTimer: NodeJS.Timeout | null = null;
-    let hideTimer: NodeJS.Timeout | null = null;
-
-    if (visibleHints.size === 0 && dismissedHints.size < 3) {
-      // Show first tip immediately (only if not already showing)
-      setWelcomeTips((prev) => (prev.length === 0 ? [0] : prev));
-
-      // Start rotation after initial display
-      tipTimer = setInterval(() => {
-        setCurrentTipIndex((prev) => {
-          const next = (prev + 1) % WELCOME_TIPS.length;
-          // Update welcome tips in the same callback to avoid multiple renders
+          // Auto-dismiss after 8 seconds
           setTimeout(() => {
-            setWelcomeTips([next]);
-          }, 0);
-          return next;
-        });
-      }, 4000);
-
-      // Hide tips after some time
-      hideTimer = setTimeout(() => {
-        setWelcomeTips([]);
-        if (tipTimer) clearInterval(tipTimer);
-      }, 15000);
+            setVisibleHints((prev) => {
+              const next = new Set(prev);
+              next.delete(tip.id);
+              return next;
+            });
+          }, 8000);
+        }, tip.delay);
+      });
     }
+  }, []);
 
-    return () => {
-      if (tipTimer) clearInterval(tipTimer);
-      if (hideTimer) clearTimeout(hideTimer);
-    };
-  }, [visibleHints.size, dismissedHints.size]); // Use .size to compare primitive values
+  // Show contextual hints based on user interaction (simplified for now)
+  React.useEffect(() => {
+    // Could add intersection observer or event-based triggering here
+    // For now, hints are manually triggered or shown on load
+  }, []);
 
-  // Stable dismiss functions using useCallback
-  const dismissHint = React.useCallback((hintId: string) => {
-    setDismissedHints((prev) => {
-      const next = new Set(prev);
-      next.add(hintId);
-      try {
-        localStorage.setItem('bme_dismissed_hints', JSON.stringify([...next]));
-      } catch {
-        // Silently fail
-      }
-      return next;
-    });
-
+  function dismissHint(hintId: string) {
     setVisibleHints((prev) => {
       const next = new Set(prev);
       next.delete(hintId);
       return next;
     });
-  }, []);
 
-  const dismissWelcomeTip = React.useCallback(
-    (tipId: string) => {
-      // Remove from welcome tips immediately
-      const numericId = parseInt(tipId.replace('welcome-', ''));
-      setWelcomeTips((prev) => prev.filter((id) => id !== numericId));
+    // Save to localStorage
+    setDismissedHints((prev) => {
+      const updated = new Set(prev);
+      updated.add(hintId);
 
-      // Also add to dismissed hints so it doesn't reappear
-      dismissHint(tipId);
-    },
-    [dismissHint]
-  );
+      try {
+        localStorage.setItem('bme_dismissed_hints', JSON.stringify([...updated]));
+      } catch {}
 
-  if (visibleHints.size === 0 && welcomeTips.length === 0) return null;
+      return updated;
+    });
+  }
 
-  return (
-    <>
-      {/* Contextual Hints */}
-      {CONTEXTUAL_HINTS.filter((h) => visibleHints.has(h.id)).map((hint) => (
-        <ContextualBubble key={hint.id} hint={hint} onDismiss={() => dismissHint(hint.id)} />
-      ))}
-
-      {/* Welcome Tips */}
-      {welcomeTips.map((tipIdx) => {
-        const tip = WELCOME_TIPS[tipIdx];
-        if (!tip) return null;
-        return (
-          <WelcomeTipBubble
-            key={`welcome-${tipIdx}`}
-            tip={tip}
-            onDismiss={() => dismissWelcomeTip(`welcome-${tipIdx}`)}
-          />
-        );
-      })}
-    </>
-  );
-}
-
-function ContextualBubble({ hint, onDismiss }: { hint: ContextualHint; onDismiss: () => void }) {
-  const [position, setPosition] = React.useState<{
-    top?: number;
-    left?: number;
-    right?: number;
-    bottom?: number;
-  }>({});
-
-  React.useEffect(() => {
-    const element = document.querySelector(`[data-tour="${hint.target}"]`);
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      const offset = 12;
-
-      switch (hint.position) {
-        case 'top':
-          setPosition({
-            bottom: window.innerHeight - rect.top + offset,
-            left: rect.left + rect.width / 2,
-          });
-          break;
-        case 'bottom':
-          setPosition({
-            top: rect.bottom + offset,
-            left: rect.left + rect.width / 2,
-          });
-          break;
-        case 'left':
-          setPosition({
-            top: rect.top + rect.height / 2,
-            right: window.innerWidth - rect.left + offset,
-          });
-          break;
-        case 'right':
-          setPosition({
-            top: rect.top + rect.height / 2,
-            left: rect.right + offset,
-          });
-          break;
-      }
-    }
-  }, [hint.target, hint.position]);
-
-  if (Object.keys(position).length === 0) return null;
-
-  const HintIcon = hint.icon;
+  function dismissAllWelcomeTips() {
+    WELCOME_TIPS.forEach((tip) => {
+      setVisibleHints((prev) => {
+        const next = new Set(prev);
+        next.delete(tip.id);
+        return next;
+      });
+      dismissHint(tip.id);
+    });
+  }
 
   return (
-    <div
-      className={cn(
-        'fixed z-[90] animate-in fade-in slide-in-from-bottom-2 duration-300',
-        'max-w-sm px-4 py-3 rounded-xl shadow-lg border',
-        hint.priority === 'high'
-          ? 'bg-gradient-to-br from-primary to-teal text-white border-primary/30'
-          : 'bg-card text-foreground border-border'
-      )}
-      style={{
-        ...position,
-        transform:
-          hint.position === 'left' || hint.position === 'right'
-            ? 'translateY(-50%)'
-            : 'translateX(-50%)',
-      }}
-    >
-      <div className="flex items-start gap-3">
-        {HintIcon && (
-          <div
-            className={cn(
-              'h-8 w-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5',
-              hint.priority === 'high' ? 'bg-white/20' : 'bg-primary/10'
-            )}
-          >
-            <HintIcon className="h-4 w-4" />
-          </div>
-        )}
-
-        <div className="flex-1 min-w-0 space-y-1.5">
-          <div className="font-semibold text-sm leading-tight">{hint.title}</div>
-          <div className="text-xs opacity-90 leading-relaxed">{hint.content}</div>
-
-          {hint.action && (
-            <button
-              onClick={hint.action.onClick}
-              className="inline-flex items-center gap-1.5 text-xs font-medium opacity-90 hover:opacity-100 underline underline-offset-2 transition-opacity"
+    <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-3 max-w-md">
+      {/* Welcome Tips - Enhanced styling */}
+      {WELCOME_TIPS.map(
+        (tip, idx) =>
+          visibleHints.has(tip.id) &&
+          !dismissedHints.has(tip.id) && (
+            <div
+              key={tip.id}
+              className="animate-in slide-in-from-bottom-3 fade-in duration-500 group"
             >
-              {hint.action.label}
-              <ArrowRight className="h-3 w-3" />
-            </button>
-          )}
-        </div>
+              <div
+                className={cn(
+                  'relative p-4 rounded-xl backdrop-blur-xl',
+                  'bg-gradient-to-r from-indigo-500/15 via-purple-500/10 to-transparent',
+                  'border border-indigo-500/25 shadow-lg shadow-indigo-500/10',
+                  'hover:border-indigo-400/40 hover:shadow-xl hover:shadow-indigo-500/20',
+                  'transition-all duration-300'
+                )}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <tip.icon className="w-4.5 h-4.5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white/90 font-medium leading-relaxed">{tip.text}</p>
+                    {tip.action && (
+                      <p className="text-xs text-indigo-300 mt-1.5 flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <ArrowRight className="h-3 w-3" />
+                        {tip.action}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => dismissHint(tip.id)}
+                    className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.08] transition-all shrink-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onDismiss();
-          }}
-          className={cn(
-            'p-1 rounded-md transition-colors shrink-0',
-            hint.priority === 'high' ? 'hover:bg-white/20' : 'hover:bg-secondary'
-          )}
-          aria-label="关闭提示"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      </div>
+                {/* Dismiss all button on last tip */}
+                {idx === welcomeTips.length - 1 && (
+                  <button
+                    onClick={dismissAllWelcomeTips}
+                    className="mt-3 w-full px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-[10px] font-medium text-white/50 hover:text-white/80 border border-white/[0.06] transition-all"
+                  >
+                    关闭所有提示（不再显示）
+                  </button>
+                )}
+              </div>
+            </div>
+          )
+      )}
 
-      {/* Priority indicator */}
-      {hint.priority === 'high' && (
-        <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-yellow-400 animate-pulse" />
+      {/* Contextual Hints - Only show if not dismissed */}
+      {CONTEXTUAL_HINTS.map(
+        (hint) =>
+          !dismissedHints.has(hint.id) && (
+            <div key={hint.id} className="animate-in fade-in zoom-in-95 duration-300">
+              {/* Contextual hint implementation could go here */}
+              {/* For now, we're focusing on the welcome tips */}
+            </div>
+          )
       )}
     </div>
   );
 }
 
-function WelcomeTipBubble({
-  tip,
-  onDismiss,
-}: {
-  tip: (typeof WELCOME_TIPS)[0];
-  onDismiss: () => void;
-}) {
-  const TipIcon = tip.icon;
-
-  // Handle dismiss with event prevention to ensure it works
-  const handleDismiss = React.useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      e.preventDefault();
-      onDismiss();
-    },
-    [onDismiss]
-  );
-
-  return (
-    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] animate-in fade-in slide-in-from-bottom-4 duration-500 pointer-events-none">
-      <div className="px-5 py-3 rounded-xl bg-card border border-border shadow-xl max-w-md pointer-events-auto">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-            <TipIcon className="h-4 w-4 text-primary" />
-          </div>
-
-          <p className="text-sm text-foreground/90 flex-1">{tip.text}</p>
-
-          <button
-            onClick={handleDismiss}
-            className="p-1 rounded hover:bg-secondary transition-colors cursor-pointer"
-            aria-label="关闭提示"
-            type="button"
-          >
-            <X className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+export function resetHints() {
+  try {
+    localStorage.removeItem('bme_dismissed_hints');
+  } catch {}
 }
